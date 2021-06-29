@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+html,
+body {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  background-color: #f9f9f9;
+
+  --primary-color: #461BC2;
+}
+h1.heading {
+  color: #310a31;
+  font-family: "Roboto", sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.token-img {
+  margin-bottom: 10px;
+}
+#arrow {
+  cursor: pointer;
+}
+
+.btn-outline-primary {
+  border-color: #310a31;
+  color: #310a31;
+  outline-color: #310a31;
+}
+
+.btn-outline-primary:hover {
+  border-color: #310a31;
+  background-color: #310a31;
+  color: #f9f9f9;
+}
+.btn-outline-primary:active {
+  border-color: #310a31 !important;
+  color: #310a31 !important;
+  outline-color: #310a31 !important;
+  background: #fff !important;
+}
+.btn-outline-primary:focus {
+  border-color: #310a31 !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgb(49 10 49 / 25%) !important;
+}
+
+.form-control:focus {
+  border-color: #310a31;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgb(49 10 49 / 25%);
+}
