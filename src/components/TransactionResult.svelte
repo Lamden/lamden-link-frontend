@@ -2,7 +2,7 @@
   import Button from "./Button.svelte";
   import Success from "./ConnectedSVG.svelte";
   import Error from "./ErrorSVG.svelte";
-  import { currentNetwork } from "../stores/lamden";
+  import { swap_details, swap_finished } from "../stores/lamden";
 
   export let status;
   export let network;
@@ -37,6 +37,12 @@
     return "";
   };
 
+  let closeDetails = function() {
+    swap_finished.set(false)
+    swap_details.set({'origin': $swap_details.origin, 'result': $swap_details.result, 'page_view': false})
+    return "";
+  }
+
   let ethApprovalTxHash;
   let ethDepositTxHash;
   let ethTxHash;
@@ -67,90 +73,86 @@
   }
 </script>
 
-{#if localStorage.getItem("swap_finished") != "false"}
-  <div class="details-page">
-    <div class="details">
-      <div style="display: grid;grid-template-columns: 1fr 30fr;">
-        <div class="alert">
-          {#if isError}
-            <Error />
-          {:else}
-            <Success />
-          {/if}
-        </div>
-        <div class="detail-header">Transaction {transactionResult}</div>
-      </div>
-      {#if transactionResult == "Success"}
-        <div class="transaction-info">
-          {tokens_moved} WETH was transferred successfully.
-        </div>
-      {/if}
-
-      <div>
-        {#if network == 'lamden'}
-          <div class="transaction-info link">
-            <div class="transaction-title">Lamden Approval Tx Hash:</div>
-            <a
-              class="transaction-hash"
-              href={lamdenscan_base + lamdenApprovalTxHash.hash}
-              target="_blank"
-            >
-              {lamdenApprovalTxHash.hash}
-            </a>
-          </div>
-          <div class="transaction-info link">
-            <div class="transaction-title">Lamden Burn Tx Hash:</div>
-            <a
-              class="transaction-hash"
-              href={lamdenscan_base + lamdenBurnTxHash.hash}
-              target="_blank"
-            >
-              {lamdenBurnTxHash.hash}
-            </a>
-          </div>
-          <div class="transaction-info link">
-            <div class="transaction-title">Eth Tx Hash:</div>
-            <a
-              class="transaction-hash"
-              href={etherscan_base + ethTxHash.hash}
-              target="_blank"
-            >
-              {ethTxHash.hash}
-            </a>
-          </div>
+<div class="details-page">
+  <div class="details">
+    <div style="display: grid;grid-template-columns: 1fr 30fr;">
+      <div class="alert">
+        {#if isError}
+          <Error />
         {:else}
-          <div class="transaction-info link">
-            <div class="transaction-title">Eth Approval Tx Hash:</div>
-            <a
-              class="transaction-hash"
-              href={etherscan_base + ethApprovalTxHash.hash}
-              target="_blank"
-            >
-              {ethApprovalTxHash.hash}
-            </a>
-          </div>
-          <div class="transaction-info link">
-            <div class="transaction-title">Eth Deposit Tx Hash:</div>
-            <a
-              class="transaction-hash"
-              href={etherscan_base + ethDepositTxHash.hash}
-              target="_blank"
-            >
-              {ethDepositTxHash.hash}
-            </a>
-          </div>
+          <Success />
         {/if}
       </div>
-      <div style="width: 30%;margin-top:1rem;">
-        <button on:click={() => window.open("/", "_self")}>
-          <span class="button-text">{buttonMessage}</span>
-        </button>
+      <div class="detail-header">Transaction {transactionResult}</div>
+    </div>
+    {#if transactionResult == "Success"}
+      <div class="transaction-info">
+        {tokens_moved} WETH was transferred successfully.
       </div>
+    {/if}
+
+    <div>
+      {#if network == 'lamden'}
+        <div class="transaction-info link">
+          <div class="transaction-title">Lamden Approval Tx Hash:</div>
+          <a
+            class="transaction-hash"
+            href={lamdenscan_base + lamdenApprovalTxHash.hash}
+            target="_blank"
+          >
+            {lamdenApprovalTxHash.hash}
+          </a>
+        </div>
+        <div class="transaction-info link">
+          <div class="transaction-title">Lamden Burn Tx Hash:</div>
+          <a
+            class="transaction-hash"
+            href={lamdenscan_base + lamdenBurnTxHash.hash}
+            target="_blank"
+          >
+            {lamdenBurnTxHash.hash}
+          </a>
+        </div>
+        <div class="transaction-info link">
+          <div class="transaction-title">Eth Tx Hash:</div>
+          <a
+            class="transaction-hash"
+            href={etherscan_base + ethTxHash.hash}
+            target="_blank"
+          >
+            {ethTxHash.hash}
+          </a>
+        </div>
+      {:else}
+        <div class="transaction-info link">
+          <div class="transaction-title">Eth Approval Tx Hash:</div>
+          <a
+            class="transaction-hash"
+            href={etherscan_base + ethApprovalTxHash.hash}
+            target="_blank"
+          >
+            {ethApprovalTxHash.hash}
+          </a>
+        </div>
+        <div class="transaction-info link">
+          <div class="transaction-title">Eth Deposit Tx Hash:</div>
+          <a
+            class="transaction-hash"
+            href={etherscan_base + ethDepositTxHash.hash}
+            target="_blank"
+          >
+            {ethDepositTxHash.hash}
+          </a>
+        </div>
+      {/if}
+    </div>
+    <div style="width: 30%;margin-top:1rem;">
+      <button on:click={() => closeDetails()}>
+        <span class="button-text">{buttonMessage}</span>
+      </button>
     </div>
   </div>
-{:else}
-  {returnHome()}
-{/if}
+</div>
 
 <style>
   .alert {
