@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { ethTxHash, ethDepositTxHash } from "./stores/lamden";
+  import { swap_details, swap_finished } from "./stores/lamden";
   import { Router, Link, Route } from "svelte-routing";
   import Details from "./pages/Details.svelte";
   import Home from "./pages/Home.svelte";
   import { onMount } from 'svelte'
   
-  onMount(() => {
-    localStorage.setItem('swap_finished', 'false')
-  })
+
   let update_url = function() {
     window.history.pushState("", "", "/")
     return ""
   }
+
+
 </script>
 
 <Router>
@@ -22,13 +22,15 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
         rel="stylesheet"
       />
-      <Route path="/:origin/tx/:result" let:params>
-        <Details result={params.result} origin={params.origin}/>
-      </Route>
+      {#if $swap_details && $swap_details.page_view}
+        <Details result={$swap_details.result} origin={$swap_details.origin}/>
+      {:else}
       <Route path="/">
         { update_url() }
         <Home />
       </Route>
+      {/if}
+      
 
     </div>
     <script
