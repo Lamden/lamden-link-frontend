@@ -3,7 +3,8 @@
     lamden_origin,
     isLoading,
     resume_burn,
-    ethTxHash,
+    swap_details,
+    swap_finished,
   } from "../stores/lamden";
   import Loader from "./Loader.svelte";
   import Button from "./Button.svelte";
@@ -14,43 +15,45 @@
   export let error;
   export let status;
   export let success;
-  let path;
+
   let openModal = function () {
- 
-    if (localStorage.getItem('swap_finished') != 'false') {
+    if ($swap_finished) {
       let network;
-      if ($lamden_origin) network = 'lamden';
-      else network = 'ethereum'
+      let result;
+      if ($lamden_origin) network = "lamden";
+      else network = "ethereum";
 
-      if (error) path = `${network}/tx/error/`;
-      else path = `${network}/tx/success/`;
+      if (error) result = `error`;
+      else result = `success`;
 
-      window.open(path, "_self");
+      JSON.stringify(
+        localStorage.setItem("swap_details", {
+          origin: network,
+          result: result,
+        })
+      );
+      swap_details.set({ origin: network, result: result, page_view: true });
     }
+
     return "";
   };
 
-  let getLastTrade = function() {
-    let network = lastTransfer.network
-    let status = lastTransfer.status
-    link = `${network}/tx/${status}/`
-    localStorage.setItem('swap_finished', 'true')
-    window.open(link, "_self");
-
-  }
+  let getLastTrade = function () {
+    let network = lastTransfer.network;
+    let status = lastTransfer.status;
+    swap_details.set({ origin: network, result: status, page_view: true });
+  };
   let lastTransfer;
-  let link;
   $: {
-    link = path;
-    if (localStorage.getItem('lastTransfer')) {
-      lastTransfer = JSON.parse(localStorage.getItem('lastTransfer'))
+    if (localStorage.getItem("lastTransfer")) {
+      lastTransfer = JSON.parse(localStorage.getItem("lastTransfer"));
     }
   }
 
   let setColor = function () {
-    if (lastTransfer.status == 'error') return 'see-details error'
-    else return 'see-details success'
-  }
+    if (lastTransfer.status == "error") return "see-details error";
+    else return "see-details success";
+  };
 </script>
 
 <div class="">
@@ -94,20 +97,18 @@
     </div>
 
     {openModal()}
-
   {:else if error}
     <div>
       <Alert text={error} isError={true} />
     </div>
 
     {openModal()}
-
   {/if}
 
   {#if lastTransfer}
-  <div class={setColor()} on:click={() => getLastTrade()}>
-    Previous Transaction Details
-  </div>
+    <div class={setColor()} on:click={() => getLastTrade()}>
+      Previous Transaction Details
+    </div>
   {/if}
 </div>
 

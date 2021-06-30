@@ -107,7 +107,6 @@
   .drop-down-text {
     margin-top: auto;
     margin-bottom: auto;
-    text-align: center;
     cursor: pointer;
   }
   .drop-down:hover {

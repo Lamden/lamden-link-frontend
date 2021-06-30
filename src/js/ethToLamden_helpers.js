@@ -264,6 +264,6 @@ export async function startSwap(event) {
     }
     isLoading.set(false)
     success.set('Swapping was successful')
-    localStorage.setItem('swap_finished', 'true')
+    swap_finished.set(true)
   }
 }
