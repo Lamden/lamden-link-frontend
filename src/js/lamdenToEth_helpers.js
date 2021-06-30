@@ -509,13 +509,13 @@ const finishBurn = (txHashResult) => {
   if (!txHashResult.status) {
     message.set(txHashResult.message || 'Error sending Ethereum Transaction.')
     localStorage.setItem('ethTxHash', JSON.stringify({ hash: latest_ethTxHash.hash, success: false }))
-    localStorage.setItem('swap_finished', 'true')
+    swap_finished.set(true)
 
     return
   }
   localStorage.setItem('ethTxHash', JSON.stringify({ hash: latest_ethTxHash.hash, success: true }))
   success.set(`${tokenName} tokens sent to Ethereum Chain`)
-  localStorage.setItem('swap_finished', 'true')
+  swap_finished.set(true)
 }
 
 export const toggleResume = () => (newSwap = !newSwap)
