@@ -17,10 +17,14 @@
 
   function unregisterOldServiceWorkers(){
     if (typeof navigator === "undefined") return
-    navigator.serviceWorker.getRegistrations().then( function(registrations) { for(let registration of registrations) { registration.unregister(); } });
+    navigator.serviceWorker.getRegistrations()
+      .then(registrations => {
+        for(let registration of registrations) { 
+          registration.unregister(); 
+        }
+        if (registrations.length > 0) window.location.reload()
+      })
   }
-
-
 </script>
 
 <Router>
