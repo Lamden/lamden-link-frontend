@@ -7,9 +7,8 @@
     swap_finished,
   } from "../stores/lamden";
   import Loader from "./Loader.svelte";
-  import Button from "./Button.svelte";
   import Alert from "./Alert.svelte";
-  import Info from "./InformationalSVG.svelte";
+
   export let title;
   export let description;
   export let error;
@@ -26,8 +25,7 @@
       if (error) result = `error`;
       else result = `success`;
 
-      JSON.stringify(
-        localStorage.setItem("swap_details", {
+      localStorage.setItem("swap_details", JSON.stringify({
           origin: network,
           result: result,
         })
@@ -38,22 +36,7 @@
     return "";
   };
 
-  let getLastTrade = function () {
-    let network = lastTransfer.network;
-    let status = lastTransfer.status;
-    swap_details.set({ origin: network, result: status, page_view: true });
-  };
-  let lastTransfer;
-  $: {
-    if (localStorage.getItem("lastTransfer")) {
-      lastTransfer = JSON.parse(localStorage.getItem("lastTransfer"));
-    }
-  }
-
-  let setColor = function () {
-    if (lastTransfer.status == "error") return "see-details error";
-    else return "see-details success";
-  };
+ 
 </script>
 
 <div class="">
@@ -67,20 +50,7 @@
     {description}
   </h3>
 
-  {#if $lamden_origin}
-    <div style="float: right;margin-left:1rem;display:flex">
-      {#if !$resume_burn}
-        <Button text={"Resume Swap"} clicked={() => resume_burn.set(true)} />
-        <Info />
-      {:else}
-        <Button
-          text={"Create New Swap"}
-          clicked={() => resume_burn.set(false)}
-        />
-        <Info />
-      {/if}
-    </div>
-  {/if}
+  
 
   {#if status && !success}
     <div class="loading">
@@ -105,11 +75,7 @@
     {openModal()}
   {/if}
 
-  {#if lastTransfer}
-    <div class={setColor()} on:click={() => getLastTrade()}>
-      Previous Transaction Details
-    </div>
-  {/if}
+  
 </div>
 
 <style>
@@ -117,16 +83,7 @@
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
   }
-  .see-details {
-    margin-bottom: 1rem;
-    cursor: pointer;
-  }
-  .success {
-    color: rgb(43, 222, 98);
-  }
-  .error {
-    color: rgb(222, 43, 43);
-  }
+
   .see-details:hover {
     color: white;
   }

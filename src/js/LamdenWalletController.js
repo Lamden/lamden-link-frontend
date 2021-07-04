@@ -40,7 +40,6 @@ class WalletController {
         document.addEventListener('lamdenWalletInfo', (e) => {
             this.installed = true;
             let data = e.detail;
-            //console.log(data)
             if (data){
                 if (!data.errors){
                     if (typeof data.locked !== 'undefined') this.locked = data.locked
@@ -102,7 +101,6 @@ class WalletController {
     walletIsInstalled(){
         return new Promise((resolve, reject) => {
             const handleWalletInstalled = (e) => {
-                console.log(e)
                 this.installed = true;
                 this.events.emit('installed', true)
                 document.removeEventListener("lamdenWalletInfo", handleWalletInstalled);
@@ -207,7 +205,7 @@ class WalletConnectionRequest {
         try{
             populate(connectionRequest)
         }catch (e){
-            console.log(e)
+            //console.log(e)
             throw new Error(e.message)
         }
     }

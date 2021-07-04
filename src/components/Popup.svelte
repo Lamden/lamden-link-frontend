@@ -6,6 +6,7 @@
     currentNetwork,
     lamden_origin,
     popup_modal,
+    skipped
   } from "../stores/lamden";
   import { lweth_data, weth_data } from "../js/utils";
   import { projectConf } from "../conf.js";
@@ -25,10 +26,10 @@
   $: {
     if ($lamden_origin) {
       img_src = lweth_data;
-      token_name = "Lamden WEth";
+      token_name = "Lamden WETH";
     } else {
       img_src = weth_data;
-      token_name = "Ethereum WEth";
+      token_name = "Ethereum WETH";
     }
 
     if ($popup_modal == "select") {
@@ -49,7 +50,6 @@
       lamdenscan_base = "https://testnet.lamden.io/transactions/";
     }
   }
-  console.log($lamden_origin);
 </script>
 
 <div id="myModal" class="modal">
@@ -61,17 +61,20 @@
       {#each conf.ethereum.tokens as token}
         <TokenEntry name={token_name} symbol={token.name} img={img_src} />
       {/each}
-      {#if $token_selected}
+      {#if $token_selected && !$skipped}
         <button on:click={() => set_token()}> Choose </button>
       {:else}
         <button disabled> Choose </button>
       {/if}
     {/if}
     {#if $popup_modal == "info"}
-      <div class="info-text">
-        Resume your swap using your Lamden Burn Transaction Hash
-      </div>
-    {/if}
+    <div class="info-text">
+      Resume your swap using your Lamden Burn Transaction Hash
+    </div>
+    <a class="info-text-link">
+      Learn how
+    </a>
+  {/if}
   </div>
 </div>
 
@@ -79,21 +82,12 @@
   .info-text {
     margin-bottom: 2rem;
   }
-  .transaction-title {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    font-size: x-large;
-    font-weight: 200;
-    color: #42e8e0;
-  }
-  .transaction-hash {
-    word-wrap: break-word;
-    text-decoration: none;
-    color: rgb(238, 237, 237);
-  }
-  .transaction-hash:hover {
-    color: white;
-  }
+  .info-text-link {
+    color: #3bcec6;
+        text-decoration: none;
+        cursor: pointer;
+    }
+ 
   /* The Modal (background) */
   .modal {
     display: none; /* Hidden by default */
