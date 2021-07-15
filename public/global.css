@@ -68,6 +68,32 @@
 .success {
   color: #89ed5b;
 }
+.lamden-link {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+@media only screen and (min-width: 1280px) {
+  .lamden-link {
+    max-width: 1100px;
+}
+}
+@media only screen and (min-width: 1440px) {
+  .lamden-link {
+  max-width: 1280px;
+}
+}
+@media only screen and (min-width: 1920px) {
+  .lamden-link {
+  max-width: 1440px;
+}
+}
+@media only screen and (min-width: 3840px) {
+.lamden-link {
+  max-width: 2500px;
+}
+}
+
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
@@ -75,7 +101,7 @@
     width: 100%;
     margin: auto;
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     gap: 0.3rem;
   }
 
@@ -95,11 +121,6 @@
     margin-top: 2rem;
   }
 
-  .lamden-link {
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
-  }
-
   .field-drop {
     margin-top: 2rem;
   }
@@ -107,17 +128,12 @@
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-  
-  .lamden-link {
-    margin-left: 5rem;
-    margin-right: 5rem;
-  }
 
   .buttons {
     width: 100%;
     margin: auto;
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     gap: 1rem;
   }
 
@@ -217,7 +233,7 @@ button {
   margin-bottom: 1rem;
   border: none;
   border-radius: 0.2rem;
-  width: 100%;
+  width: 100%; 
   font-family: inherit;
   font-size: inherit;
   -webkit-padding: 0.65em 0;

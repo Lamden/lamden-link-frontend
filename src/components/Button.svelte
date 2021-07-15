@@ -2,11 +2,10 @@
 <script lang='ts'>
     export let text: string;
     export let clicked: any;
-    export let button_class: string
-</script>
+ </script>
 
 
-<button type="submit" on:click={clicked} class={button_class}>
+<button type="submit" on:click={clicked}>
   <span class="button-text">
       {text}
   </span>

@@ -1,12 +1,14 @@
 <script>
-  import { token_selected } from "../stores/lamden";
+  import { token_selected, skipped } from "../stores/lamden";
     export let symbol;
   export let name;
   export let img;
 
   let choose_token = function (symbol) {
-    token_selected.set(symbol);
+    if (!$skipped) {
+      token_selected.set(symbol);
     document.getElementById(`${symbol}-entry`).style.backgroundColor = "#2f2f2f";
+    }
   };
   //
 </script>

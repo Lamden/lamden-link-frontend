@@ -1,12 +1,11 @@
 <script lang="ts">
-  import Alert from "./Alert.svelte";
-  import Header from "./BridgeHeader.svelte";
+  import Info from "./InformationalSVG.svelte";
   import Arrow from "./ArrowSVG.svelte";
   import DropDown from "./DropDown.svelte";
   import Input from "./Input.svelte";
   import NetworkSelection from "./NetworkSelection.svelte";
   import Button from "./Button.svelte";
-  import Popup from "./Popup.svelte";
+  import Popup from "./Popup.svelte"
   import { onMount } from "svelte";
   //import Alert from "../components/alert.svelte";
   import { projectConf } from "../conf.js";
@@ -16,26 +15,28 @@
     checkLamdenBalance,
     network_to,
     network_from,
-    set_swap_func, connect_lamden_wallet_button, connect_metamask_button
+    set_swap_func,
+    connect_lamden_wallet_button,
+    connect_metamask_button,
   } from "../js/utils";
-  import { chainData } from "svelte-web3";
+  import { chainData, selectedAccount } from "svelte-web3";
   import {
     vk,
     ethBalance,
     lamden_origin,
     tauBalance,
     checkTokenBalanceFunction,
-    message,
-    success,
-    status,
+    skipped,
     resume_burn,
     currentNetwork,
-    token_selected
+    token_selected,
+message,
+inputValue,
+swap_details
   } from "../stores/lamden";
 
-  let tokenName = null;
-  $: selectedToken = tokenName;
   let conf = projectConf[$currentNetwork];
+  let lastTransfer;
 
   $: buttonDisabled =
     $chainData.chainId !== conf.ethereum.chainId ||
@@ -44,50 +45,103 @@
   chainData.subscribe((current) => checkChain(current));
 
   onMount(async () => {
-     checkChain($chainData);
-    checkETHBalance();
+    checkChain($chainData);
+    checkETHBalance($selectedAccount);
     checkLamdenBalance();
-   });
+  });
+  
+  $: {
+    if ($selectedAccount && $currentNetwork) {
+      checkETHBalance($selectedAccount);
+       if ($token_selected) {
+         $checkTokenBalanceFunction($token_selected, $selectedAccount);
+      }
+    }
+  } 
+  
+  if (localStorage.getItem("current_network") === null) {
+    currentNetwork.set("mainnet");
+    localStorage.setItem("current_network", "mainnet");
+  }
+  else {
+    currentNetwork.set(localStorage.getItem("current_network"));
+  }
 
-  currentNetwork.set("mainnet");
-  localStorage.setItem('current_network', "mainnet")
+  let getLastSwap = function() {
+    if (localStorage.getItem('swap_details')) {
+      let last_swap = JSON.parse(localStorage.getItem('swap_details'))
+      swap_details.set({'origin': last_swap.origin, 'result': last_swap.result, 'page_view': true})
+    }
+  }
 
   let clicked = function (network) {
-     if (network == "mainnet") {
-      localStorage.setItem('current_network', "testnet")
+    if (network == "mainnet") {
+      localStorage.setItem("current_network", "testnet");
       currentNetwork.set("testnet");
-     }
-    else {
+    } else {
+      localStorage.setItem("current_network", "mainnet");
       currentNetwork.set("mainnet");
-      localStorage.setItem('current_network', "mainnet")
     }
-    connect_lamden_wallet_button.clicked()
-    connect_metamask_button.clicked()
-    checkLamdenBalance()
-    checkETHBalance()
-    if ($checkTokenBalanceFunction) {
-      $checkTokenBalanceFunction($token_selected);
-    }   
+    connect_lamden_wallet_button();
+    connect_metamask_button();
+    checkLamdenBalance();
+    checkETHBalance($selectedAccount);
+    token_selected.set(null);
   };
 
   let setTestnetColor = function (network) {
-     let base_styles = "font-weight: 700;font-size: 1rem;color:";
-    if (network == "testnet") return base_styles + "#89ed5b";
-    else return base_styles + "#ff0000";
+    let base_styles = "font-weight: 700;font-size: 1rem;color:";
+    if (network == "testnet") return base_styles + "#8c77ff";
+    else return base_styles + "white";
   };
-  
+
+  let disableButton= function (error, token, input) {
+  if (error || !token || !input) return true
+  else return false
+}
+
+let link;
+  $: {
+    if (localStorage.getItem('lastTransfer')) {
+      lastTransfer = JSON.parse(localStorage.getItem('lastTransfer'))
+    }
+  }
+
+  let setColor = function () {
+    if (lastTransfer.status == 'error') return 'see-details error'
+    else return 'see-details details-success'
+  }
 </script>
 
 <div class="bridge-connected">
   <Popup />
-  <Header
-    title={"Bridge"}
-    description={"You're connected to the bridge and good to go."}
-    status={$status}
-    error={$message}
-    success={$success}
-  />
-  <form
+  <div class="boxes" style="margin-top:1.25rem;margin-bottom:1.25rem;min-width: 70%;display:grid;grid-template-columns: 1fr 1fr;max-width: 400px;">
+    {#if (localStorage.getItem("current_network") == "testnet")}
+       <input
+        type="checkbox"
+        id="box-1"
+        on:click={clicked($currentNetwork)}
+        checked
+      />
+    {:else}
+       <input
+        type="checkbox"
+        id="box-1"
+        on:click={clicked($currentNetwork)}
+      />
+    {/if}
+    <label for="box-1" style={setTestnetColor($currentNetwork)}
+      >Testnet</label
+    >
+    {#if lastTransfer}
+    <div class={setColor()} on:click={() => getLastSwap()} style="float:right;text-align: right;">
+      Previous Transaction
+    </div>
+  {/if}
+  </div>
+
+
+    <form
     on:submit|preventDefault={set_swap_func($lamden_origin)}
     action="#"
     method="POST"
@@ -101,6 +155,20 @@
       <Arrow />
       <NetworkSelection direction={"To"} network={network_to($lamden_origin)} />
     </div>
+    {#if $lamden_origin}
+    <div style="display:flex;margin-right: 1.8rem;margin-top: 1rem;margin-bottom: 1rem;">
+      {#if !$resume_burn}
+      <Info />
+        <Button text={"Resume Swap"} clicked={() => resume_burn.set(true)} />
+      {:else}
+      <Info />
+        <Button
+          text={"Create New Swap"}
+          clicked={() => resume_burn.set(false)}
+        />
+      {/if}
+    </div>
+  {/if}
     {#if !$resume_burn}
       <div class="amount container">
         <DropDown network={network_from($lamden_origin)} />
@@ -114,24 +182,29 @@
       </div>
     {/if}
     <div class="container" style="margin-top:1rem">
-      <Button
-        text={`SEND TOKENS TO ${network_to($lamden_origin).toUpperCase()}`}
-        clicked={""}
-      />
+      {#if ($skipped)}
+      <Button text={"CONNECT WALLETS"} clicked={() => skipped.set(false)} />
 
-      <div class="boxes" style="float:right;margin:1.25rem">
-        <input type="checkbox" id="box-1" on:click={clicked($currentNetwork)} />
-        <label for="box-1" style={setTestnetColor($currentNetwork)}
-          >Testnet</label
-        >
-      </div>
+      {:else}
+ 
+      <button type="submit" disabled={disableButton($message, $token_selected, $inputValue)}>
+        <span class="button-text">
+            {`SEND TOKENS TO ${network_to($lamden_origin).toUpperCase()}`}
+        </span>
+      </button>
+
+
+      {/if}
+
     </div>
   </form>
 </div>
 
 <style>
-
   /*Page styles*/
+  .details-success {
+    color: #00ff37;
+  }
   .amount {
     width: 70%;
   }
