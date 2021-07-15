@@ -218,7 +218,7 @@ const getUnsignedABIFromBlockchain = (txHash) =>
         else return res.json()
       })
       .then((json) => {
-        console.log({ json })
+        //console.log({ json })
         if (!json) resolve(false)
         else {
           if (!json.result || json.result === null || json.result === 'None')
@@ -247,7 +247,7 @@ const getProof = (unSignedABI) =>
     }
 
     const checkForProof = async () => {
-      console.log({ timesChecked })
+      //console.log({ timesChecked })
       fetch(
         `${conf.lamden.network.apiLink}/states/${
           conf.lamden.clearingHouse.contractName
@@ -255,7 +255,7 @@ const getProof = (unSignedABI) =>
       )
         .then((res) => res.json())
         .then((json) => {
-          console.log({ json })
+          //console.log({ json })
           if (!json) {
             checkAgain()
             return
@@ -295,12 +295,12 @@ const processProof = (unSignedABI, signedABI) => {
       s,
     }
   } catch (e) {
-    console.log(e)
+    //console.log(e)
     return false
   }
 }
 export const checkEthTxStatus = async (txHash, web3) => {
-  console.log({ checking: txHash })
+  //console.log({ checking: txHash })
   try {
     let response = await web3.eth.getTransactionReceipt(txHash)
      return response
@@ -437,7 +437,7 @@ export async function startBurn(event) {
       } else {
         let latest_status = get(status)
         let latest_isLoading = get(isLoading)
-        console.log({ latest_status, latest_isLoading })
+        //console.log({ latest_status, latest_isLoading })
         continueBurn(unSignedABI)
       }
     }
@@ -454,8 +454,8 @@ export const resumeBurn = async () => {
   message.set(`Checking Lamden Blockchain for Proof of token Burn...`)
 
   const unSignedABI = await getUnsignedABIFromBlockchain(txHash)
-  console.log({ unSignedABI })
-  console.log({ status })
+  //console.log({ unSignedABI })
+  //console.log({ status })
 
   if (unSignedABI) {
     localStorage.setItem('lamdenBurnTxHash', JSON.stringify({ hash: txHash, success: true }))
@@ -470,7 +470,7 @@ export const resumeBurn = async () => {
 const continueBurn = async (unSignedABI) => {
   let latest_status = get(status)
   let latest_isLoading = get(isLoading)
-  console.log({ latest_status, latest_isLoading })
+  //console.log({ latest_status, latest_isLoading })
   const signedABI = await getProof(unSignedABI)
   if (!signedABI) {
     isLoading.set(false)
@@ -480,11 +480,11 @@ const continueBurn = async (unSignedABI) => {
     status.set(`Got Burn Proof from the Lamden Blockchain.`)
     let latest_status = get(status)
     let latest_isLoading = get(isLoading)
-    console.log({ latest_status, latest_isLoading })
+    //console.log({ latest_status, latest_isLoading })
   }
 
   status.set(`Processing Burn Proof...`)
-  console.log({ latest_status })
+  //console.log({ latest_status })
 
   const proofData = processProof(unSignedABI, signedABI)
   if (!proofData) {
@@ -496,9 +496,9 @@ const continueBurn = async (unSignedABI) => {
   status.set(
     `Sending ${tokenName} tokens from Lamden to Ethereum (check for Metamask popup)...`,
   )
-  console.log({ latest_status })
+  //console.log({ latest_status })
   const txHashResult = await sendProofToEthereum(proofData)
-  console.log({ txHashResult })
+  //console.log({ txHashResult })
   finishBurn(txHashResult)
 }
 const finishBurn = (txHashResult) => {

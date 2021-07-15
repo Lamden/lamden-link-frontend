@@ -4,8 +4,7 @@ import { projectConf } from '../conf'
 import {
   vk,
   ethBalance,
-  lamden_origin,
-  tauBalance,
+   tauBalance,
   lwc,
   connected_lwc,
   message,
@@ -13,6 +12,7 @@ import {
   eth_token_balance,
   lamden_token_balance,
   currentNetwork,
+  
 } from '../stores/lamden'
 import { get } from 'svelte/store'
 import BN from 'bignumber.js'
@@ -71,16 +71,6 @@ function connect_lamden_wallet() {
   }
 }
 
-export const connect_metamask_button = {
-  title: 'CONNECT METAMASK',
-  clicked: connectMetamask,
-}
-
-export const connect_lamden_wallet_button = {
-  title: 'CONNECT LAMDEN WALLET',
-  clicked: connect_lamden_wallet,
-}
-
 export const checkForLamdenWallet = async () => {
   let controller = new WalletController()
   let walletInstalled
@@ -89,14 +79,16 @@ export const checkForLamdenWallet = async () => {
     if (installed) {
       walletInstalled = true
     } else {
-      console.log('install wallet')
+      //console.log('install wallet')
     }
   })
-  console.log(controller)
 }
+export const connect_metamask_button = connectMetamask;
+
+export const connect_lamden_wallet_button = connect_lamden_wallet;
 
 export const checkEthTxStatus = async (txHash, web3) => {
-  console.log({ checking: txHash })
+  //console.log({ checking: txHash })
   try {
     let response = await web3.eth.getTransactionReceipt(txHash)
      return response
@@ -136,6 +128,7 @@ export function setNetwork(direction, from_lamden) {
 
 export function checkChain(current) {
   let latest_network = get(currentNetwork)
+  let latest_selectedAccount = get(selectedAccount)
   let conf = projectConf[latest_network]
   let alternate_network = 'Ethereum Mainnet'
   if (latest_network == 'mainnet') alternate_network = 'Kovan Test Network'
@@ -153,18 +146,16 @@ export function checkChain(current) {
       msg === `Switch Metamask to ${alternate_network}.`
     ) {
       message.set('')
-       checkETHBalance()
+       checkETHBalance(latest_selectedAccount)
       checkLamdenBalance()
     }
   }
 }
 
-export async function checkETHBalance() {
-  let latest_selectedAccount = get(selectedAccount)
+export async function checkETHBalance(latest_selectedAccount) {
   if (!latest_selectedAccount) return
   let latest_web3 = get(web3)
   await latest_web3.eth.getBalance(latest_selectedAccount).then((res) => {
-    console.log(latest_web3.utils.fromWei(res, 'ether'))
     ethBalance.set(new BN(latest_web3.utils.fromWei(res, 'ether')))
   })
 }
@@ -227,17 +218,14 @@ export const handleTxHashInvalid = (e) =>
   e.target.setCustomValidity('Invalid Lamden Transaction Hash')
 
 let tokenName = null
-export async function checkEthereumTokenBalance(selected_token) {
+export async function checkEthereumTokenBalance(selected_token, latest_selectedAccount) {
   if (selected_token) {
     let latest_network = get(currentNetwork)
     let conf = projectConf[latest_network]
     tokenName = selected_token
     const token = conf.ethereum.tokens.filter((t) => t.name === tokenName).pop()
     let latest_web3 = get(web3)
-
-    try {
-      let latest_selectedAccount = get(selectedAccount)
-
+     try {
       const erc20TokenContract = new latest_web3.eth.Contract(
         token.abi,
         token.address,
@@ -252,12 +240,12 @@ export async function checkEthereumTokenBalance(selected_token) {
       }
  
     } catch (error) {
-      console.log(error)
+      //console.log(error)
     }
   }
 }
 
-export async function checkLamdenTokenBalance(selected_token) {
+export async function checkLamdenTokenBalance(selected_token, latest_selectedAccount = null) {
   if (selected_token) {
     let latest_network = get(currentNetwork)
     let conf = projectConf[latest_network]

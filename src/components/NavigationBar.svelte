@@ -14,6 +14,9 @@
     { name: "Lamden.io", href: () => {
       window.open('https://lamden.io/en/')
     } },
+    { name: "Help", href: () => {
+      window.open('https://help.lamdenlink.com/')
+    } },
   ];
 </script>
 <div id="mobileMenu" class="hamburger-menu">
@@ -46,7 +49,7 @@
 <style>
     .navigation-bar-links {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;      
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;      
     }
     .navigation-bar {
       margin-top: 1rem;

@@ -4,9 +4,17 @@
     handleInput,
     handleTxHashInvalid,
     handleTxHashInput,
+    
   } from "../js/utils";
 
   export let title: string;
+
+  import { message, inputValue } from "../stores/lamden";
+
+let disableInput = function (error) {
+  if (error) return true
+  else return false
+}
 </script>
 
 <div>
@@ -26,8 +34,9 @@
               pattern="^\d*\.?\d*$"
               on:invalid={handleInvalid}
               on:input={handleInput}
+              disabled={disableInput($message)}
+              bind:value={$inputValue}
             />
-            
           </label>
         </div>
       {:else}
@@ -44,102 +53,99 @@
               minlength="64"
               on:invalid={handleTxHashInvalid}
               on:input={handleTxHashInput}
+              disabled={disableInput($message)}
+              bind:value={$inputValue}
             />
-
           </label>
         </div>
-
       {/if}
     </div>
   </fieldset>
 </div>
 
 <style>
-
   .field {
     width: 100%;
   }
 
-/*
+  /*
 =====
 RESET STYLES
 =====
 */
-.drop-down {
-  color: white;
-}
-.field__input{ 
-  --uiFieldPlaceholderColor: var(--fieldPlaceholderColor, #ffffff);
-  
-  background-color: transparent;
-  color: white;
-  border-radius: 0;
-  border: none;
+  .drop-down {
+    color: white;
+  }
+  .field__input {
+    --uiFieldPlaceholderColor: var(--fieldPlaceholderColor, #ffffff);
 
-  -webkit-appearance: none;
-  -moz-appearance: none;
+    background-color: transparent;
+    color: white;
+    border-radius: 0;
+    border: none;
 
-  font-family: inherit;
-  font-size: inherit;
-}
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
-.field__input:focus::-webkit-input-placeholder{
-  color: white;
-}
+    font-family: inherit;
+    font-size: inherit;
+  }
 
-.field__input:focus::-moz-placeholder{
-  color: white;
-}
+  .field__input:focus::-webkit-input-placeholder {
+    color: white;
+  }
 
-/*
+  .field__input:focus::-moz-placeholder {
+    color: white;
+  }
+
+  /*
 =====
 CORE STYLES
 =====
 */
 
-.field{
-  --uiFieldBorderWidth: var(--fieldBorderWidth, 2px);
-  --uiFieldPaddingRight: var(--fieldPaddingRight, 1rem);
-  --uiFieldPaddingLeft: var(--fieldPaddingLeft, 1rem);   
+  .field {
+    --uiFieldBorderWidth: var(--fieldBorderWidth, 2px);
+    --uiFieldPaddingRight: var(--fieldPaddingRight, 1rem);
+    --uiFieldPaddingLeft: var(--fieldPaddingLeft, 1rem);
 
-  display: var(--fieldDisplay, inline-flex);
-  position: relative;
-  font-size: var(--fieldFontSize, 1rem);
-}
+    display: var(--fieldDisplay, inline-flex);
+    position: relative;
+    font-size: var(--fieldFontSize, 1rem);
+  }
 
-.field__input{
-  box-sizing: border-box;
-  width: var(--fieldWidth, 100%);
-  height: var(--fieldHeight, 3rem);
-  padding: var(--fieldPaddingTop, 1.25rem) var(--uiFieldPaddingRight) var(--fieldPaddingBottom, .5rem) var(--uiFieldPaddingLeft);
-  border-bottom: var(--uiFieldBorderWidth) solid var(--fieldBorderColor, #626262);  
-}
+  .field__input {
+    box-sizing: border-box;
+    width: var(--fieldWidth, 100%);
+    height: var(--fieldHeight, 3rem);
+    padding: var(--fieldPaddingTop, 1.25rem) var(--uiFieldPaddingRight)
+      var(--fieldPaddingBottom, 0.5rem) var(--uiFieldPaddingLeft);
+    border-bottom: var(--uiFieldBorderWidth) solid
+      var(--fieldBorderColor, #626262);
+  }
 
-.field__input:focus{
-  outline: none;
-}
+  .field__input:focus {
+    outline: none;
+  }
 
-.field__input::-webkit-input-placeholder{
-  opacity: 0;
-  transition: opacity .2s ease-out;
-}
+  .field__input::-webkit-input-placeholder {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
 
-.field__input::-moz-placeholder{
-  opacity: 0;
-  transition: opacity .2s ease-out;
-}
+  .field__input::-moz-placeholder {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
 
-.field__input:focus::-webkit-input-placeholder{
-  opacity: 1;
-  transition-delay: .2s;
-}
+  .field__input:focus::-webkit-input-placeholder {
+    opacity: 1;
+    transition-delay: 0.2s;
+  }
 
-.field__input:focus::-moz-placeholder{
-  opacity: 1;
-  transition-delay: .2s;
-}
-
-
-
-
+  .field__input:focus::-moz-placeholder {
+    opacity: 1;
+    transition-delay: 0.2s;
+  }
 </style>
