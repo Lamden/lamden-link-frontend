@@ -7,8 +7,8 @@
         Lamden Link
     </div>
     <h4 class="description">
-        A two-way bridge to convert wrapped ETH between Ethereum and Lamden Blockchain.
-        <a class="description-link" href="https://lamden.io/en/wallets/" target="_blank">Download the Wallet</a>, <a class="description-link" href="https://lamden.io/en/" target="_blank">visit our website</a>, or view our <a class="description-link" href="https://mainnet.lamden.io/" target="_blank">block explorer</a> to learn more.
+        Welcome to the only two-way token bridge between the Ethereum and Lamden Blockchains! <br><br>
+        New to Lamden? Read our <a class="description-link" href="https://blog.lamden.io/getting-started-on-lamden-2b73dc0a87b2" target="_blank">Getting Started</a> article.
     </h4>
 </div>
 
