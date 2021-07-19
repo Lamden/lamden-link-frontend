@@ -7,5 +7,6 @@
 <style>
     .arrow-container {
         float: right;
+        margin: 0 0 0 auto;
     }
 </style>

@@ -102,7 +102,9 @@
   };
 
   let disableButton= function (error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin) {
+    console.log({error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin})
     buttonErrorText = null
+
     if (ethBal.isEqualTo(0)) {
       buttonErrorText = "INSUFFICIENT ETHEREUM BALANCE"
       return true
@@ -125,7 +127,7 @@
     }
 
     if (resumeBurn) {
-      if (!input || loading) return true
+      if (!input) return true
       const regex = /^[a-fA-F0-9]+$/;
       const found = input.match(regex);  
       if (found && input.length == 64) return false
@@ -134,7 +136,7 @@
         return true
       }
     }else{
-      if (error || !token || !input) return true
+      if (!token || !input) return true
       else{
         if (lamdenOrigin){
           if (lamdenTokenBal && lamdenTokenBal.isLessThan(input)){
@@ -192,8 +194,8 @@ let link;
       >Testnet</label
     >
     {#if lastTransfer}
-    <div class={setColor()} on:click={() => getLastSwap()} style="float:right;text-align: right;">
-      view previous transaction details >>
+    <div class="description-link" style="float:right;text-align: right;">
+      {'view previous transaction details >>'}
     </div>
   {/if}
   </div>
@@ -214,16 +216,14 @@ let link;
       <NetworkSelection direction={"To"} network={network_to($lamden_origin)} />
     </div>
     {#if $lamden_origin}
-    <div style="display:flex;margin-right: 1.8rem;margin-top: 1rem;margin-bottom: 1rem;">
+    <div>
       {#if !$resume_burn}
         <Button text={"Resume Previous Failed Swap"} clicked={() => handleResumeBurnClicked(true)} />
-        <Info /> 
       {:else}
         <Button
           text={"Create New Swap"}
           clicked={() => handleResumeBurnClicked(false)}
         />
-        <Info />
       {/if}
     </div>
   {/if}
@@ -238,6 +238,7 @@ let link;
       <div class="container">
         <Input title={"Lamden BURN Transaction Hash"} />
       </div>
+      <a class="description-link" href="https://help.lamdenlink.com/#/swapTau2Eth?id=resume-a-swap-from-lamden-to-ethereum" target="_blank" rel="noopener noreferrer" >how do I resume a swap?</a>
     {/if}
     <div class="container" style="margin-top:1rem">
       {#if ($skipped)}
@@ -245,7 +246,7 @@ let link;
 
       {:else}
  
-        <button type="submit" disabled={
+        <button type="submit" disabled={$isLoading || 
           disableButton(
             $message, 
             $token_selected, 
@@ -326,5 +327,9 @@ let link;
     border-left-color: transparent;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
+  }
+  a{
+    margin-top: 1rem;
+    display: block;
   }
 </style>
