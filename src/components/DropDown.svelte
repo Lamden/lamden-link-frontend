@@ -8,7 +8,8 @@
     lamden_token_balance,
     popup_modal,
     message,
-    skipped
+    skipped,
+    isLoading
   } from "../stores/lamden";
   import {
     checkEthereumTokenBalance,
@@ -19,6 +20,13 @@
   export let network;
 
   let current_network;
+
+  $: {
+    if ($token_selected && current_network && current_network != network) {
+       checkEthereumTokenBalance($token_selected, $selectedAccount);
+    }
+  }
+  
   let refresher = function (network) {
     if (current_network && current_network != network) {
       token_selected.set(null);
@@ -26,6 +34,8 @@
     current_network = network;
     return "";
   };
+
+
   function checkTokenBalance(network) {
     let check_func;
     if (network == "Ethereum") {
@@ -36,33 +46,26 @@
     checkTokenBalanceFunction.set(check_func);
   }
 
-  let openModal = function (network) {
-    if (!$message || $skipped) {
-      checkTokenBalance(network);
-      popup_modal.set("select");
-      var modal = document.getElementById("myModal");
+  let openModal = function (network, loading) {
+    if (loading) return
+    checkTokenBalance(network);
+    popup_modal.set("select");
+    var modal = document.getElementById("myModal");
 
-      var span = document.getElementsByClassName("close")[0];
+    var span = document.getElementsByClassName("close")[0];
 
-      modal.style.display = "block";
+    modal.style.display = "block";
 
-      span.onclick = function () {
+    span.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
         modal.style.display = "none";
-      };
-
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-    }
+      }
+    };
   };
-
-  $: {
-    if ($token_selected && current_network && current_network != network) {
-       checkEthereumTokenBalance($token_selected, $selectedAccount);
-    }
-  }
 </script>
 
 <div>
@@ -70,7 +73,7 @@
     <legend class="field-label">Token Name</legend>
     {refresher(network)}
 
-    <div class="drop-down" on:click={() => openModal(network)}>
+    <div class="drop-down" on:click={() => openModal(network, $isLoading)}>
       {#if $token_selected}
         <div class="drop-down-text">{$token_selected}</div>
       {:else}

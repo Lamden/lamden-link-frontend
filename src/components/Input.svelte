@@ -9,15 +9,11 @@
 
   export let title: string;
 
-  import { message, inputValue } from "../stores/lamden";
+  import { message, inputValue, isLoading } from "../stores/lamden";
 
-
-  let disableInput = function (error) {
-    if (title === "Amount"){
-      if (error) return true
-      else return false
-    }
-    return false
+  let disableInput = function (loading) {
+    console.log({loading})
+    return loading
   }
 </script>
 
@@ -38,7 +34,7 @@
               pattern="^\d*\.?\d*$"
               on:invalid={handleInvalid}
               on:input={handleInput}
-              disabled={disableInput($message)}
+              disabled={disableInput($isLoading)}
               bind:value={$inputValue}
             />
           </label>
@@ -57,7 +53,7 @@
               minlength="64"
               on:invalid={handleTxHashInvalid}
               on:input={handleTxHashInput}
-              disabled={disableInput($message, $inputValue)}
+              disabled={disableInput($isLoading)}
               bind:value={$inputValue}
             />
           </label>
@@ -123,8 +119,7 @@ CORE STYLES
     box-sizing: border-box;
     width: var(--fieldWidth, 100%);
     height: var(--fieldHeight, 3rem);
-    padding: var(--fieldPaddingTop, 1.25rem) var(--uiFieldPaddingRight)
-      var(--fieldPaddingBottom, 0.5rem) var(--uiFieldPaddingLeft);
+    padding: 0 0 0 10px;
     border-bottom: var(--uiFieldBorderWidth) solid
       var(--fieldBorderColor, #626262);
   }

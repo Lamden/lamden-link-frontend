@@ -147,6 +147,7 @@
         width: 70%;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
+        margin-bottom: 2rem;
     }
     .field-enter {
         margin-top: 2rem;
@@ -256,4 +257,18 @@ button:not(:disabled):active {
 
 button:focus {
     border-color: #666;
+}
+
+.description-link {
+    color: #3bcec6;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.description-link:hover {
+    color: #45f3ea;
+}
+
+.description-link:visited {
+    color: #3bcec6;
 }

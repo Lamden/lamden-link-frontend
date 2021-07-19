@@ -1,5 +1,5 @@
 <script>
-  	import { lamden_origin, resume_burn, inputValue } from "../stores/lamden";
+  	import { lamden_origin, resume_burn, inputValue, message, status } from "../stores/lamden";
   import Button from "./Button.svelte"
 
   let changeNetwork = function() {
@@ -15,7 +15,7 @@
 </script>
 
 <div class="arrow-container">
-  <div>
+    <!--
   <svg viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg" class="arrow-svg">
     <path
       d="M3.625 14.5C3.625 20.5061 8.4939 25.375 14.5 25.375C20.5061 25.375 25.375 20.5061 25.375 14.5C25.375 8.4939 20.5061 3.625 14.5 3.625C8.4939 3.625 3.625 8.4939 3.625 14.5Z"
@@ -48,17 +48,15 @@
   </svg>
 </div>
   <div class="switch">
+    -->
   <button on:click={changeNetwork}>Switch</button>
-  </div>
 </div>
 
 <style>
-    .arrow-container {
-      width: 2.5rem;
-        text-align: center;
-    }
-    .switch {
-      font-size: x-small;
+  button{
+    margin-top: 0;
+  }
+  .arrow-container {
     text-align: center;
-    }
+  }
 </style>
