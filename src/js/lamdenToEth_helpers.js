@@ -368,11 +368,13 @@ export async function startBurn(event) {
         message.set('')
         status.set('')
         success.set('')
+
         const formData = new FormData(event.target)
+        console.log(event)
         tokenName = get(token_selected).toString()
 
         let amount = new BN(formData.get('quantity'))
-        console.log({ amount })
+
         localStorage.setItem('tokens_moved', amount.toFixed(5))
 
         const token = conf.ethereum.tokens.find((t) => t.name === tokenName)
@@ -494,7 +496,7 @@ const continueBurn = async(unSignedABI) => {
         )
         //console.log({ latest_status })
     const txHashResult = await sendProofToEthereum(proofData)
-    console.log({ txHashResult })
+
     finishBurn(txHashResult)
 }
 const finishBurn = (txHashResult) => {
