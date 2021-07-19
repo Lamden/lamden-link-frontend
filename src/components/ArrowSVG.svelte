@@ -1,13 +1,16 @@
 <script>
-  	import { lamden_origin } from "../stores/lamden";
+  	import { lamden_origin, resume_burn, inputValue } from "../stores/lamden";
   import Button from "./Button.svelte"
 
   let changeNetwork = function() {
-    if ($lamden_origin) lamden_origin.set(false)
-    else {
-      lamden_origin.set(true);
-      
+    if ($lamden_origin) {
+      resume_burn.set(false)
+      lamden_origin.set(false)
     }
+    else {
+      lamden_origin.set(true); 
+    }
+    inputValue.set(null)
    }
 </script>
 
@@ -45,7 +48,7 @@
   </svg>
 </div>
   <div class="switch">
-    <button on:click={() => changeNetwork()}>Switch</button>
+  <button on:click={changeNetwork}>Switch</button>
   </div>
 </div>
 

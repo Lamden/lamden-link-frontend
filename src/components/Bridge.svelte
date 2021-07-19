@@ -203,9 +203,9 @@
   .skip-button {
     color: white;
     font-size: 1.25rem;
-  text-align: center;
-  max-width: 25rem;
-  margin-top: -4rem;
+    text-align: center;
+    max-width: 19rem;
+    margin-top: -4rem;
   
   }
 </style>

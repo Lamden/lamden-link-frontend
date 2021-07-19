@@ -11,10 +11,14 @@
 
   import { message, inputValue } from "../stores/lamden";
 
-let disableInput = function (error) {
-  if (error) return true
-  else return false
-}
+
+  let disableInput = function (error) {
+    if (title === "Amount"){
+      if (error) return true
+      else return false
+    }
+    return false
+  }
 </script>
 
 <div>
@@ -53,7 +57,7 @@ let disableInput = function (error) {
               minlength="64"
               on:invalid={handleTxHashInvalid}
               on:input={handleTxHashInput}
-              disabled={disableInput($message)}
+              disabled={disableInput($message, $inputValue)}
               bind:value={$inputValue}
             />
           </label>

@@ -30,9 +30,13 @@
     resume_burn,
     currentNetwork,
     token_selected,
-message,
-inputValue,
-swap_details
+    isLoading,
+    message,
+    inputValue,
+    swap_details,
+    tokenBalance,
+    eth_token_balance,
+    lamden_token_balance
   } from "../stores/lamden";
 
   let conf = projectConf[$currentNetwork];
@@ -41,8 +45,12 @@ swap_details
   $: buttonDisabled =
     $chainData.chainId !== conf.ethereum.chainId ||
     $ethBalance.isLessThanOrEqualTo(0);
+  
+  $: buttonErrorText = null
 
   chainData.subscribe((current) => checkChain(current));
+
+  resume_burn.subscribe((current) => console.log(current));
 
   onMount(async () => {
     checkChain($chainData);
@@ -95,9 +103,56 @@ swap_details
     else return base_styles + "white";
   };
 
-  let disableButton= function (error, token, input) {
-  if (error || !token || !input) return true
-  else return false
+  let disableButton= function (error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin) {
+    buttonErrorText = null
+    console.log({error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin, ethBalZero: ethBal.isEqualTo(0), tauBalZero: tauBal.isEqualTo(0)})
+    if (ethBal.isEqualTo(0)) {
+      buttonErrorText = "INSUFFICIENT ETHEREUM BALANCE"
+      return true
+    }
+
+    if (lamdenOrigin){
+      if (token && lamdenTokenBal && lamdenTokenBal.isEqualTo(0)){
+        buttonErrorText = `INSUFFICIENT ${token} BALANCE`
+        return true
+      }
+      if (lamdenOrigin && tauBal.isEqualTo(0)) {
+        buttonErrorText = "INSUFFICIENT TAU BALANCE"
+        return true
+      }
+    }else{
+      if (token && ethTokenBal && ethTokenBal.isEqualTo(0)){
+        buttonErrorText = `INSUFFICIENT ${token} BALANCE`
+        return true
+      }
+    }
+
+    if (resumeBurn) {
+      if (!input || loading) return true
+      const regex = /^[a-fA-F0-9]+$/;
+      const found = input.match(regex);  
+      if (found && input.length == 64) return false
+      else {
+        buttonErrorText = `INVALID LAMDEN HASH`
+        return true
+      }
+    }else{
+      if (error || !token || !input) return true
+      else{
+        if (lamdenOrigin){
+          if (lamdenTokenBal && lamdenTokenBal.isLessThan(input)){
+            buttonErrorText = `INSUFFICIENT ${token} BALANCE`
+            return true
+          }
+        }else{
+          if (ethTokenBal && ethTokenBal.isLessThan(input)){
+            buttonErrorText = `INSUFFICIENT ${token} BALANCE`
+            return true
+          }
+        }
+      }
+    }
+    return false
 }
 
 let link;
@@ -110,6 +165,12 @@ let link;
   let setColor = function () {
     if (lastTransfer.status == 'error') return 'see-details error'
     else return 'see-details details-success'
+  }
+
+  const handleResumeBurnClicked = (value) => {
+    resume_burn.set(value)
+    inputValue.set(null)
+    message.set("")
   }
 </script>
 
@@ -142,7 +203,7 @@ let link;
 
 
     <form
-    on:submit|preventDefault={set_swap_func($lamden_origin)}
+    on:submit|preventDefault={() => set_swap_func($lamden_origin)()}
     action="#"
     method="POST"
     style="width:100%"
@@ -158,14 +219,14 @@ let link;
     {#if $lamden_origin}
     <div style="display:flex;margin-right: 1.8rem;margin-top: 1rem;margin-bottom: 1rem;">
       {#if !$resume_burn}
-      <Info />
-        <Button text={"Resume Swap"} clicked={() => resume_burn.set(true)} />
+        <Button text={"Resume Previous Failed Swap"} clicked={() => handleResumeBurnClicked(true)} />
+        <Info /> 
       {:else}
-      <Info />
         <Button
           text={"Create New Swap"}
-          clicked={() => resume_burn.set(false)}
+          clicked={() => handleResumeBurnClicked(false)}
         />
+        <Info />
       {/if}
     </div>
   {/if}
@@ -187,13 +248,23 @@ let link;
 
       {:else}
  
-      <button type="submit" disabled={disableButton($message, $token_selected, $inputValue)}>
-        <span class="button-text">
-            {`SEND TOKENS TO ${network_to($lamden_origin).toUpperCase()}`}
-        </span>
-      </button>
-
-
+        <button type="submit" disabled={
+          disableButton(
+            $message, 
+            $token_selected, 
+            $inputValue, 
+            $resume_burn, 
+            $isLoading, 
+            $ethBalance, 
+            $tauBalance, 
+            $eth_token_balance,
+            $lamden_token_balance, 
+            $lamden_origin
+          )}>
+          <span class="button-text">
+              {buttonErrorText || `SEND TOKENS TO ${network_to($lamden_origin).toUpperCase()}`}
+          </span>
+        </button>
       {/if}
 
     </div>
