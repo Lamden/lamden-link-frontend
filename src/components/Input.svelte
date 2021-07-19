@@ -118,7 +118,7 @@ CORE STYLES
   .field__input {
     box-sizing: border-box;
     width: var(--fieldWidth, 100%);
-    height: var(--fieldHeight, 3rem);
+    height: 2.5rem;
     padding: 0 0 0 10px;
     border-bottom: var(--uiFieldBorderWidth) solid
       var(--fieldBorderColor, #626262);

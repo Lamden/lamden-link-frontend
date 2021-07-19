@@ -102,7 +102,6 @@
   };
 
   let disableButton= function (error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin) {
-    console.log({error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin})
     buttonErrorText = null
 
     if (ethBal.isEqualTo(0)) {
@@ -180,24 +179,24 @@ let link;
        <input
         type="checkbox"
         id="box-1"
-        on:click={clicked($currentNetwork)}
+        on:click={() => clicked($currentNetwork)}
         checked
       />
     {:else}
        <input
         type="checkbox"
         id="box-1"
-        on:click={clicked($currentNetwork)}
+        on:click={() => clicked($currentNetwork)}
       />
     {/if}
-    <label for="box-1" style={setTestnetColor($currentNetwork)}
-      >Testnet</label
-    >
+
+    <label for="box-1" style={setTestnetColor($currentNetwork)}>Testnet</label>
+
     {#if lastTransfer}
-    <div class="description-link" style="float:right;text-align: right;">
-      {'view previous transaction details >>'}
-    </div>
-  {/if}
+      <div class="description-link" style="float:right;text-align: right;" on:click={() => getLastSwap()}>
+        {'view previous transaction details >>'}
+      </div>
+    {/if}
   </div>
 
 
