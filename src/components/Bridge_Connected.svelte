@@ -50,8 +50,6 @@
 
   chainData.subscribe((current) => checkChain(current));
 
-  resume_burn.subscribe((current) => console.log(current));
-
   onMount(async () => {
     checkChain($chainData);
     checkETHBalance($selectedAccount);
@@ -105,7 +103,6 @@
 
   let disableButton= function (error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin) {
     buttonErrorText = null
-    console.log({error, token, input, resumeBurn, loading, ethBal, tauBal, ethTokenBal, lamdenTokenBal, lamdenOrigin, ethBalZero: ethBal.isEqualTo(0), tauBalZero: tauBal.isEqualTo(0)})
     if (ethBal.isEqualTo(0)) {
       buttonErrorText = "INSUFFICIENT ETHEREUM BALANCE"
       return true
@@ -163,8 +160,8 @@ let link;
   }
 
   let setColor = function () {
-    if (lastTransfer.status == 'error') return 'see-details error'
-    else return 'see-details details-success'
+    if (lastTransfer.status == 'error') return 'prev-tx-button see-details'
+    else return 'prev-tx-button see-details details-success'
   }
 
   const handleResumeBurnClicked = (value) => {
@@ -196,14 +193,14 @@ let link;
     >
     {#if lastTransfer}
     <div class={setColor()} on:click={() => getLastSwap()} style="float:right;text-align: right;">
-      Previous Transaction
+      view previous transaction details >>
     </div>
   {/if}
   </div>
 
 
     <form
-    on:submit|preventDefault={() => set_swap_func($lamden_origin)()}
+    on:submit|preventDefault={(e) => set_swap_func($lamden_origin)(e)}
     action="#"
     method="POST"
     style="width:100%"
@@ -278,6 +275,10 @@ let link;
   }
   .amount {
     width: 70%;
+  }
+  .prev-tx-button{
+    text-decoration: underline;
+    cursor: pointer;
   }
   /*Checkboxes styles*/
   input[type="checkbox"] {

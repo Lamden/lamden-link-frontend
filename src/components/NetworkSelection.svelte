@@ -4,10 +4,6 @@
   export let network: string;
   export let direction: string;
 
-
-  ethBalance.subscribe(curr => console.log({ethBalance: curr}))
-  tauBalance.subscribe(curr => console.log({tauBalance: curr}))
-
 </script>
 
 <div class="network-field">
