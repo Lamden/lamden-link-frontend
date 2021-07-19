@@ -59,7 +59,8 @@
 
 <style>
     .informational-container {
-        margin-right: .5rem;
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
     }
     .info-button {
         width: 1.75rem;
