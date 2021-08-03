@@ -1,11 +1,8 @@
 import { projectConf } from '../conf'
 import BN from 'bignumber.js'
 import {
-
     tauBalance,
-
     lwc,
-
     success,
     message,
     status,
@@ -16,13 +13,12 @@ import {
 } from '../stores/lamden'
 import {get } from 'svelte/store'
 import { web3, selectedAccount, chainData } from 'svelte-web3'
-let latest_network = get(currentNetwork)
-let conf = projectConf[latest_network]
 
 let tokenName = null
 
 let newSwap = true
 
+$: conf = projectConf[$currentNetwork]
 
 
 export const getErrorInfo = (txResults) => {
@@ -41,8 +37,7 @@ export const getErrorInfo = (txResults) => {
 export async function checkTokenBalance(event) {
     if (event.target.value) {
         tokenName = event.target.value
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
+
         const token = conf.ethereum.tokens.filter((t) => t.name === tokenName).pop()
         try {
             const res = await fetch(
@@ -93,8 +88,7 @@ async function checkApproval() {
 
 const sendApproval = (amountToApprove) =>
     new Promise((resolve) => {
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
+
         status.set('Sending Lamden approval (check popup)...')
         const txInfo = {
             networkType: conf.lamden.clearingHouse.networkType,
@@ -150,8 +144,6 @@ const sendApproval = (amountToApprove) =>
 
 const sendBurn = (token, amount) =>
     new Promise((resolve) => {
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
         const ethereum_contract = token.address
         const txInfo = {
             networkType: conf.lamden.clearingHouse.networkType,
@@ -230,8 +222,7 @@ const getProof = (unSignedABI) =>
     new Promise((resolve) => {
         let timesToCheck = 60
         let timesChecked = 0
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
+
         const checkAgain = () => {
             timesChecked = timesChecked + 1
             if (timesChecked <= timesToCheck) setTimeout(checkForProof, 1000)
@@ -276,8 +267,7 @@ const processProof = (unSignedABI, signedABI) => {
 
         const amountHex = '0x' + unSignedABI.substring(65, 129)
         const nonce = '0x' + unSignedABI.substring(129, 193)
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
+
         const token = conf.ethereum.tokens.find((t) => t.name === 'WETH')
 
         if (!token || !r || !v || !s || !unSignedABI || !nonce) return false
@@ -321,8 +311,7 @@ export const checkEthTransactionUntilResult = async(
 
 const sendProofToEthereum = async(proofData) => {
     let latest_web3 = get(web3)
-    let latest_network = get(currentNetwork)
-    let conf = projectConf[latest_network]
+
     const clearingHouseContract = new latest_web3.eth.Contract(
         conf.ethereum.clearingHouse.abi,
         conf.ethereum.clearingHouse.address,
@@ -361,8 +350,7 @@ const sendProofToEthereum = async(proofData) => {
 
 export async function startBurn(event) {
     let latest_token_selected = get(token_selected)
-    let latest_network = get(currentNetwork)
-    let conf = projectConf[latest_network]
+
     if (latest_token_selected) {
         isLoading.set(true)
         message.set('')
