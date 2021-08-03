@@ -41,9 +41,7 @@ export const getErrorInfo = (txResults) => {
 export async function checkTokenBalance(event) {
     if (event.target.value) {
         tokenName = event.target.value
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
-        const token = conf.ethereum.tokens.filter((t) => t.name === tokenName).pop()
+
         try {
             const res = await fetch(
                 `${conf.lamden.network.apiLink}/states/${conf.lamden.token.contractName}/balances/${$vk}`, {
@@ -282,15 +280,14 @@ const processProof = (unSignedABI, signedABI) => {
 
         const amountHex = '0x' + unSignedABI.substring(65, 129)
         const nonce = '0x' + unSignedABI.substring(129, 193)
-        let latest_network = get(currentNetwork)
-        let conf = projectConf[latest_network]
-        const token = conf.ethereum.tokens.find((t) => t.name === 'WETH')
+
+        const token = '0x' + unSignedABI.slice(25, 65)
 
         if (!token || !r || !v || !s || !unSignedABI || !nonce) return false
 
         return {
             unSignedABI,
-            token: token.address,
+            token,
             amount: amountHex,
             nonce: nonce,
             v,
