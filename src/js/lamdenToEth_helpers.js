@@ -460,6 +460,7 @@ export const resumeBurn = async() => {
     message.set(`Checking Lamden Blockchain for Proof of token Burn...`)
 
     const unSignedABI = await getUnsignedABIFromBlockchain(txHash)
+    console.log({ unSignedABI })
 
     if (unSignedABI) {
         localStorage.setItem('lamdenBurnTxHash', JSON.stringify({ hash: txHash, success: true }))
@@ -476,6 +477,7 @@ const continueBurn = async(unSignedABI) => {
     let latest_isLoading = get(isLoading)
         //console.log({ latest_status, latest_isLoading })
     const signedABI = await getProof(unSignedABI)
+    console.log({ signedABI })
     if (!signedABI) {
         isLoading.set(false)
         status.set('')
@@ -491,6 +493,7 @@ const continueBurn = async(unSignedABI) => {
         //console.log({ latest_status })
 
     const proofData = processProof(unSignedABI, signedABI)
+    console.log({ proofData })
     if (!proofData) {
         message.set('Malformed Proof')
         isLoading.set(false)
