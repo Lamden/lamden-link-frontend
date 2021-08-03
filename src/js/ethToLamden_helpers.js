@@ -134,7 +134,7 @@ export async function startSwap(event) {
         ).toString()
 
         const erc20TokenContract = new latest_web3.eth.Contract(
-            token.abi,
+            projectConf.ERC20_ABI,
             token.address,
         )
         const clearingHouseContract = new latest_web3.eth.Contract(

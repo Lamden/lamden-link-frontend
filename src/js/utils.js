@@ -227,7 +227,7 @@ export async function checkEthereumTokenBalance(selected_token, latest_selectedA
         let latest_web3 = get(web3)
         try {
             const erc20TokenContract = new latest_web3.eth.Contract(
-                token.abi,
+                projectConf.ERC20_ABI,
                 token.address,
             )
             const val = await erc20TokenContract.methods

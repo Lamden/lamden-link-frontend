@@ -59,7 +59,9 @@
     <div class="modal-title">{title}</div>
     {#if $popup_modal == "select"}
       {#each conf.ethereum.tokens as token}
-        <TokenEntry name={token_name} symbol={token.name} img={img_src} />
+        {#if token.name === "WETH"}
+          <TokenEntry name={token_name} symbol={token.name} img={img_src} />
+        {/if}
       {/each}
       {#if $token_selected && !$skipped}
         <button on:click={() => set_token()}> Choose </button>
