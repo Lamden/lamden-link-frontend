@@ -13,7 +13,7 @@ import {
 import { web3, selectedAccount, chainData } from 'svelte-web3'
 import {get } from 'svelte/store'
 import BN from 'bignumber.js'
-import { projectConf } from '../conf.js'
+import { projectConf } from './networks.js'
 import { checkEthTransactionUntilResult } from './utils'
 let latest_network = get(currentNetwork)
 let conf = projectConf[latest_network]

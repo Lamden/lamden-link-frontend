@@ -15,7 +15,7 @@
     checkEthereumTokenBalance,
     checkLamdenTokenBalance,
   } from "../js/utils";
-  import DropDownArrow from "./DropDownSVG.svelte";
+  import DropDownArrow from "./SVG/DropDownSVG.svelte";
 
   export let network;
 

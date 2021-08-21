@@ -1,4 +1,4 @@
-import { projectConf } from '../conf'
+import { projectConf } from './networks'
 import BN from 'bignumber.js'
 import {
 

@@ -1,7 +1,7 @@
 <script>
   import Button from "./Button.svelte";
-  import Success from "./ConnectedSVG.svelte";
-  import Error from "./ErrorSVG.svelte";
+  import Success from "./SVG/ConnectedSVG.svelte";
+  import Error from "./SVG/ErrorSVG.svelte";
   import { swap_details, swap_finished } from "../stores/lamden";
 
   export let status;

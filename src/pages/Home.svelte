@@ -1,16 +1,20 @@
 <script>
-  import NavBar from "../components/NavigationBar.svelte";
-  import Header from "../components/Header.svelte";
-  import Banner from "../components/Banner.svelte";
-  import Bridge from "../components/Bridge.svelte";
-  import Footer from "../components/Footer.svelte";
+  import MakeSwap from "../components/MakeSwap/MakeSwap.svelte";
 
 </script>
 
-<div>
-  <NavBar />
-  <Header />
-  <Banner />
-  <Bridge />
-  <Footer />
-</div>
+<style>
+  .description{
+    text-align: center;
+  }
+</style>
+
+<!--
+<p class="description">
+  New to Lamden? Read our <a class="description-link" href="https://blog.lamden.io/getting-started-on-lamden-2b73dc0a87b2" target="_blank">Getting Started</a> article.
+</p>
+-->
+
+<MakeSwap />
+<!--<Bridge />-->
+

@@ -1,24 +1,17 @@
 <script lang="ts">
   import NavLogo from "./NavigationLogo.svelte";
   import NavLink from "./NavigationLink.svelte";
-  import Hamburger from "./HamburgerSVG.svelte"
+  import Hamburger from "../SVG/HamburgerSVG.svelte"
   let links = [
-    
-    { name: "Lamden Link", href: () => {} },
-    { name: "Explorer", href: () => {
-      window.open('https://mainnet.lamden.io/')
-    } },
-    { name: "Wallet", href: () => {
-      window.open('https://lamden.io/en/wallets/')
-    } },
-    { name: "Lamden.io", href: () => {
-      window.open('https://lamden.io/en/')
-    } },
-    { name: "Help", href: () => {
-      window.open('https://help.lamdenlink.com/')
-    } },
+    { name: "Home", href: "/"},
+    { name: "Explorer", href: "https://mainnet.lamden.io/"},
+    { name: "Wallet", href: "https://lamden.io/en/wallets/"},
+    { name: "Lamden.io", href: "https://lamden.io/en/"},
+    { name: "Help", href: "https://help.lamdenlink.com/"},
   ];
 </script>
+
+
 <div id="mobileMenu" class="hamburger-menu">
   <div class="hamburger-content">
     <span class="mobile-close">&times;</span>
@@ -31,14 +24,15 @@
     </div>
   </div>
 </div>
-<div class="navigation-bar">
-    <div class="nav-logo-container">
-        <NavLogo/>
+
+<div class="flex row align-center navigation-bar border-box">
+    <div class="flex-grow nav-logo-container">
+        <NavLogo />
     </div>
     <div class="hamburger-container">
       <Hamburger/>
     </div>
-    <div class="navigation-bar-links">
+    <div class="flex row align-center just-end border-box">
       {#each links as link}
         <NavLink link={link.name} href={link.href} />
       {/each}
@@ -47,18 +41,14 @@
 </div>
 
 <style>
-    .navigation-bar-links {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;      
-    }
     .navigation-bar {
+      color: var(--bg-primary);
+      position: fixed;
       margin-top: 1rem;
+      padding: 0 1rem;
       width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;      
-    }
-    .nav-logo-container {
-      width: 40%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;      
     }
     .hamburger-menu {
       display: none;
@@ -74,15 +64,15 @@
       background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
     .hamburger-content {
-        background-color: #151515;
-    box-shadow: 0px 1px 4px 8px #00000038;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
-    border: none;
-    border-radius: .25rem;
-    width: 80%;
-    max-width: 20rem;
+      background-color: #151515;
+      box-shadow: 0px 1px 4px 8px #00000038;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px;
+      border: none;
+      border-radius: .25rem;
+      width: 80%;
+      max-width: 20rem;
     }
     .mobile-close {
       color: #aaaaaa;
@@ -96,5 +86,9 @@
       color: #000;
       text-decoration: none;
       cursor: pointer;
+    }
+
+    @media screen and (min-width: 430px) {
+
     }
 </style>

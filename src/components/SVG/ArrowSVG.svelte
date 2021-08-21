@@ -1,6 +1,6 @@
 <script>
-  	import { lamden_origin, resume_burn, inputValue, message, status } from "../stores/lamden";
-  import Button from "./Button.svelte"
+  	import { lamden_origin, resume_burn, inputValue, message, status } from "../../stores/lamden";
+  import Button from "../Button.svelte"
 
   let changeNetwork = function() {
     if ($lamden_origin) {

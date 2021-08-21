@@ -1,6 +1,6 @@
 import { ethStore, web3, connected, selectedAccount } from 'svelte-web3'
 import WalletController from './LamdenWalletController'
-import { projectConf } from '../conf'
+import { projectConf } from './networks'
 import {
     vk,
     ethBalance,
