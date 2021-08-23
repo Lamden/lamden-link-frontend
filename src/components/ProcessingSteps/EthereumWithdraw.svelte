@@ -34,12 +34,19 @@
         sendProofToEthereum(withdrawTxStatus, handleSendProofResult)
     }
 
-    async function handleSendProofResult(){
-        swapInfo.update(curr => {
-            curr.complete = true
-            return curr
-        })
-        saveSwap()
+    async function handleSendProofResult(withdrawTxResult){
+        if (withdrawTxResult.status){
+            withdrawTxStatus.set({loading: false})
+            swapInfo.update(curr => {
+                curr.withdrawHash = JSON.parse(JSON.stringify(curr.withdrawHashPending))
+                delete curr.withdrawHashPending
+                curr.complete = true
+                return curr
+            })
+            saveSwap()
+        }else{
+            withdrawTxStatus.set({errors: ['Transactoin Failed. Check blockexplorer for details.']})
+        }
     }   
 
     function handleNextStep(){
@@ -66,14 +73,16 @@
     </ul>
 
     {#if !swapComplete}
-        {#if withdrawTxStatus.loading }
-            <Status statusStore={withdrawTxStatus} />
-        {:else}
-            <button on:click={withdrawTokens}>Withdraw Tokens</button>
-        {/if}
-    {/if }
+        <Status statusStore={withdrawTxStatus} />
+    {/if}
 
-    {#if swapComplete}
-        <button on:click={handleNextStep}>Finsh</button>
-    {/if }
+    {#if !$withdrawTxStatus.loading }
+        {#if !swapComplete}
+                <button on:click={withdrawTokens}>Withdraw Tokens</button>
+        {/if }
+
+        {#if swapComplete}
+            <button class="success" on:click={handleNextStep}>Finsh</button>
+        {/if }
+    {/if}
 {/if}

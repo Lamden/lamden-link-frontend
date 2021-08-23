@@ -1,0 +1,96 @@
+<script>
+    import { setContext, onMount } from 'svelte'
+    import { navigate } from "svelte-routing";
+
+    // Step Components
+    import ChooseFromNetwork from '../components/MakeSwap/ChooseFromNetwork.svelte'
+    import ChooseToNetwork from '../components/MakeSwap/ChooseToNetwork.svelte'
+    import ChooseToken from '../components/MakeSwap/ChooseToken.svelte'
+    import ProcessSwap from '../components/MakeSwap/ProcessSwap.svelte'
+
+    // Misc
+    import * as networks from '../js/networks'
+    import { selectedNetwork, swapInfo } from '../stores/globalStores';
+    import { getLastSwap, clearCurrentSwap } from '../js/localstorage-utils';
+
+    let currentStep = 0
+
+    setContext('current_swap', {
+        fromNetworks: getFromNetworks,
+        toNetworks: getToNetworks,
+        supportedTokens: getSupportedTokens,
+        setStep,
+        startOver,
+        goHome: handleGoHome
+    })
+
+    onMount(() => {
+        let lastSwapInfo = getLastSwap()
+        if (!lastSwapInfo.to && !lastSwapInfo.from && !lastSwapInfo.token){
+            // Do nothing
+        }else{
+            swapInfo.set(lastSwapInfo)
+            setStep(3)
+        }
+    })
+
+
+    function getFromNetworks(){
+        let network = $selectedNetwork
+        if (network === null) network = "mainnet"
+        return Object.keys(networks[network])
+    }
+
+    function getToNetworks(){
+        let network = $selectedNetwork
+        if (network === null) network = "mainnet"
+        return networks[network][$swapInfo.from].interop
+    }
+
+    function getSupportedTokens(){
+        let network = $selectedNetwork
+        if (network === null) network = "mainnet"
+        return networks[network][$swapInfo.from].tokens
+    }
+
+    function setStep(step){
+        currentStep = step
+    }
+
+    function startOver(){
+        clearCurrentSwap()
+        setStep(0)
+    }
+
+    let steps = [
+        ChooseFromNetwork,
+        ChooseToNetwork,
+        ChooseToken,
+        ProcessSwap
+    ]
+
+    function handleGoHome(){
+        navigate("/", { replace: true });
+    }
+
+</script>
+
+<style>
+    div{
+        width: 100%;
+        max-width: 650px;
+    }
+    .buttons{
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="flex col">
+    <svelte:component this={steps[currentStep]} />
+</div>
+
+{#if currentStep < 3}
+    <div class="buttons flex row align-center just-center">
+        <button class="secondary" on:click={handleGoHome}>Lamden Link Home</button>
+    </div>
+{/if}

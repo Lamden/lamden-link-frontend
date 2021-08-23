@@ -4,6 +4,10 @@ export function openURL(url){
 	window.open(url, '_blank');
 }
 
+export function isString(s) {
+    return typeof s === 'string' || s instanceof String
+}
+
 export const stringToFixed = (value, precision) => {
 	if (BN.isBigNumber(value) && precision ) value = value.toFixed(precision)
 	if (!value) return "0.0"

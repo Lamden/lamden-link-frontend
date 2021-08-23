@@ -4,6 +4,13 @@ import * as networks from '../js/networks'
 export const selectedNetwork = writable("testnet")
 
 export const swapInfo = writable({})
+export const swapHistory = writable([])
+
+export const lastSwap = derived(swapHistory, ($swapHistory) => {
+    if ($swapHistory.length > 0) return $swapHistory[0]
+    else return null
+})
+
 export const selectedToken = derived(swapInfo, ($swapInfo) => $swapInfo.token)
 
 export const networkInfo = derived(selectedNetwork, ($selectedNetwork) => networks[$selectedNetwork])

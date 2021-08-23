@@ -10,6 +10,7 @@
 
     // Misc
     import { swapInfo } from '../../stores/globalStores'
+    import { saveSwap } from '../../js/localstorage-utils'
 
     const { supportedTokens, setStep } = getContext('current_swap')
 
@@ -35,6 +36,7 @@
     }
 
     function next(){
+        saveSwap()
         setStep(3)
     }
 

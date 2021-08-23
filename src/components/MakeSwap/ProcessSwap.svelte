@@ -1,5 +1,5 @@
 <script>
-    import { setContext } from 'svelte'
+    import { setContext, getContext, tick } from 'svelte'
     import { navigate } from "svelte-routing";
 
     // Components
@@ -8,9 +8,12 @@
     import MetamaskStep from '../ProcessingSteps/MetamaskStep.svelte'
     import LamdenBurnStep from '../ProcessingSteps/LamdenBurn.svelte'
     import EthereumWithdraw from '../ProcessingSteps/EthereumWithdraw.svelte'
+    import EthereumTokenApproval from '../ProcessingSteps/EthereumTokenApproval.svelte'
+    import EthereumDeposit from '../ProcessingSteps/EthereumDeposit.svelte'
 
     // Misc
     import { swapInfo } from '../../stores/globalStores'
+    import { setSwapInHistory, clearCurrentSwap } from '../../js/localstorage-utils'
 
     const connectLamdenWalletStep = {
         name: "Lamden Wallet",
@@ -58,13 +61,15 @@
                     name: "Token Approval",
                     desc: "A standard ERC-20 token approval to allow the lamden-link contract to transfer your tokens.",
                     type: "transaction",
-                    network: 'ethereum'
+                    network: 'ethereum',
+                    component: EthereumTokenApproval
                 },
                 {
                     name: "Token Deposit",
                     desc: "This will deposit your tokens in the Lamden Link Contract.",
                     type: "transaction",
-                    network: 'ethereum'
+                    network: 'ethereum',
+                    component: EthereumDeposit
                 }
             ]
         },
@@ -75,17 +80,16 @@
                 {
                     name: "Token Approval",
                     desc: "A standard ERC-20 token approval to allow the lamden-link contract to transfer your tokens.",
-                    network: 'ethereum'
+                    type: "transaction",
+                    network: 'ethereum',
+                    component: EthereumTokenApproval
                 },
                 {
                     name: "Token Deposit",
                     desc: "This will deposit your tokens in the Lamden Link Contract.",
-                    network: 'ethereum'
-                },
-                {
-                    name: "Get Tokens",
-                    desc: "This step will wait for confirmation that the tokens have been sent to you on the Lamden Blockchain.",
-                    network: 'lamden'
+                    type: "transaction",
+                    network: 'ethereum',
+                    component: EthereumDeposit
                 }
             ]
         }
@@ -97,7 +101,15 @@
         done
     })
 
+    const { startOver, goHome } = getContext('current_swap')
+
     let currentProcessingStep = 0
+    let validateStartOver = false
+    let processingDone = false
+
+    let from = $swapInfo.from.toUpperCase()
+    let to = $swapInfo.to.toUpperCase()
+    let tokenSymbole = $swapInfo.token.symbol
 
     function getProcessingSteps(){
         let steps = swapStepsMap[$swapInfo.from][$swapInfo.to]
@@ -133,8 +145,13 @@
         
     }
 
-    function done(){
-        navigate("/results", { replace: true });
+    async function done(){
+        setSwapInHistory($swapInfo)
+        navigate("/finish", { replace: true });
+    }
+    function handleStartOver(){
+        if (validateStartOver) startOver()
+        validateStartOver = true
     }
 </script>
 
@@ -142,9 +159,19 @@
     h2{
         text-align: center;
     }
+    button{
+        margin: 0 10px;
+    }
 </style>
 
-<h2>Let's Go!</h2>
+{#if $swapInfo}
+    <h2>Sending {tokenSymbole} from {from} to {to}</h2>
+{/if}
+<div class="flex row just-center">
+    <button class="secondary" class:warning={validateStartOver} on:click={handleStartOver}>{validateStartOver ? "ARE YOU SURE?" : "Start Swap Over"}</button>
+    <button on:click={goHome}>Home</button>
+</div>
+
 {#each getProcessingSteps() as stepInfo, index }
-<Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
+    <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
 {/each}

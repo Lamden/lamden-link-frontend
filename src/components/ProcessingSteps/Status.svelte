@@ -11,8 +11,16 @@
 
 <style>
     .icon{
-        width: 80px;
         margin-right: 20px;
+    }
+    .icon.info{
+        width: 25px;
+    }
+    .icon.error{
+        width: 25px;
+    }
+    .text-error{
+        margin: 0.25 0;
     }
 </style>
 
@@ -25,18 +33,18 @@
 
 {#if $statusStore.errors}
     <div class="flex row align-center">
-        <div class="icon">
+        <div class="icon error">
             <IconError />
         </div>
         {#each $statusStore.errors as error}
-            <p class="text-error">{$statusStore.error}</p>
+            <p class="text-error">{error}</p>
         {/each}
     </div>  
 {/if}
 
 {#if $statusStore.message}
     <div class="flex row align-center">
-        <div class="icon">
+        <div class="icon info">
             <IconInfo />
         </div>
         <p>{$statusStore.message}</p>

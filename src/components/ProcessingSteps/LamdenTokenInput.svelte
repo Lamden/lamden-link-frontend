@@ -6,18 +6,19 @@
     import InputNumber from '../InputNumber.svelte'
 
     // Misc
+    import BN from 'bignumber.js'
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { lamden_vk, lamdenTokenBalance  } from '../../stores/lamdenStores'
     import { checkLamdenTokenBalance } from '../../js/lamden-utils'
     import { stringToFixed } from '../../js/global-utils' 
-
-    
 
     export let input = true;
 
     let timer = null
 
     $: burnComplete = $swapInfo.burnHash || false
+    $: tokensToSend = $swapInfo.tokenAmount || new BN(0)
+    $: hasEnoughTokens = $lamdenTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
 
     onMount(() => {
         timer = setTimeout(refreshLamdenTokenBalance, 10000)
@@ -43,7 +44,16 @@
 
 </script>
 
-<div class="flex row align-center">
+<style>
+    .insufficient{
+        color: var(--warning-color);
+    }
+    p{
+        margin: 1rem 0 0.25rem;
+    }
+</style>
+
+<div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
     <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
     {`${stringToFixed($lamdenTokenBalance, 8)} ${$selectedToken.symbol}`}
 </div>

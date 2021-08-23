@@ -15,6 +15,7 @@
     export let current
     export let complete
 
+    $: depositComplete = $swapInfo.ethDepositTxHash || false
     $: notAttempted = $lamdenWalletInfo.installed === undefined
     $: installed = $lamdenWalletInfo.installed || false
     $: connected = $hasNetworkApproval.approved || false
@@ -54,20 +55,17 @@
         $lwc.sendConnection()
     }
     async function handleNextStep(){
-        await checkLamdenTokenApproval()
         swapInfo.update(curr => {
-            curr.lamden_address
-            return
+            curr.lamden_address = $lamden_vk
+            return curr
         })
+        if (tokenFromMe) await checkLamdenTokenApproval()
         nextStep()
     }
 </script>
 
 
 <style>
-    .wrapper{
-        width: 100%;
-    }
     ul{
         margin: 0;
     }
@@ -92,76 +90,75 @@
 </style>
 
 {#if current || complete}
-    <div class="wrapper">
-        <ul>
-            <li class:yes={installed}>
-                {#if !installed}
-                    {#if notAttempted}
-                        Not Connected
-                    {:else}
-                        Not Installed
-                    {/if}
+    <ul>
+        <li class:yes={installed}>
+            {#if !installed}
+                {#if notAttempted}
+                    Not Connected
                 {:else}
-                    Installed
+                    Not Installed
+                {/if}
+            {:else}
+                Installed
+            {/if}
+        </li>
+    
+        {#if installed}
+            <li class:yes={connected}>
+                {#if !connected}
+                    Lamden Link Not Connected
+                {:else}
+                    Connected to Lamden Link
                 {/if}
             </li>
-        
-            {#if installed}
-                <li class:yes={connected}>
-                    {#if !connected}
-                        Lamden Link Not Connected
-                    {:else}
-                        Connected to Lamden Link
-                    {/if}
-                </li>
-            {/if}
-        
-            {#if installed && connected}
-                <li class:yes={!locked}>
-                    {#if !locked}
-                        Wallet Unlocked 
-                    {:else}
-                        Wallet is Locked
-                    {/if}
-                </li>
-            {/if}
+        {/if}
+    
+        {#if installed && connected}
+            <li class:yes={!locked}>
+                {#if !locked}
+                    Wallet Unlocked 
+                {:else}
+                    Wallet is Locked
+                {/if}
+            </li>
+        {/if}
 
-            {#if $lamden_vk}
-                <li class="no-bullet">
-                    <LamdenBalance />
-                </li>
-            {/if}
+        {#if $lamden_vk}
+            <li class="no-bullet">
+                <LamdenBalance />
+            </li>
+        {/if}
 
-            {#if $lamden_vk && tokenFromMe}
+        {#if $lamden_vk && tokenFromMe}
+            {#if !depositComplete}
                 <li class="no-bullet">
                     <LamdenTokenInput />
                 </li>
             {/if}
+        {/if}
 
-        </ul>
-        <div class="flex row align-center just-end buttons">
-            {#if current}
-                {#if notAttempted}
-                    <button on:click={checkIfWalletIsInstalled}>Connect To Lamden Wallet</button>
-                {:else}
-                    {#if !installed}
-                        <a class="install" href="{$lamdenNetwork.wallet_install_url}" target="_blank" rel="noopener noreferrer">Click to Install Lamden Wallet</a> 
-                    {/if}
-                    
-                    {#if installed && !connected}
-                        <button on:click={sendLamdenApproval}>Create Linked Account</button>
-                    {/if}
-                    
-                    {#if $lamden_vk && current}
-                        {#if tokenFromMe}
-                            <button disabled={!hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
-                        {:else}
-                            <button on:click={handleNextStep}>Next Step</button>
-                        {/if}
-                    {/if} 
+    </ul>
+    <div class="flex row align-center just-end buttons">
+        {#if current}
+            {#if notAttempted}
+                <button on:click={checkIfWalletIsInstalled}>Connect To Lamden Wallet</button>
+            {:else}
+                {#if !installed}
+                    <a class="install" href="{$lamdenNetwork.wallet_install_url}" target="_blank" rel="noopener noreferrer">Click to Install Lamden Wallet</a> 
                 {/if}
+                
+                {#if installed && !connected}
+                    <button on:click={sendLamdenApproval}>Create Linked Account</button>
+                {/if}
+                
+                {#if $lamden_vk && current}
+                    {#if tokenFromMe}
+                        <button class="success" disabled={!hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
+                    {:else}
+                        <button class="success" on:click={handleNextStep}>Next Step</button>
+                    {/if}
+                {/if} 
             {/if}
-        </div>
-
+        {/if}
     </div>
 {/if}

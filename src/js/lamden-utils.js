@@ -52,12 +52,9 @@ export async function checkLamdenTokenApproval() {
                 method: 'GET',
             },
         ).catch((e) => console.log({e}))
-        console.log({res})
         let value = await getValueFromResponse(res)
-        console.log({value})
         lamdenTokenApprovalAmount.set(value)
     } catch (error) {
-        console.log({error})
         lamdenTokenApprovalAmount.set(new BN(0))
     }
 }

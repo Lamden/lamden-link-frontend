@@ -7,12 +7,16 @@
 
     // Misc
     import { selectedAccount } from 'svelte-web3'
+    import BN from 'bignumber.js'
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { ethChainTokenBalance } from '../../stores/ethereumStores'
     import { stringToFixed } from '../../js/global-utils' 
     import { checkChainTokenBalance } from '../../js/ethereum-utils' 
 
     export let input = true;
+
+    $: tokensToSend = $swapInfo.tokenAmount || new BN(0)
+    $: hasEnoughTokens = $ethChainTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
 
     let timer = null
 
@@ -40,7 +44,17 @@
 
 </script>
 
-<div class="flex row align-center">
+<style>
+    .insufficient{
+        color: var(--warning-color);
+    }
+    p{
+        margin: 1rem 0 0.25rem;
+    }
+
+</style>
+
+<div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
     <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
     {`${stringToFixed($ethChainTokenBalance, 8)} ${$selectedToken.symbol}`}
 </div>
@@ -49,5 +63,6 @@
     <p>Amount of {$selectedToken.symbol} to send:</p>
     <div class="input-number"><InputNumber on:input={handleInput}/></div>
 {/if}
+
 
 

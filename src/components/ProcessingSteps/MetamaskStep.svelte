@@ -4,10 +4,12 @@
     // Components
     import MetaMaskBalance from '../ProcessingSteps/MetaMaskBalance.svelte'
     import MetaMaskTokenInput from '../ProcessingSteps/MetamaskTokenInput.svelte'
+    import TokenApprovalInfo from '../ProcessingSteps/TokenApprovalInfo.svelte'
 
     // Misc
+    import BN from 'bignumber.js'
     import { ethStore, connected, selectedAccount, chainData } from 'svelte-web3'
-    import { ethChainBalance } from '../../stores/ethereumStores'
+    import { ethChainBalance, ethChainTokenBalance } from '../../stores/ethereumStores'
     import { getNetworkStore, swapInfo } from '../../stores/globalStores';
     import { checkChain, checkChainBalance, checkChainTokenBalance } from '../../js/ethereum-utils';   
 
@@ -21,8 +23,11 @@
     $: hasEthBalnnce = $ethChainBalance.isGreaterThan(0)
     $: isCorrectChain = checkChain($chainData)
     $: tokenFromMe = $swapInfo.from !== "lamden"
+    $: tokensToSend = $swapInfo.tokenAmount || new BN(0)
+    $: hasEnoughTokens = tokensToSend.isGreaterThan(0) && $ethChainTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
+    $: hasApproval = $swapInfo.metamaskApproval || false
 
-    const { nextStep, setStep } = getContext('process_swap')
+    const { nextStep, setStep, startOver } = getContext('process_swap')
 
     chainData.subscribe(() => {
         if (complete){
@@ -61,7 +66,11 @@
 
     function refreshAllBalances(){
         checkChainBalance()
-        checkChainTokenBalance
+        checkChainTokenBalance()
+    }
+
+    function handleStartOver(){
+        startOver()
     }
 
 </script>
@@ -74,7 +83,12 @@
 
     button{
         display: block;
-        margin: 0 0 0 auto;
+        margin: 1rem 0 0 auto;
+    }
+    .buttons > button{
+        margin: 0;
+        margin-top: 1rem;
+        margin-left: 10px;
     }
 
     @media screen and (min-width: 430px) {
@@ -121,7 +135,13 @@
 
     {#if isCorrectChain && $connected && tokenFromMe}
         <li class="no-bullet">
-            <MetaMaskTokenInput {stepInfo}/>
+            <MetaMaskTokenInput {stepInfo} input={!hasApproval}/>
+        </li>
+    {/if}
+
+    {#if $connected && hasApproval && tokenFromMe}
+        <li class="no-bullet">
+            <TokenApprovalInfo />
         </li>
     {/if}
 </ul>
@@ -131,7 +151,16 @@
 {#if current}
     {#if $connected && $selectedAccount}
         {#if isCorrectChain}
-            <button disabled={!hasEthBalnnce} on:click={handleNextStep}>Next Step</button>
+            {#if tokenFromMe}
+                <div class="flex row just-end buttons">
+                    {#if hasApproval}
+                        <button on:click={handleStartOver}>Start Over</button>
+                    {/if}
+                    <button class="success" disabled={!hasEthBalnnce || !hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
+                </div>
+            {:else}
+                <button class="success" disabled={!hasEthBalnnce} on:click={handleNextStep}>Next Step</button>
+            {/if}
         {/if}
     {:else}
         <button on:click={connectMetamask}>Connect To MetaMask</button>

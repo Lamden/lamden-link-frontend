@@ -36,6 +36,7 @@ body {
     --error-color: red;
     --black-color: #121212;
     --success-color: #31ce31;
+    --success-color-dark: #159415;
     --success-color-darker: #003100;
     background-color: var(--bg-primary);
     color: var(--font-primary);
@@ -163,6 +164,20 @@ button:not(:disabled):active {
 button:focus {
     border-color: #666;
 }
+
+button.secondary{
+    background: var(--color-gray-2);
+}
+
+button.success{
+    color: var(--color-white);
+    background: var(--success-color-dark);
+}
+button.warning{
+    color: var(--black-color);
+    background: var(--warning-color);
+}
+
 
 button.icon{
     padding: 3px;

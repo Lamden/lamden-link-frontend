@@ -108,7 +108,7 @@
     {/if}
 
     {#if burnComplete && current}
-        <button on:click={handleNextStep}>Next Step</button>
+        <button class="success" on:click={handleNextStep}>Next Step</button>
     {/if}
 
     
