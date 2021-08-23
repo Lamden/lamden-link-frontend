@@ -1,21 +1,10 @@
 <script>
-    import { onMount, getContext } from 'svelte';
-
-    // Components
-    import LamdenWalletStep from './LamdenWalletStep.svelte'
-    import MetamaskStep from './MetamaskStep.svelte'
+    import { getContext } from 'svelte';
 
     // Logos
     import LogoEthereum from '../Logos/LogoEthereum.svelte'
     import LogoBinance from '../Logos/LogoBinance.svelte'
     import LogoLamden from '../Logos/LogoLamden.svelte'
-
-    // Misc
-    import { lamden_vk } from '../../stores/lamdenStores.js'
-    import { selectedAccount } from 'svelte-web3'
-
-    const { nextStep } = getContext('process_swap')
-
 
     export let stepInfo
     export let complete
@@ -23,7 +12,6 @@
     export let stepNum
 
     $: isMetamaskStep = stepInfo.wallet ? stepInfo.wallet === "metamask" : false
-    $: isLamdenStep = stepInfo.wallet ? stepInfo.wallet === "lamden" : false
 
     const LogoMap = {
         ethereum: LogoEthereum,
@@ -36,18 +24,11 @@
         console.log("clicked step")
     }
 
-    function handleStartStep(){
-        stepInfo.start()
-    }
-
-    function handleComplete(){
-        nextStep()
-    }
-
 </script>
 
 <style>
     .step-container{
+        box-sizing: border-box;
         padding: 1rem;
         margin: 1rem 0;
         width: 100%;
@@ -56,7 +37,7 @@
         border-radius: 10px;
     }
     .logo-container{
-        margin: 0 25px;
+        margin-right: 1rem;
     }
     .step-container.metamask{
         opacity: 100%;
@@ -78,9 +59,7 @@
         min-width: initial;
         width: 50px;
     }
-    p{
-        margin: 0.25 0;
-    }
+
     p.step-name{
         font-weight: 600;
     }
@@ -93,7 +72,7 @@
     .step-num{
         opacity: 50%;
         font-size: 50px;
-        margin: 0 30px 0 0 ;
+        margin: 1rem 30px 0 0 ;
     }
     .step-num.current{
         opacity: 100%;
@@ -106,10 +85,10 @@
 
     }
 </style>
-<div class="wrapper flex row align-center">
+<div class="wrapper flex row" id="{`process-step-${stepNum}`}">
     <p class="step-num" class:complete={complete} class:current={current}>{stepNum}</p>
     <div class="step-container" class:complete={complete} class:current={current && !isMetamaskStep} class:metamask={current && isMetamaskStep } >
-        <div class="flex row align-center">
+        <div class="flex row">
             <div class="flex just-center logo-container"  on:click={handleClick}>
                 {#if stepInfo.type !== "wallet"}
                     <div class="logo">
@@ -120,31 +99,11 @@
             <div class="width-100">
                 <p class="step-name">{stepInfo.name}</p>
                 <p class="step-desc">{stepInfo.desc}</p>
-                {#if stepInfo.wallet === "lamden"}
-                    <LamdenWalletStep on:walletInstalled={handleComplete} {current}/>
-                {/if}
-                {#if isMetamaskStep}
-                    <MetamaskStep on:walletInstalled={handleComplete} {current}/>
+                {#if stepInfo.component}
+                    <svelte:component this={stepInfo.component} {current} {complete} {stepInfo}/>
                 {/if}
             </div>
         </div>
-
-        {#if stepInfo.type !== "wallet"}
-            {#if current && !complete}
-                <div class="buttons">
-                    <button on:click={handleStartStep} disabled={!current}>Start</button>
-                </div>
-            {/if}
-        {/if}
-
-        {#if $lamden_vk && isLamdenStep}
-            <p class="address">{$lamden_vk}</p>
-            
-        {/if}
-
-        {#if $selectedAccount && isMetamaskStep}
-            <p class="address">{$selectedAccount}</p>
-        {/if}
     </div>
 </div>
 

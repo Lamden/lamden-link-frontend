@@ -15,6 +15,8 @@
 </p>
 -->
 
-<MakeSwap />
+  <MakeSwap />
+
+
 <!--<Bridge />-->
 

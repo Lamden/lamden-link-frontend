@@ -1,11 +1,12 @@
 <script>
     export let width = "100%"
+    export let color = "var(--primary-color)"
 </script>
 
 <svg
   {width}
   viewBox="0 0 32 32"
-  fill="none"
+  fill={color}
   xmlns="http://www.w3.org/2000/svg"
 
 >

@@ -11,10 +11,11 @@ import * as clearinghouse_abi from './clearinghouse_abi.js'
 
 export const mainnet = {
     lamden: {
-        network: {
-            apiLink: "https://mainnet.lamden.io/api",
-            blockexplorer: "https://mainnet.lamden.io"
-        },
+        apiLink: "https://mainnet.lamden.io/api",
+        blockexplorer: "https://www.tauhq.com",
+        blockexplorer_tx: "transactions",
+        blockexplorer_address: "addresses",
+        wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
         interop: ['ethereum'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
@@ -29,7 +30,8 @@ export const mainnet = {
             symbol: 'WETH',
             address: 'con_weth_lst001'
         }],
-        currencySymbol: "TAU",
+        networkName: "Lamden Mainnet",
+        network_symbol: "TAU",
         currentStampRatio: 65,
         stamps: {
             burn: 65,
@@ -40,8 +42,11 @@ export const mainnet = {
         network: "wss://mainnet.infura.io/ws/v3/5ef3994ede0945f6beb3fbddef483643",
         interop: ['lamden'],
         blockexplorer: "https://etherscan.io",
+        blockexplorer_tx: "tx",
+        blockexplorer_address: "address",
         chainId: 1,
         networkName: "Ethereum Mainnet",
+        network_symbol: "ETH",
         clearingHouse: {
             address: '0xF881aC8E0BAe5FCFE125e88c5F90A693aF3EA8Cb',
             abi: clearinghouse_abi.abi
@@ -57,6 +62,9 @@ export const mainnet = {
         network: "wss://ws-nd-463-770-272.p2pify.com/8411e4e71f588f5c0b80b936d3081378",
         interop: ['lamden'],
         blockexplorer: "https://bscscan.com",
+        blockexplorer_tx: "tx",
+        blockexplorer_address: "address",
+        network_symbol: "BNB",
         chainId: 56,
         networkName: "Binance Smart Chain Mainnet",
         clearingHouse: {
@@ -74,10 +82,10 @@ export const mainnet = {
 
 export const testnet = {
     lamden: {
-        network: {
-            apiLink: "https://testnet.lamden.io/api",
-            blockexplorer: "https://testnet.lamden.io"
-        },
+        apiLink: "https://testnet.lamden.io/api",
+        blockexplorer: "https://testnet.lamden.io",
+        blockexplorer_tx: "transactions",
+        blockexplorer_address: "addresses",
         interop: ['ethereum'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
@@ -92,7 +100,8 @@ export const testnet = {
             symbol: 'WETH',
             address: 'con_weth_lst001_v1'
         }],
-        currencySymbol: "DTAU",
+        networkName: "Lamden Testnet",
+        network_symbol: "DTAU",
         currentStampRatio: 13,
         stamps: {
             burn: 65,
@@ -103,6 +112,9 @@ export const testnet = {
         network: "wss://kovan.infura.io/ws/v3/63ded85a9a5442c6ae2b94c2e97fb8c4",
         interop: ['lamden'],
         blockexplorer: "https://kovan.etherscan.io",
+        blockexplorer_tx: "tx",
+        blockexplorer_address: "address",
+        network_symbol: "TETH",
         chainId: 42,
         networkName: "Kovan Test Network",
         clearingHouse: {
@@ -127,6 +139,9 @@ export const testnet = {
         network: "wss://ws-nd-088-476-707.p2pify.com/04675114bb8fa340f6c15f995fe3c367",
         interop: ['lamden'],
         blockexplorer: "https://testnet.bscscan.com",
+        blockexplorer_tx: "tx",
+        blockexplorer_address: "address",
+        network_symbol: "TBNB",
         chainId: 97,
         networkName: "Binance Smart Chain Test Network",
         clearingHouse: {

@@ -10,13 +10,12 @@
 
     // Misc
     import * as networks from '../../js/networks.js'
-    import { selectedNetwork } from '../../stores/globalStores';
+    import { selectedNetwork, swapInfo } from '../../stores/globalStores';
+    import { getLastSwap } from '../../js/localstorage-utils';
 
-    let swapInfo = writable({})
     let currentStep = 0
 
     setContext('current_swap', {
-        swapInfo,
         fromNetworks: getFromNetworks,
         toNetworks: getToNetworks,
         supportedTokens: getSupportedTokens,
@@ -25,14 +24,32 @@
 
     onMount(() => {
         swapInfo.set({
-            from: 'lamden',
-            to: 'ethereum',
-            token: {
-                name: "Wrapped Ethereum",
-                symbol: 'WETH',
-                address: 'con_weth_lst001'
-            }
-        })
+                from: 'ethereum',
+                to: 'lamden',
+                token: {
+                    name: "Wrapped Ethereum",
+                    symbol: 'WETH',
+                    address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+                    decimals: 18
+                }
+            })
+            setStep(3)
+        return
+        let lastSwapInfo = getLastSwap()
+        if (lastSwapInfo){
+            swapInfo.set(lastSwapInfo)
+        }else{
+            swapInfo.set({
+                from: 'lamden',
+                to: 'ethereum',
+                token: {
+                    name: "Wrapped Ethereum",
+                    symbol: 'WETH',
+                    address: 'con_weth_lst001_v1'
+                }
+            })
+        }
+        console.log($swapInfo)
         setStep(3)
     })
 
@@ -55,9 +72,14 @@
         return networks[network][$swapInfo.from].tokens
     }
 
+    function saveSwapData(){
+
+    }
+
     function setStep(step){
         currentStep = step
     }
+
 
     let steps = [
         ChooseFromNetwork,

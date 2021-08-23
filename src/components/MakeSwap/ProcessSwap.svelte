@@ -1,52 +1,59 @@
 <script>
-    import { getContext, setContext } from 'svelte'
+    import { setContext } from 'svelte'
+    import { navigate } from "svelte-routing";
 
     // Components
     import Step from './Step.svelte'
+    import LamdenWalletStep from '../ProcessingSteps/LamdenWalletStep.svelte'
+    import MetamaskStep from '../ProcessingSteps/MetamaskStep.svelte'
+    import LamdenBurnStep from '../ProcessingSteps/LamdenBurn.svelte'
+    import EthereumWithdraw from '../ProcessingSteps/EthereumWithdraw.svelte'
 
     // Misc
-    import { start_burn } from '../../js/lamden-utils'
+    import { swapInfo } from '../../stores/globalStores'
 
     const connectLamdenWalletStep = {
         name: "Lamden Wallet",
         desc: "Connect the Lamden Wallet to Lamden Link",
         type: "wallet",
-        wallet: 'lamden'
+        wallet: 'lamden',
+        component: LamdenWalletStep
     }
 
     const connectMetaMaskStep = {
         name: "Connect Metamask",
         desc: "Install and connect the Metamask to Lamden Link.",
         type: "wallet",
-        wallet: 'metamask'
+        wallet: 'metamask',
+        network: "ethereum",
+        component: MetamaskStep
     }
 
     const swapStepsMap = {
         'lamden': {
             'ethereum':[
+                connectLamdenWalletStep,
+                connectMetaMaskStep,
                 {
-                    name: "Burn Tokens",
-                    desc: "This transaction will burn the selected token on the Lamden Network and create a Proof-of-Burn.",
+                    name: `Burn Tokens`,
+                    desc: `This transaction will burn you tokens on the Lamden Network.  Creating this Proof-of-Burn will allow the tokens to be minted on the Ethereum network.`,
                     type: "transaction",
                     network: 'lamden',
-                    start: start_burn
+                    component: LamdenBurnStep
                 },
                 {
                     name: "Withdraw Tokens",
                     desc: "This transaction will use the Proof-of-Burn to from the previous transation to withdraw your tokens on the Ethereum network.",
                     type: "transaction",
-                    network: 'ethereum'
-                },
-                {
-                    name: "Get Tokens",
-                    desc: "This step will wait for confirmation that your tokens have been sent to you on the Ethereum blockchian.",
-                    type: "check",
-                    network: 'ethereum'
+                    network: 'ethereum',
+                    component: EthereumWithdraw
                 }
             ]
         },
         'ethereum':{
             'lamden': [
+                connectMetaMaskStep,
+                connectLamdenWalletStep,
                 {
                     name: "Token Approval",
                     desc: "A standard ERC-20 token approval to allow the lamden-link contract to transfer your tokens.",
@@ -58,17 +65,13 @@
                     desc: "This will deposit your tokens in the Lamden Link Contract.",
                     type: "transaction",
                     network: 'ethereum'
-                },
-                {
-                    name: "Get Tokens",
-                    desc: "This step will wait for confirmation that the tokens have been minted in the Lamden Blockchain.",
-                    type: "check",
-                    network: 'lamden'
                 }
             ]
         },
         'binance':{
             'lamden': [
+                connectMetaMaskStep,
+                connectLamdenWalletStep,
                 {
                     name: "Token Approval",
                     desc: "A standard ERC-20 token approval to allow the lamden-link contract to transfer your tokens.",
@@ -89,28 +92,49 @@
     }
 
     setContext('process_swap', {
-        nextStep
+        nextStep,
+        setStep,
+        done
     })
 
     let currentProcessingStep = 0
 
-    const { swapInfo } = getContext('current_swap')
-
     function getProcessingSteps(){
-        return [connectLamdenWalletStep, connectMetaMaskStep, ...swapStepsMap[$swapInfo.from][$swapInfo.to]]
+        let steps = swapStepsMap[$swapInfo.from][$swapInfo.to]
+        if (swapInfo.from === "binance") steps[0].network = "binance"
+        else connectMetaMaskStep.network = "ethereum"
+        
+        return steps
     }
 
     function nextStep(){
         let steps = getProcessingSteps()
         let newStep = currentProcessingStep + 1
-        console.log({newStep})
+
         if (newStep + 1 > steps.length ) return
         currentProcessingStep = newStep
-        console.log({newStep, currentProcessingStep})
+        scrollToStep()
     }
+
+    function setStep(stepNum) {
+        currentProcessingStep = stepNum
+        scrollToStep()
+    }
+
     function handleDebugBack(){
         let newStep = currentProcessingStep - 1
         if (newStep >= 0) currentProcessingStep = newStep
+        
+    }
+
+    function scrollToStep(){
+        var elmnt = document.getElementById(`process-step-${currentProcessingStep}`);
+        if (elmnt) elmnt.scrollIntoView();
+        
+    }
+
+    function done(){
+        navigate("/results", { replace: true });
     }
 </script>
 
@@ -124,5 +148,3 @@
 {#each getProcessingSteps() as stepInfo, index }
 <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
 {/each}
-<button on:click={nextStep}>Debug Next</button>
-<button on:click={handleDebugBack}>Debug Back</button>

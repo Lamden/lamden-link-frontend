@@ -43,7 +43,7 @@
 <style>
     .navigation-bar {
       color: var(--bg-primary);
-      position: fixed;
+      position: absolute;
       margin-top: 1rem;
       padding: 0 1rem;
       width: 100%;

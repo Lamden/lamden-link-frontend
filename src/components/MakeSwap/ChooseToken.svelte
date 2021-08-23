@@ -1,6 +1,5 @@
 <script>
     import { getContext } from 'svelte'
-    import { fade } from 'svelte/transition';
 
     // Components
     import TokenLogo from './TokenLogo.svelte'
@@ -9,13 +8,20 @@
     // Icons
     import IconArrowRight from '../SVG/ArrowRightSVG.svelte'
 
-    const { swapInfo, supportedTokens, setStep } = getContext('current_swap')
+    // Misc
+    import { swapInfo } from '../../stores/globalStores'
+
+    const { supportedTokens, setStep } = getContext('current_swap')
 
     function handleTokenSelected(e) {
         swapInfo.update(curr => {
             curr.token = e.detail
             return curr
         })
+    }
+
+    function handleTokenClicked(token){
+        handleTokenSelected({detail: token})
     }
 
     function back(){
@@ -29,7 +35,6 @@
     }
 
     function next(){
-        console.log("CHOSING TOKEN")
         setStep(3)
     }
 
@@ -47,11 +52,20 @@
         border-radius: 10px;
         margin-bottom: 1rem;
     }
+    .token{
+        margin: 0 0px;
+        padding: 10px;
+
+    }
+    .token:hover{
+        background: rgba(255, 255, 255, 0.349);
+        border-radius: 15px;
+    }
 
     .arrows{
         width: 30px;
     }
-    .token{
+    .selected-token{
         margin-left: -54px;
     }
     p{
@@ -77,7 +91,7 @@
     <h2>Select a supported token</h2>
     <div class="flex row align-center just-center tokens">
         {#each supportedTokens() as token (token.address)}
-            <div class="flex col align-center">
+            <div class="flex col align-center token" on:click={() => handleTokenClicked(token)}>
                 <TokenLogo {token} on:selected={handleTokenSelected}/>
                 <p class="token-name">{token.name}</p>
                 <p class="token-symbol">{token.symbol}</p>
@@ -90,7 +104,7 @@
                 <NetworkLogo networkName={$swapInfo.from}/>
         </div>
 
-        <div class="token">
+        <div class="selected-token">
             <TokenLogo token={$swapInfo.token} clickable={false}/>
         </div>
         
@@ -102,6 +116,7 @@
             <NetworkLogo networkName={$swapInfo.to}/>
         </div>
     </div>
+
 
     <div class="flex row">
         <button on:click={back}>Back</button>

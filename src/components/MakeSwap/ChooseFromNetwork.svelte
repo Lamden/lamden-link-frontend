@@ -1,11 +1,14 @@
 <script>
     import { getContext } from 'svelte'
-    import { fade } from 'svelte/transition';
 
     // Components
     import NetworkLogo from './NetworkLogo.svelte'
 
-    const { swapInfo, fromNetworks, toNetworks, setStep } = getContext('current_swap')
+    // Misc
+    import { swapInfo } from '../../stores/globalStores'
+
+
+    const { fromNetworks, toNetworks, setStep } = getContext('current_swap')
 
     function handleNetworkSelected(e) {
         swapInfo.update(curr => {

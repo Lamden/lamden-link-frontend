@@ -5,7 +5,10 @@
     // Components
     import NetworkLogo from './NetworkLogo.svelte'
 
-    const { swapInfo, fromNetworks, toNetworks, setStep } = getContext('current_swap')
+    // Misc
+    import { swapInfo } from '../../stores/globalStores'
+
+    const { fromNetworks, toNetworks, setStep } = getContext('current_swap')
 
     function handleNetworkSelected(e) {
         let interop = toNetworks(e.detail)

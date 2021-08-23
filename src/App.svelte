@@ -3,6 +3,7 @@
 
   // Components
   import Home from "./pages/Home.svelte";
+  import Results from "./pages/Results.svelte";
   import Banner from "./components/Banner.svelte";
   import NavBar from "./components/Nav/NavigationBar.svelte";
   import Footer from "./components/Footer.svelte";
@@ -38,6 +39,7 @@
   <NavBar />
   <main>
     <Route path="/"><Home /></Route>
+    <Route path="/results"><Results /></Route>
   </main>
   <Footer />
 </Router>
