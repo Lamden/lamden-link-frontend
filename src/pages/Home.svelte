@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte'
 	import { navigate } from "svelte-routing";
 
+	// Components
+	import BigButton from '../components/BigHomeButton.svelte'
+
 	// MISC
 	import { lastSwap, swapInfo } from '../stores/globalStores'
 	import { clearCurrentSwap } from '../js/localstorage-utils'
@@ -29,26 +32,42 @@
 	.description{
 		text-align: center;
 	}
-	button.big{
-		padding: 10px;
-		margin: 1rem;
+	.buttons{
+		width: max-content;
+		margin: 2rem auto 1rem;
+	}
+	.subtitle{
+		font-size: 1em;
+	}
+	p{
+		margin: 0.5rem 0.5em 0 0;
+		color: var(--font-primary-dim);	
+		width: max-content;
+	}
+
+	.help-link{
+		margin-top: 0.5rem;
+		font-weight: 100;
+		align-self: flex-end;
 	}
 </style>
 
-<h2>Welcome to Lamden Link!</h2>
+<h2>Welcome to Lamden Link</h2>
+<div class="subtitle flex row wrap align-center">
+	<p class="subtitle">A blockchain bridge made by Lamden. </p>
+	<a class="help-link" href="https://help.lamdenlink.com/" target="_blank" rel="noopener noreferrer" > more info </a>
+</div>
 
-<p class="description">
-	New to Lamden? Read our <a class="description-link" href="https://blog.lamden.io/getting-started-on-lamden-2b73dc0a87b2" target="_blank">Getting Started</a> article.
-</p>
-
-<div class="flow row wrap">
+<div class="buttons flex">
 	{#if hasPendingSwap}
-		<button on:click={handleResume}>Resume A Swap</button>
+		<BigButton title={"Resume A Swap"} icon="resume" action={handleResume} />
 	{:else}
-		<button on:click={handleStartNew}>Start A New Swap</button>
+		<BigButton title={"Start A New Swap"} icon="start" action={handleStartNew} />
 	{/if}
 	
 	{#if hasLastSwap}
-		<button on:click={handleViewLast}>View Last Swap</button>
+		<BigButton title={"View Last Swap"} icon="results" action={handleViewLast} />
 	{/if}
 </div>
+
+

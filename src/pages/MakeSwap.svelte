@@ -76,21 +76,16 @@
 </script>
 
 <style>
+    .page-container{
+        margin: 0 auto;
+    }
     div{
         width: 100%;
-        max-width: 650px;
-    }
-    .buttons{
-        margin-top: 2rem;
     }
 </style>
 
-<div class="flex col">
-    <svelte:component this={steps[currentStep]} />
-</div>
-
-{#if currentStep < 3}
-    <div class="buttons flex row align-center just-center">
-        <button class="secondary" on:click={handleGoHome}>Lamden Link Home</button>
+<div class="page-container">
+    <div class="flex col">
+        <svelte:component this={steps[currentStep]} />
     </div>
-{/if}
+</div>

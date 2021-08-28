@@ -36,15 +36,13 @@
 <style>
     .container{
         width: 100%;
-        max-width: 650px;
     }
     .network-container{
-        margin-top: 1rem;
-        margin-bottom: 2rem;
+        margin: 1rem 2rem;
+        width: max-content;
     }
     h2{
-        margin: 1rem 0 0;
-        text-align: center;
+        margin: 1rem 0 2rem;
     }
     hr {
         margin: 1rem 0 2rem;
@@ -82,49 +80,50 @@
         <hr>
         <h3 class="text-primary-dim">Transaction Links</h3>
 
-        <div class="flex row network-container">
-            <NetworkLogo networkName={$lastSwap.from} />
+        <div class="flex row wrap align-center just-around">
+            <div class="flex row network-container">
+                <NetworkLogo networkName={$lastSwap.from} />
 
-            <div class="felx col">
-                {#if $lastSwap.from !== 'lamden'}
-                    <ResultLink title="MetaMask Account" network={$fromNetwork} type="address" hash={$lastSwap.metamask_address} />
-                {:else}
-                    <ResultLink title="Lamden Account"  network={$fromNetwork} type="address" hash={$lastSwap.lamden_address}/>
-                {/if}
-                
-                {#if $lastSwap.burnApproveHash}
-                    <ResultLink title="Burn Approval" network={$fromNetwork} type="transaction" hash={$lastSwap.burnApproveHash} />
-                {/if}
+                <div class="felx col">
+                    {#if $lastSwap.from !== 'lamden'}
+                        <ResultLink title="MetaMask Address" network={$fromNetwork} type="address" hash={$lastSwap.metamask_address} />
+                    {:else}
+                        <ResultLink title="Lamden Account"  network={$fromNetwork} type="address" hash={$lastSwap.lamden_address}/>
+                    {/if}
+                    
+                    {#if $lastSwap.burnApproveHash}
+                        <ResultLink title="Burn Approval" network={$fromNetwork} type="transaction" hash={$lastSwap.burnApproveHash} />
+                    {/if}
 
-                {#if $lastSwap.burnHash}
-                    <ResultLink title="Burn Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.burnHash} />
-                {/if}
+                    {#if $lastSwap.burnHash}
+                        <ResultLink title="Burn Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.burnHash} />
+                    {/if}
 
 
-                {#if $lastSwap.metamaskApproval}
-                    <ResultLink title="Approve Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.metamaskApproval} />
-                {/if}
+                    {#if $lastSwap.metamaskApproval}
+                        <ResultLink title="Approve Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.metamaskApproval} />
+                    {/if}
 
-                {#if $lastSwap.metamaskDeposit}
-                    <ResultLink title="Deposit Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.metamaskDeposit} />
-                {/if}
+                    {#if $lastSwap.metamaskDeposit}
+                        <ResultLink title="Deposit Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.metamaskDeposit} />
+                    {/if}
 
+                </div>
             </div>
-        </div>
 
 
-        <div class="flex row network-container">
-            <NetworkLogo networkName={$lastSwap.to} />
+            <div class="flex row network-container">
+                <NetworkLogo networkName={$lastSwap.to} />
 
-            <div class="felx col">     
-                {#if $lastSwap.to !== 'lamden'}
-                    <ResultLink title="MetaMask Address" network={$toNetwork} type="address" hash={$lastSwap.metamask_address} />
-                {:else}
-                    <ResultLink title="Lamden Address" network={$toNetwork} type="address" hash={$lastSwap.lamden_address} />
-                {/if}       
+                <div class="felx col">     
+                    {#if $lastSwap.to !== 'lamden'}
+                        <ResultLink title="MetaMask Address" network={$toNetwork} type="address" hash={$lastSwap.metamask_address} />
+                    {:else}
+                        <ResultLink title="Lamden Address" network={$toNetwork} type="address" hash={$lastSwap.lamden_address} />
+                    {/if}       
+                </div>
             </div>
-        </div>
-
+    </div>
     {/if}
 </div>
 

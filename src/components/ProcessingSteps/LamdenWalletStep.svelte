@@ -44,11 +44,17 @@
     }
 
 	const handleWalletInfo = (info) => {
-        if (Object.keys(info.approvals).includes($selectedNetwork)){
-            hasNetworkApproval.set({approved: true})
-            lamden_vk.set($lwc.walletAddress)
+        console.log({info})
+        if (info.approvals){
+            if (Object.keys(info.approvals).includes($selectedNetwork)){
+                hasNetworkApproval.set({approved: true})
+                lamden_vk.set($lwc.walletAddress)
+            }
         }
-		lamdenWalletInfo.set(info)
+        if (!info.errors){
+            lamdenWalletInfo.set(info)
+        }
+		
     }
 
     const sendLamdenApproval = () => {
@@ -102,6 +108,16 @@
                 Installed
             {/if}
         </li>
+
+        {#if installed}
+            <li class:yes={!locked}>
+                {#if !locked}
+                    Wallet Unlocked 
+                {:else}
+                    Wallet is Locked
+                {/if}
+            </li>
+        {/if}
     
         {#if installed}
             <li class:yes={connected}>
@@ -109,16 +125,6 @@
                     Lamden Link Not Connected
                 {:else}
                     Connected to Lamden Link
-                {/if}
-            </li>
-        {/if}
-    
-        {#if installed && connected}
-            <li class:yes={!locked}>
-                {#if !locked}
-                    Wallet Unlocked 
-                {:else}
-                    Wallet is Locked
                 {/if}
             </li>
         {/if}
@@ -138,6 +144,7 @@
         {/if}
 
     </ul>
+
     <div class="flex row align-center just-end buttons">
         {#if current}
             {#if notAttempted}

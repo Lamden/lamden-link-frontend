@@ -28,9 +28,6 @@
 </script>
 
 <style>
-    p{
-        width: max-content;
-    }
     a {
         white-space: nowrap;
         overflow: hidden;

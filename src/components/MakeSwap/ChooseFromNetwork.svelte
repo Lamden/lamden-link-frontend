@@ -8,7 +8,7 @@
     import { swapInfo } from '../../stores/globalStores'
 
 
-    const { fromNetworks, toNetworks, setStep } = getContext('current_swap')
+    const { fromNetworks, toNetworks, setStep, goHome } = getContext('current_swap')
 
     function handleNetworkSelected(e) {
         swapInfo.update(curr => {
@@ -30,6 +30,9 @@
     h2{
         text-align: center;
     }
+    button{
+        margin: 2rem auto;
+    }
 
     @media screen and (min-width: 430px) {
 
@@ -44,4 +47,5 @@
             <NetworkLogo networkName={fn} on:selected={handleNetworkSelected}/>
         {/each}
     </div>
+    <button on:click={goHome}>Home</button>
 </div>

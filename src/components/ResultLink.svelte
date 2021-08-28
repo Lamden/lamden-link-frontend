@@ -33,6 +33,9 @@
 </script>
 
 <style>
+    a{
+        font-size: 0.8em;
+    }
     div{
         height: 35px;
     }

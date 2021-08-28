@@ -10,6 +10,7 @@
     import EthereumWithdraw from '../ProcessingSteps/EthereumWithdraw.svelte'
     import EthereumTokenApproval from '../ProcessingSteps/EthereumTokenApproval.svelte'
     import EthereumDeposit from '../ProcessingSteps/EthereumDeposit.svelte'
+    import SwapVisual from './SwapVisual.svelte'
 
     // Misc
     import { swapInfo } from '../../stores/globalStores'
@@ -159,19 +160,24 @@
     h2{
         text-align: center;
     }
+    .buttons{
+        margin: 1rem 0;
+    }
     button{
         margin: 0 10px;
     }
 </style>
 
 {#if $swapInfo}
-    <h2>Sending {tokenSymbole} from {from} to {to}</h2>
+    <SwapVisual />
 {/if}
-<div class="flex row just-center">
+
+<div class="buttons flex row just-center">
     <button class="secondary" class:warning={validateStartOver} on:click={handleStartOver}>{validateStartOver ? "ARE YOU SURE?" : "Start Swap Over"}</button>
     <button on:click={goHome}>Home</button>
 </div>
 
+<h2>Complete the following steps</h2>
 {#each getProcessingSteps() as stepInfo, index }
     <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
 {/each}

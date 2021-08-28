@@ -2,17 +2,14 @@
     import { getContext } from 'svelte'
 
     // Components
+    import SwapVisual from './SwapVisual.svelte'
     import TokenLogo from './TokenLogo.svelte'
-    import NetworkLogo from './NetworkLogo.svelte'
-
-    // Icons
-    import IconArrowRight from '../SVG/ArrowRightSVG.svelte'
 
     // Misc
     import { swapInfo } from '../../stores/globalStores'
     import { saveSwap } from '../../js/localstorage-utils'
 
-    const { supportedTokens, setStep } = getContext('current_swap')
+    const { supportedTokens, setStep, goHome } = getContext('current_swap')
 
     function handleTokenSelected(e) {
         swapInfo.update(curr => {
@@ -53,6 +50,7 @@
         padding: 1rem;
         border-radius: 10px;
         margin-bottom: 1rem;
+        box-sizing: border-box;
     }
     .token{
         margin: 0 0px;
@@ -64,12 +62,7 @@
         border-radius: 15px;
     }
 
-    .arrows{
-        width: 30px;
-    }
-    .selected-token{
-        margin-left: -54px;
-    }
+
     p{
         margin: 0;
     }
@@ -90,6 +83,14 @@
 </style>
 
 <div class="flex col align-center just-center">
+    <SwapVisual />
+
+    <div class="flex row">
+        <button on:click={back}>Back</button>
+        <button on:click={next} disabled={!$swapInfo.token}>Next</button>
+        <button class="secondary" on:click={goHome}>Home</button>
+    </div>
+
     <h2>Select a supported token</h2>
     <div class="flex row align-center just-center tokens">
         {#each supportedTokens() as token (token.address)}
@@ -99,30 +100,6 @@
                 <p class="token-symbol">{token.symbol}</p>
             </div>
         {/each}
-    </div>
-
-    <div class="flex row align-center">
-        <div class="from-logo">
-                <NetworkLogo networkName={$swapInfo.from}/>
-        </div>
-
-        <div class="selected-token">
-            <TokenLogo token={$swapInfo.token} clickable={false}/>
-        </div>
-        
-        <div class="arrows">
-            <IconArrowRight />
-        </div>
-
-        <div class="to-logo">
-            <NetworkLogo networkName={$swapInfo.to}/>
-        </div>
-    </div>
-
-
-    <div class="flex row">
-        <button on:click={back}>Back</button>
-        <button on:click={next} disabled={!$swapInfo.token}>Next</button>
     </div>
 </div>
 
