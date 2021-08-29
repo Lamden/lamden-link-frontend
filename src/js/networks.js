@@ -151,7 +151,6 @@ export const testnet = {
         tokens: [{
             name: "Lamden Testnet Token",
             symbol: 'dTAU',
-            name: 'TAU',
             address: '0x14Cdc7f44D497B47c26196Aef2C4f779875b0846',
             decimals: 18
         }]

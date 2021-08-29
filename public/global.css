@@ -57,12 +57,10 @@ select,
 textarea {
     font-family: inherit;
     font-size: inherit;
-    -webkit-padding: 0.4em 0;
-    padding: 0.4em;
-    margin: 0 0 0.5em 0;
+    padding: 0.25em 0.6em;
     box-sizing: border-box;
     border: .75px solid #ccc;
-    border-radius: 2px;
+    border-radius: 1em;
 }
 
 h1 {
@@ -275,22 +273,13 @@ li.no-bullet{
     list-style-type: none;
 }
 
-@media only screen and (min-width: 650px) {
-    .navigation-bar-links {
-        visibility: hidden;
-    }
-}
+
 @media only screen and (min-width: 1280px) {
     body{
         font-size: 1.3em;
     }
-    .hamburger-container {
-        display: none;
-    }
-    .navigation-bar-links {
-        visibility: visible;
-    }
 }
+
 @media only screen and (min-width: 2800px) {
     body{
         font-size: 3em;

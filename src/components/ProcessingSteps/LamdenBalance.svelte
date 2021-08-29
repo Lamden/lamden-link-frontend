@@ -3,6 +3,7 @@
 
     // Components
     import TokenLogo from '../MakeSwap/TokenLogo.svelte'
+    import ResultLink from '../ResultLink.svelte'
 
     // Stores
     import { lamden_vk, lamdenCurrencyBalance } from '../../stores/lamdenStores' 
@@ -39,21 +40,13 @@
 </script>
 
 <style>
-    a {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 40%;
-        margin-left: 10px;
-        text-decoration: underline;
-    }
-    a:hover{
-        color: var(--color-white);
+    p{
+        margin-right: 1em;
     }
 </style>
 
 <div class="flex row align-center">
     <TokenLogo token={lamdenToken} clickable={false} size="tiny" />
     <p>{`${stringToFixed($lamdenCurrencyBalance, 8)} ${$networkInfo.network_symbol}`}</p>
-    <a href="{addressURL}" target="_blank" rel="noopener noreferrer">{$lamden_vk}</a>
+    <ResultLink type="address" data={$lamden_vk} title={$lamden_vk} network={$networkInfo}/>
 </div>

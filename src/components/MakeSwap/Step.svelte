@@ -29,7 +29,7 @@
 <style>
     .step-container{
         box-sizing: border-box;
-        padding: 1rem;
+        padding: 1rem 1rem 2rem;
         margin: 1rem 0;
         width: 100%;
         opacity: 50%;

@@ -33,6 +33,11 @@
     }
 
     function next(){
+        swapInfo.update(curr => {
+            curr.startDate = new Date()
+            return curr
+        })
+        setStep(0)
         saveSwap()
         setStep(3)
     }

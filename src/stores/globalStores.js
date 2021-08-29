@@ -7,7 +7,7 @@ export const swapInfo = writable({})
 export const swapHistory = writable([])
 
 export const lastSwap = derived(swapHistory, ($swapHistory) => {
-    if ($swapHistory.length > 0) return $swapHistory[0]
+    if ($swapHistory.length > 0) return $swapHistory[$swapHistory.length - 1]
     else return null
 })
 

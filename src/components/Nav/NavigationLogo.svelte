@@ -14,7 +14,7 @@
 <style>
     a{
         color: var(--color-gray-5);
-        font-size: 20px;
+        font-size: clamp(16px, 1.5vw, 45px);
         font-weight: 800;
     }
     .container:hover > a{
@@ -34,8 +34,10 @@
         .nav-brand-logo {
             width: 35px;
         }
-        a{
-            font-size: 22px;
+    }
+    @media screen and (min-width: 2000px) {
+        .nav-brand-logo {
+            width: 55px;
         }
     }
 </style>

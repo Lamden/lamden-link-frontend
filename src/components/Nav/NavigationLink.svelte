@@ -12,10 +12,10 @@
     .nav-link {
         color: var(--color-gray-5);
         text-decoration: none;
-        font-size: 1vw;
+        font-size: clamp(16px, 1.2vw, 40px);
         font-weight: 800;
         border-bottom: 2px solid transparent;
-        margin: 0 10px;
+        margin: 0 1em;
     }
     .nav-link:hover {
         color: var(--primary-color);

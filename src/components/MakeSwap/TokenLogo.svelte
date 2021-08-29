@@ -41,7 +41,7 @@
         height: 60px;
         border: 1px solid var(--accent-color);
         background: var(--accent-color);
-        border-radius: 99px;
+        border-radius: 999px;
         margin: 0 10px;
     }
     .container.tiny{
@@ -57,7 +57,7 @@
     }
     .logo.tiny{
         min-width: initial;
-        width: 15px;
+        width: 16px;
     }
     @media screen and (min-width: 430px) {
 
@@ -66,7 +66,7 @@
 
 <div class="flex align-center just-center container" class:filled={hashTokenInfo} on:click={handleClick} class:tiny={size === "tiny"}>
     {#if hashTokenInfo}
-        <div class="logo" class:tiny={size === "tiny"}>
+        <div class="flex align-center just-center logo" class:tiny={size === "tiny"}>
             <svelte:component this={TokenMap[token.symbol]} />
         </div>
     {/if}

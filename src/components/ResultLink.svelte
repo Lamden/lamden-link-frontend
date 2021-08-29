@@ -11,13 +11,6 @@
     export let hash
 
     function makeURL(){
-        console.log(network)
-        console.log({
-            blockexplorer: network.blockexplorer,
-            blockexplorer_address: network.blockexplorer_address,
-            hash,
-            type
-        })
         if (type === "address"){
             return `${network.blockexplorer}/${network.blockexplorer_address}/${hash}`
         }
@@ -35,6 +28,13 @@
 <style>
     a{
         font-size: 0.8em;
+
+    }
+    .address-link{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
     }
     div{
         height: 35px;
@@ -50,7 +50,7 @@
 </style>
 
 <div class="flex row align-center">
-    <a href="{makeURL()}" target="_blank" rel="noopener noreferrer">{title}</a>
+    <a href="{makeURL()}" class:address-link={type === "address"} target="_blank" rel="noopener noreferrer">{title}</a>
     <button class="icon" on:click={open_url}>
         <IconLink />
     </button>

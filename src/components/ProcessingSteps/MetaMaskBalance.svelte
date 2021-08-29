@@ -3,6 +3,7 @@
 
     // Components
     import TokenLogo from '../MakeSwap/TokenLogo.svelte'
+    import ResultLink from '../ResultLink.svelte'
 
     // Stores
     import { getNetworkStore } from '../../stores/globalStores' 
@@ -28,24 +29,16 @@
 </script>
 
 <style>
-    a {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 40%;
-        margin-left: 10px;
-        text-decoration: underline;
-    }
-    a:hover{
-        color: var(--color-white);
-    }
     div{
         margin-top: 1rem;
+    }
+    p{
+        margin-right: 1em;
     }
 </style>
 
 <div class="flex row align-center">
     <TokenLogo token={networktoken} size="tiny" clickable={false} />
     <p>{`${stringToFixed($ethChainBalance, 8)} ${$networkInfo.network_symbol}`}</p>
-    <a href="{addressURL}" target="_blank" rel="noopener noreferrer">{$selectedAccount}</a>
+    <ResultLink type="address" data="$selectedAccount" title={$selectedAccount} network={$networkInfo}/>
 </div>

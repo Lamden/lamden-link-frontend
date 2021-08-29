@@ -114,9 +114,9 @@
 
     function getProcessingSteps(){
         let steps = swapStepsMap[$swapInfo.from][$swapInfo.to]
-        if (swapInfo.from === "binance") steps[0].network = "binance"
+        if ($swapInfo.from === "binance") steps[0].network = "binance"
         else connectMetaMaskStep.network = "ethereum"
-        
+        console.log({steps})
         return steps
     }
 
@@ -147,6 +147,7 @@
     }
 
     async function done(){
+        $swapInfo.completeDate = new Date()
         setSwapInHistory($swapInfo)
         navigate("/finish", { replace: true });
     }
