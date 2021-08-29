@@ -1,13 +1,29 @@
 <script>
-import Header from './Header.svelte';
-import HeartSvg from './HeartSVG.svelte';
-
-import Heart from './HeartSVG.svelte'
+import Heart from './SVG/HeartSVG.svelte'
 
 </script>
 
-<div class="footer" style="width:100%;margin-top: 4rem;margin-bottom: 1rem;">
-    <div style="text-align: center;">
-        Made with <Heart/> by Lamden 
+<style>
+    .footer{
+        width: 100%;
+        text-align: center;
+        margin: 2rem 0;
+        padding-bottom: 1rem;
+        font-size: 0.8em;
+        color: var(--font-primary-dim);
+    }
+    .heart-icon{
+        width: 1em;
+        margin: 0 8px;
+    }
+</style>
+
+<div class="footer flex just-center align-end flex-grow">
+    <div class="flex row align-center just-center">
+        Made with 
+        <div class="heart-icon">
+            <Heart />
+        </div> 
+        by Lamden 
     </div>
 </div>

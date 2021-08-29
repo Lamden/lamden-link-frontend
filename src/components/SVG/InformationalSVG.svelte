@@ -1,6 +1,6 @@
 <script>
 
-    import { popup_modal } from '../stores/lamden'
+    import { popup_modal } from '../../stores/lamden'
 
     let openModal = function () {
         popup_modal.set('info')

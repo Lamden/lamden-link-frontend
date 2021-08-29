@@ -1,0 +1,75 @@
+<script>
+    import { createEventDispatcher } from 'svelte'
+
+    // Logos
+    import Token_WETH from '../Tokens/Token_WETH.svelte'
+    import Token_TAU from '../Tokens/Token_TAU.svelte'
+    import Token_BDT from '../Tokens/Token_BDT.svelte'
+    import Token_ETH from '../Tokens/Token_ETH.svelte'
+    import Token_BNB from '../Tokens/Token_BNB.svelte'
+
+    export let token = null;
+    export let clickable = true;
+    export let size = null;
+
+    $: hashTokenInfo = token !== null
+
+    const dispatchEvent = createEventDispatcher();
+
+    const TokenMap = {
+        WETH: Token_WETH,
+        TAU: Token_TAU,
+        DTAU: Token_TAU,
+        dTAU: Token_TAU,
+        BDT: Token_BDT,
+        ETH: Token_ETH,
+        TETH: Token_ETH,
+        BNB: Token_BNB,
+        TBNB: Token_BNB
+    }
+
+    function handleClick(){
+        if (!clickable) return
+        dispatchEvent('selected', token)
+    }
+
+</script>
+
+<style>
+    .container{
+        width: 60px;
+        height: 60px;
+        border: 1px solid var(--accent-color);
+        background: var(--accent-color);
+        border-radius: 999px;
+        margin: 0 10px;
+    }
+    .container.tiny{
+        width: 30px;
+        height: 30px;
+    }
+    .filled{
+        background: var(--color-white);
+    }
+    .logo{
+        min-width: initial;
+        width: 30px;
+    }
+    .logo.tiny{
+        min-width: initial;
+        width: 16px;
+    }
+    @media screen and (min-width: 430px) {
+
+    }
+</style>
+
+<div class="flex align-center just-center container" class:filled={hashTokenInfo} on:click={handleClick} class:tiny={size === "tiny"}>
+    {#if hashTokenInfo}
+        <div class="flex align-center just-center logo" class:tiny={size === "tiny"}>
+            <svelte:component this={TokenMap[token.symbol]} />
+        </div>
+    {/if}
+</div>
+
+

@@ -9,7 +9,7 @@
     skipped
   } from "../stores/lamden";
   import { lweth_data, weth_data } from "../js/utils";
-  import { projectConf } from "../conf.js";
+  import { projectConf } from "../js/conf.js";
   let conf = projectConf[$currentNetwork];
 
   let set_token = function () {

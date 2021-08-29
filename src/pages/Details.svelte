@@ -1,5 +1,5 @@
 <script>
-  import NavBar from "../components/NavigationBar.svelte";
+  import NavBar from "../components/Nav/NavigationBar.svelte";
   import TransactionResult from "../components/TransactionResult.svelte"
   import Footer from "../components/Footer.svelte";
 

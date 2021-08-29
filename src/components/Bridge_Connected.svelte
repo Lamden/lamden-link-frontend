@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Info from "./InformationalSVG.svelte";
-  import Arrow from "./ArrowSVG.svelte";
+  import Info from "./SVG/InformationalSVG.svelte";
+  import Arrow from "./SVG/ArrowSVG.svelte";
   import DropDown from "./DropDown.svelte";
   import Input from "./Input.svelte";
   import NetworkSelection from "./NetworkSelection.svelte";
@@ -8,7 +8,7 @@
   import Popup from "./Popup.svelte"
   import { onMount } from "svelte";
   //import Alert from "../components/alert.svelte";
-  import { projectConf } from "../conf.js";
+  import { projectConf } from "../js/networks.js";
   import {
     checkChain,
     checkETHBalance,

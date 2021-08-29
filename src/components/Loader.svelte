@@ -1,28 +1,19 @@
 
 
-<div class="loader-container">
-  <div class="sk-folding-cube">
-    <div class="sk-cube1 sk-cube"></div>
-    <div class="sk-cube2 sk-cube"></div>
-    <div class="sk-cube4 sk-cube"></div>
-    <div class="sk-cube3 sk-cube"></div>
-  </div>
-</div>
+
 
 
 <style>
-  .loader-container {
-    display: block;
-    float: left;
-          margin-left: .85rem;
+  .loader-container{
+    margin: 0 20px 0 0;
   }
   .sk-folding-cube {
-  width: 1rem;
-  height: 1rem;
-  position: relative;
-  -webkit-transform: rotateZ(45deg);
-          transform: rotateZ(45deg);
-}
+    width: 30px;
+    height: 30px;
+    position: relative;
+    -webkit-transform: rotateZ(45deg);
+            transform: rotateZ(45deg);
+  }
 
 .sk-folding-cube .sk-cube {
   float: left;
@@ -103,3 +94,12 @@
   }
 }
 </style>
+
+<div class="loader-container">
+  <div class="sk-folding-cube">
+    <div class="sk-cube1 sk-cube"></div>
+    <div class="sk-cube2 sk-cube"></div>
+    <div class="sk-cube4 sk-cube"></div>
+    <div class="sk-cube3 sk-cube"></div>
+  </div>
+</div>

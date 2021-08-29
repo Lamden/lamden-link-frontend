@@ -12,7 +12,6 @@
   import { message, inputValue, isLoading } from "../stores/lamden";
 
   let disableInput = function (loading) {
-    console.log({loading})
     return loading
   }
 </script>

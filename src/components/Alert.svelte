@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Success from "./ConnectedSVG.svelte";
-  import Error from "./ErrorSVG.svelte"
+  import Success from "./SVG/ConnectedSVG.svelte";
+  import Error from "./SVG/ErrorSVG.svelte"
 
   export let isError: Boolean;
   export let text: string;
