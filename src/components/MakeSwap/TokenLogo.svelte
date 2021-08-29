@@ -42,7 +42,7 @@
         border: 1px solid var(--accent-color);
         background: var(--accent-color);
         border-radius: 999px;
-        margin: 0 10px;
+        margin: 0 10px 0 0;
     }
     .container.tiny{
         width: 30px;
