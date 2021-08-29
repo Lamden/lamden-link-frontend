@@ -14,6 +14,7 @@
     import { checkChainTokenBalance } from '../../js/ethereum-utils' 
 
     export let input = true;
+    export let complete = false;
 
     $: tokensToSend = $swapInfo.tokenAmount || new BN(0)
     $: hasEnoughTokens = $ethChainTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
@@ -49,7 +50,9 @@
         color: var(--warning-color);
     }
     p{
-        margin: 1rem 0 0.25rem;
+        margin: 2rem 1em 0.25rem 0;
+        font-size: 0.7em;
+        color: var(--font-primary-dim);
     }
 
 </style>
@@ -61,7 +64,7 @@
 
 {#if input}
     <p>Amount of {$selectedToken.symbol} to send:</p>
-    <div class="input-number"><InputNumber on:input={handleInput}/></div>
+    <div class="input-number"><InputNumber on:input={handleInput} disabled={complete}/></div>
 {/if}
 
 

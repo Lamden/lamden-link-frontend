@@ -13,6 +13,7 @@
     import { stringToFixed } from '../../js/global-utils' 
 
     export let input = true;
+    export let complete = false;
 
     let timer = null
 
@@ -49,7 +50,9 @@
         color: var(--warning-color);
     }
     p{
-        margin: 1rem 0 0.25rem;
+        margin: 2rem 0 0.25rem;
+        font-size: 0.7em;
+        color: var(--font-primary-dim);
     }
 </style>
 
@@ -60,7 +63,9 @@
 
 {#if input && !burnComplete}
     <p>Amount of {$selectedToken.symbol} to send:</p>
-    <div class="input-number"><InputNumber on:input={handleInput}/></div>
+    <div class="input-number">
+        <InputNumber on:input={handleInput} disabled={complete}/>
+     </div>
 {/if}
 
 

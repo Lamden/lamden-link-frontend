@@ -15,6 +15,7 @@
     export let styles = "";
     export let margin = "unset";
     export let startingValue = 0;
+    export let disabled = true;
 
 	const handleInputChange = (e) => {
 		let validateValue = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')
@@ -49,5 +50,6 @@
         on:input={handleInputChange}
         value={startingValue}
         {placeholder}
+        readonly={disabled}
     />
 </label>

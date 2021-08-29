@@ -6,7 +6,7 @@
 
 <svg
   {width}
-  viewBox="0 -2 32 34"
+  viewBox="0 0 32 34"
   fill={color}
   xmlns="http://www.w3.org/2000/svg"
 

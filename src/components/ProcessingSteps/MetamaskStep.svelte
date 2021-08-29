@@ -135,7 +135,7 @@
 
     {#if isCorrectChain && $connected && tokenFromMe}
         <li class="no-bullet">
-            <MetaMaskTokenInput {stepInfo} input={!hasApproval}/>
+            <MetaMaskTokenInput {stepInfo} input={!hasApproval} {complete}/>
         </li>
     {/if}
 
@@ -156,7 +156,7 @@
                     {#if hasApproval}
                         <button on:click={handleStartOver}>Start Over</button>
                     {/if}
-                    <button class="success" disabled={!hasEthBalnnce || !hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
+                    <button class:success={hasEthBalnnce && hasEnoughTokens } disabled={!hasEthBalnnce || !hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
                 </div>
             {:else}
                 <button class="success" disabled={!hasEthBalnnce} on:click={handleNextStep}>Next Step</button>

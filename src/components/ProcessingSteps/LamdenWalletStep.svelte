@@ -137,7 +137,7 @@
         {#if $lamden_vk && tokenFromMe}
             {#if !depositComplete}
                 <li class="no-bullet">
-                    <LamdenTokenInput />
+                    <LamdenTokenInput {complete}/>
                 </li>
             {/if}
         {/if}
@@ -159,7 +159,7 @@
                 
                 {#if $lamden_vk && current}
                     {#if tokenFromMe}
-                        <button class="success" disabled={!hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
+                        <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens} on:click={handleNextStep}>{hasEnoughTokens ? "Next Step" : "Insufficient Balance"}</button>
                     {:else}
                         <button class="success" on:click={handleNextStep}>Next Step</button>
                     {/if}
