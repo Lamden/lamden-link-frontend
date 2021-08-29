@@ -48,5 +48,5 @@
 <div class="flex row align-center">
     <TokenLogo token={lamdenToken} clickable={false} size="tiny" />
     <p>{`${stringToFixed($lamdenCurrencyBalance, 8)} ${$networkInfo.network_symbol}`}</p>
-    <ResultLink type="address" data={$lamden_vk} title={$lamden_vk} network={$networkInfo}/>
+    <ResultLink type="address" hash={$lamden_vk} title={$lamden_vk} network={$networkInfo}/>
 </div>
