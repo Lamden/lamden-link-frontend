@@ -40,7 +40,7 @@
 </style>
 
 <div class="flex col just-center">
-    <h2>Which Blockchain are are your tokens currently on?</h2>
+    <h2>Which Blockchain are your tokens currently on?</h2>
 
     <div class="flex row align-center just-center networks">
         {#each fromNetworks() as fn }
