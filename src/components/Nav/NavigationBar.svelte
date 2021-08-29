@@ -6,7 +6,6 @@
     { name: "Home", href: "/"},
     { name: "Explorer", href: "https://mainnet.lamden.io/"},
     { name: "Wallet", href: "https://lamden.io/en/wallets/"},
-    { name: "Lamden.io", href: "https://lamden.io/en/"},
     { name: "Help", href: "https://help.lamdenlink.com/"},
   ];
 </script>
