@@ -44,7 +44,6 @@
     }
 
 	const handleWalletInfo = (info) => {
-        console.log({info})
         if (info.approvals){
             if (Object.keys(info.approvals).includes($selectedNetwork)){
                 hasNetworkApproval.set({approved: true})

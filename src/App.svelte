@@ -63,10 +63,11 @@ function unregisterOldServiceWorkers(){
 <Banner />
 <NavBar />
 <main>
-	<Route path="/"><Home /></Route>
-	<Route path="/swap"><MakeSwap /></Route>
-	<Route path="/results"><Results /></Route>
-	<Route path="/finish"><Finish /></Route>
+	<Route path="/" component={Home} />
+	<Route path="/swap" component={MakeSwap} />
+	<Route path="/swap/:testnet" component={MakeSwap} />
+	<Route path="/results" component={Results} />
+	<Route path="/finish" component={Finish} />
 </main>
 <Footer />
 </Router>

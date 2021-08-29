@@ -17,7 +17,7 @@
     <span class="mobile-close">&times;</span>
     <div style="font-size: larger; margin-top: 2rem;">
       {#each links as link}
-        <NavLink link={link.name} href={link.href} />
+		<NavLink link={link.name} href={link.href} mobile={true}/>
         <br/>
         <br/>
       {/each}

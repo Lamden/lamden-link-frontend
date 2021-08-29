@@ -190,7 +190,6 @@ export function sendEthChainApproval(resultTracker, callback){
         approve
             .send({ from: metamask_address })
             .once('transactionHash', (hash) => {
-                console.log("6")
                 swapInfo.update(curr => {
                     curr.metamaskApprovalPending = hash
                     return curr
@@ -250,16 +249,6 @@ export function sendEthChainDeposit(resultTracker, callback){
         quantity,
         lamden_address,
     )
-
-    console.log({
-        clearingHouseContract,
-        deposit,
-        tokenAddress: token.address,
-        quantity,
-        lamden_address,
-        metamask_address,
-        swapInfoStore
-    })
 
     try {
         deposit

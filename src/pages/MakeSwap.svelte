@@ -13,6 +13,8 @@
     import { selectedNetwork, swapInfo } from '../stores/globalStores';
     import { getLastSwap, clearCurrentSwap } from '../js/localstorage-utils';
 
+    export let testnet
+
     let currentStep = 0
 
     setContext('current_swap', {
@@ -25,6 +27,8 @@
     })
 
     onMount(() => {
+        if (testnet) selectedNetwork.set('testnet')
+
         let lastSwapInfo = getLastSwap()
         if (!lastSwapInfo.to && !lastSwapInfo.from && !lastSwapInfo.token){
             // Do nothing
@@ -36,21 +40,15 @@
 
 
     function getFromNetworks(){
-        let network = $selectedNetwork
-        if (network === null) network = "mainnet"
-        return Object.keys(networks[network])
+        return Object.keys(networks[$selectedNetwork])
     }
 
     function getToNetworks(){
-        let network = $selectedNetwork
-        if (network === null) network = "mainnet"
-        return networks[network][$swapInfo.from].interop
+        return networks[$selectedNetwork][$swapInfo.from].interop
     }
 
     function getSupportedTokens(){
-        let network = $selectedNetwork
-        if (network === null) network = "mainnet"
-        return networks[network][$swapInfo.from].tokens
+        return networks[$selectedNetwork][$swapInfo.from].tokens
     }
 
     function setStep(step){

@@ -18,7 +18,6 @@
 	}
 
 	function handleResume(){
-		console.log()
 		navigate("/swap", { replace: true });
 	}
 	

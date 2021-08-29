@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from 'svelte'
     import { navigate } from "svelte-routing";
 
     // Components
@@ -8,20 +7,8 @@
     import ResultLink from '../components/ResultLink.svelte'
 
     //Misc
-    import { swapInfo, getNetworkStore, lastSwap } from '../stores/globalStores'
-    import { setLastSwap } from '../js/localstorage-utils'
+    import { lastSwap } from '../stores/globalStores'
     import { stringToFixed } from '../js/global-utils'
-
-    let fromNetwork = null
-    let toNetwork = null
-
-    onMount(() => {
-        if (!$lastSwap) return
-        if (!$lastSwap.complete) return
-
-        fromNetwork = getNetworkStore($lastSwap.from)
-        toNetwork = getNetworkStore($lastSwap.to)
-    })
 
     function handleGoHome(){
         navigate("/", { replace: true });
@@ -39,7 +26,7 @@
         width: max-content;
     }
     h2{
-        margin: 1rem 0 2rem;
+        margin: 2rem 0;
     }
     .date{
         font-size: 0.8em;
@@ -63,14 +50,13 @@
         </div>
     {/if}
 
-    {#if fromNetwork && toNetwork}
-
+    {#if $lastSwap}
         <h2>Thank you for using Lamden Link!</h2>
         <hr>
         <div class="flex row">
             <TokenLogo token={$lastSwap.token} clickable={false} />
             <p>
-                <strong>{`${stringToFixed($lastSwap.tokenAmount, 8)} ${$lastSwap.token.symbol}`}</strong> successfully sent to the {$toNetwork.networkName}
+                <strong>{`${stringToFixed($lastSwap.tokenAmount, 8)} ${$lastSwap.token.symbol}`}</strong> successfully sent to the {$lastSwap.toNetwork.networkName}
             </p>
         </div>
         <p class="date text-primary-dim">sent on {new Date($lastSwap.completeDate).toLocaleString()}</p>
@@ -88,26 +74,26 @@
 
                 <div class="felx col">
                     {#if $lastSwap.from !== 'lamden'}
-                        <ResultLink title={`MetaMask: ${$lastSwap.metamask_address}`} network={$fromNetwork} type="address" hash={$lastSwap.metamask_address} />
+                        <ResultLink title={`MetaMask: ${$lastSwap.metamask_address}`} network={$lastSwap.fromNetwork} type="address" hash={$lastSwap.metamask_address} />
                     {:else}
-                        <ResultLink title="Lamden Account"  network={$fromNetwork} type="address" hash={$lastSwap.lamden_address}/>
+                        <ResultLink title="Lamden Account"  network={$lastSwap.fromNetwork} type="address" hash={$lastSwap.lamden_address}/>
                     {/if}
                     
                     {#if $lastSwap.burnApproveHash}
-                        <ResultLink title="Burn Approval" network={$fromNetwork} type="transaction" hash={$lastSwap.burnApproveHash} />
+                        <ResultLink title="Burn Approval" network={$lastSwap.fromNetwork} type="transaction" hash={$lastSwap.burnApproveHash} />
                     {/if}
 
                     {#if $lastSwap.burnHash}
-                        <ResultLink title="Burn Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.burnHash} />
+                        <ResultLink title="Burn Tokens" network={$lastSwap.fromNetwork} type="transaction" hash={$lastSwap.burnHash} />
                     {/if}
 
 
                     {#if $lastSwap.metamaskApproval}
-                        <ResultLink title="Approve Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.metamaskApproval} />
+                        <ResultLink title="Approve Tokens" network={$lastSwap.fromNetwork} type="transaction" hash={$lastSwap.metamaskApproval} />
                     {/if}
 
                     {#if $lastSwap.metamaskDeposit}
-                        <ResultLink title="Deposit Tokens" network={$fromNetwork} type="transaction" hash={$lastSwap.metamaskDeposit} />
+                        <ResultLink title="Deposit Tokens" network={$lastSwap.fromNetwork} type="transaction" hash={$lastSwap.metamaskDeposit} />
                     {/if}
 
                 </div>
@@ -119,13 +105,13 @@
 
                 <div class="felx col">     
                     {#if $lastSwap.to !== 'lamden'}
-                        <ResultLink title="MetaMask Address" network={$toNetwork} type="address" hash={$lastSwap.metamask_address} />
+                        <ResultLink title="MetaMask Address" network={$lastSwap.toNetwork} type="address" hash={$lastSwap.metamask_address} />
                     {:else}
-                        <ResultLink title={`Wallet: ${$lastSwap.lamden_address}`} network={$toNetwork} type="address" hash={$lastSwap.lamden_address} />
+                        <ResultLink title={`Wallet: ${$lastSwap.lamden_address}`} network={$lastSwap.toNetwork} type="address" hash={$lastSwap.lamden_address} />
                     {/if}       
                 </div>
             </div>
-    </div>
+        </div>
     {/if}
 </div>
 

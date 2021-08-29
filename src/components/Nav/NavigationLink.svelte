@@ -1,11 +1,12 @@
 
 <script lang='ts'>
     export let link;
-    export let href;        
+    export let href;  
+    export let mobile = false      
     
 </script>
 
-<a href="{href}" target="_blank" rel="noopener noreferrer" class="nav-link" >{link}</a>
+<a href="{href}" target="_blank" rel="noopener noreferrer" class="nav-link" class:mobile={mobile}>{link}</a>
 
 <style>
 
@@ -20,6 +21,17 @@
     .nav-link:hover {
         color: var(--primary-color);
         border-bottom: 2px solid var(--primary-color);
+    }
+
+    a.mobile{
+        color: var(--white-color);
+    }
+    a.mobile:hover{
+        color: var(--accent-color);
+        border-bottom: 2px solid var(--accent-color);
+    }
+    a.mobile:visited{
+        color: var(--white-color);
     }
 
 </style>

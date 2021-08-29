@@ -16,9 +16,6 @@
     export let complete
     export let stepInfo = null;
 
-    burnApprovalTxStatus.subscribe(curr => console.log({burnApprovalTxStatus: curr}))
-    burnTxStatus.subscribe(curr => console.log({burnTxStatus: curr}))
-
     const { nextStep } = getContext('process_swap')
 
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
@@ -37,7 +34,6 @@
     }
 
     async function handleApproveBurnComplete(txResults){
-        console.log({handleApproveBurnComplete: txResults})
         lamdenTokenApprovalAmount.set($swapInfo.tokenAmount)
         burnApprovalTxStatus.set({})
         swapInfo.update(curr => {
@@ -48,7 +44,6 @@
     }
 
     function handleBurnComplete(txResults){
-        console.log({handleBurnComplete: txResults})
         swapInfo.update(curr => {
             curr.burnHash = txResults.txHash
             curr.started = new Date()

@@ -129,14 +129,7 @@ function sendBurn (resultsTracker, callback) {
     let metamask_address = swapInfoStore.metamask_address
 
     let ethTokenInfo = ethNetworkInfo.tokens.find(t => t.symbol === lamdenToken.symbol)
-    console.log({
-        lamdenNetworkInfo,
-        ethNetworkInfo,
-        lamdenToken,
-        swapInfoStore,
-        metamask_address,
-        ethTokenInfo
-    })
+
     if (!ethTokenInfo){
         resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the Ethereum network.`]})
         return

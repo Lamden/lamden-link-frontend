@@ -13,7 +13,7 @@
     import SwapVisual from './SwapVisual.svelte'
 
     // Misc
-    import { swapInfo } from '../../stores/globalStores'
+    import { getNetworkStore, selectedNetwork, swapInfo } from '../../stores/globalStores'
     import { setSwapInHistory, clearCurrentSwap } from '../../js/localstorage-utils'
 
     const connectLamdenWalletStep = {
@@ -116,7 +116,6 @@
         let steps = swapStepsMap[$swapInfo.from][$swapInfo.to]
         if ($swapInfo.from === "binance") steps[0].network = "binance"
         else connectMetaMaskStep.network = "ethereum"
-        console.log({steps})
         return steps
     }
 
@@ -147,7 +146,12 @@
     }
 
     async function done(){
-        $swapInfo.completeDate = new Date()
+        swapInfo.update(curr => {
+            curr.completeDate = new Date()
+            curr.networkType = $selectedNetwork
+            return curr
+        })
+
         setSwapInHistory($swapInfo)
         navigate("/finish", { replace: true });
     }

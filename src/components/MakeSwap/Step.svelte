@@ -18,12 +18,6 @@
         binance: LogoBinance,
         lamden: LogoLamden
     }
-
-
-    function handleClick(){
-        console.log("clicked step")
-    }
-
 </script>
 
 <style>
@@ -89,7 +83,7 @@
     <p class="step-num" class:complete={complete} class:current={current}>{stepNum}</p>
     <div class="step-container" class:complete={complete} class:current={current && !isMetamaskStep} class:metamask={current && isMetamaskStep } >
         <div class="flex row">
-            <div class="flex just-center logo-container"  on:click={handleClick}>
+            <div class="flex just-center logo-container">
                 {#if stepInfo.type !== "wallet"}
                     <div class="logo">
                             <svelte:component this={LogoMap[stepInfo.network]} />

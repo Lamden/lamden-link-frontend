@@ -19,7 +19,6 @@
     }
 
     function handleClick(){
-        console.log("click")
         dispatchEvent('selected', networkName)
     }
 

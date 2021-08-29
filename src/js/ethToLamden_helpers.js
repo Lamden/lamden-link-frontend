@@ -197,8 +197,6 @@ export async function startSwap(event) {
         })
         let latest_ethApprovalTxHash = JSON.parse(localStorage.getItem('ethApprovalTxHash'))
 
-        console.log({ approvalTxHashResult })
-
         if (!approvalTxHashResult.status) {
             isLoading.set(false)
             let msg = approvalTxHashResult.message || 'Error sending Ethereum Transaction.'

@@ -1,15 +1,12 @@
 import { writable, derived } from "svelte/store";
 import * as networks from '../js/networks'
 
-export const selectedNetwork = writable("testnet")
+export const selectedNetwork = writable("mainnet")
 
 export const swapInfo = writable({})
 export const swapHistory = writable([])
 
-export const lastSwap = derived(swapHistory, ($swapHistory) => {
-    if ($swapHistory.length > 0) return $swapHistory[$swapHistory.length - 1]
-    else return null
-})
+
 
 export const selectedToken = derived(swapInfo, ($swapInfo) => $swapInfo.token)
 
@@ -26,3 +23,16 @@ export const getNetworkStore = (networkName) => {
     }
     return networkMap[networkName] || null
 }
+
+export const lastSwap = derived(swapHistory, ($swapHistory) => {
+    let swap = null
+    if ($swapHistory.length > 0) swap = $swapHistory[$swapHistory.length - 1]
+    else return null
+
+    let network = networks[swap.networkType]
+
+    swap.toNetwork = network[swap.to]
+    swap.fromNetwork = network[swap.from]
+
+    return swap
+})
