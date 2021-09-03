@@ -159,7 +159,9 @@
                 
                 {#if $lamden_vk && current}
                     {#if tokenFromMe}
-                        <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens} on:click={handleNextStep}>{hasEnoughTokens ? "Next Step" : "Insufficient Balance"}</button>
+                        <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !$swapInfo.burnHash} on:click={handleNextStep}>
+                            {!hasEnoughTokens && !$swapInfo.burnHash ? "Insufficient Balance" : "Next Step"}
+                        </button>
                     {:else}
                         <button class="success" on:click={handleNextStep}>Next Step</button>
                     {/if}

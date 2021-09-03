@@ -68,4 +68,10 @@
      </div>
 {/if}
 
+{#if burnComplete}
+    <p>Resuming Swap of {$selectedToken.symbol}:</p>
+    <div class="input-number">
+        <InputNumber startingValue={$swapInfo.tokenAmount} disabled={true}/>
+     </div>
+{/if}
 
