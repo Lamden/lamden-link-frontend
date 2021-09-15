@@ -13,8 +13,10 @@
     import SwapVisual from './SwapVisual.svelte'
 
     // Misc
-    import { getNetworkStore, selectedNetwork, swapInfo } from '../../stores/globalStores'
-    import { setSwapInHistory, clearCurrentSwap } from '../../js/localstorage-utils'
+    import { selectedNetwork, swapInfo } from '../../stores/globalStores'
+    import { setSwapInHistory } from '../../js/localstorage-utils'
+    import { copyToClipboard } from '../../js/global-utils'
+import App from '../../App.svelte';
 
     const connectLamdenWalletStep = {
         name: "Lamden Wallet",
@@ -107,6 +109,8 @@
     let currentProcessingStep = 0
     let validateStartOver = false
     let processingDone = false
+    let copiedSwapInfo = false
+    let buttonTimer = null
 
     let from = $swapInfo.from.toUpperCase()
     let to = $swapInfo.to.toUpperCase()
@@ -159,17 +163,47 @@
         if (validateStartOver) startOver()
         validateStartOver = true
     }
+    function cancelStartOver(){
+        validateStartOver = false
+    }
+
+    function handleCopyData(){
+        console.log("CLICK")
+        copyToClipboard(JSON.stringify($swapInfo))
+        copiedSwapInfo = true
+        buttonTimer = setTimeout(() => copiedSwapInfo = false, 2000)
+    }
 </script>
 
 <style>
     h2{
         text-align: center;
     }
+    button.copyButton{
+        transition: background-color 0.5s ease-in;
+    }
+    button.copied{
+        background-color: var(--success-color-dark);
+    }
     .buttons{
         margin: 1rem 0;
     }
     button{
+        transition: all 1s ease-in;
         margin: 0 10px;
+    }
+    .start-over{
+        max-width: 650px;
+        margin: 0 auto;
+        text-align: center;
+        line-height: 1.5;
+    }
+    .start-over > p {
+        font-weight: 100;
+        font-size: 0.8em;
+    }
+    .start-over > div{
+        margin-top: 2rem;
     }
 </style>
 
@@ -178,11 +212,30 @@
 {/if}
 
 <div class="buttons flex row just-center">
-    <button class="secondary" class:warning={validateStartOver} on:click={handleStartOver}>{validateStartOver ? "ARE YOU SURE?" : "Start Swap Over"}</button>
     <button on:click={goHome}>Home</button>
+    {#if !validateStartOver}
+        <button class="copyButton" on:click={handleCopyData} class:copied={copiedSwapInfo}>Copy Swap Info</button>
+        <button class="secondary" class:warning={validateStartOver} on:click={handleStartOver}>{validateStartOver ? "ARE YOU SURE?" : "Start Swap Over"}</button>
+    {/if}
 </div>
+{#if validateStartOver}
+    <h2>Start Swap Over?</h2>
+    <div class="start-over text-center">
+        <p> Restarting the swap will clear any swap data gathered so far such as amounts and successful transaction hashes.</p>
+        <p>Be sure to copy the current swap info for your records before doing this.</p>
+        <div class="flex just-center">
+            <button class="warning" on:click={handleStartOver}>Start Swap Over</button>
+            <button class="copyButton" on:click={handleCopyData} class:copied={copiedSwapInfo}>Copy Swap Info</button>
+            <button class="secondary" on:click={cancelStartOver}>Cancel</button>
+        </div>
 
-<h2>Complete the following steps</h2>
-{#each getProcessingSteps() as stepInfo, index }
-    <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
-{/each}
+    </div>
+{:else}
+    <h2>Complete the following steps</h2>
+    {#each getProcessingSteps() as stepInfo, index }
+        <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
+    {/each}
+
+{/if}
+
+
