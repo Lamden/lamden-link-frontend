@@ -187,6 +187,7 @@ button.success{
 button.warning{
     color: var(--black-color);
     background: var(--warning-color);
+    font-weight: 400;
 }
 
 

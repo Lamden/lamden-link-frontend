@@ -32,6 +32,22 @@ export const stringToFixed = (value, precision) => {
 	}
 }
 
+export const copyToClipboard = ( textTOcopy='', callback=undefined ) => {
+    try{
+        var dummy = document.createElement("input");
+        document.body.appendChild(dummy);
+        dummy.setAttribute("id", "copyhelper");
+        document.getElementById("copyhelper").value=textTOcopy;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        
+    } catch (e) {
+        throw new Error('unable to copy')
+    }
+    if (callback){callback()}
+};
+
 export const determinePrecision = (value) => {
 	if (BN.isBigNumber(value)) value = value.toString()
 	let valueStripped = stripTrailingZero(value)
