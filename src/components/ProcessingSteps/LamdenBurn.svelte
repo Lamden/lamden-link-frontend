@@ -61,6 +61,9 @@
         margin: 0 0 0 auto;
         display: block;
     }
+    strong{
+        margin-right: 1em;
+    }
 
 </style>
 
@@ -71,8 +74,8 @@
         {`${stringToFixed($swapInfo.tokenAmount, 8)} ${$selectedToken.symbol}`}        
     </div> 
     <ul>
-        <li class:yes={hasTokenApproval}>
-            {#if hasTokenApproval}
+        <li class:yes={hasTokenApproval || burnComplete}>
+            {#if hasTokenApproval || burnComplete}
                 Burn Approved
             {:else}
                 Approval Needed
@@ -86,7 +89,7 @@
     </ul>
 
 
-    {#if !hasTokenApproval}
+    {#if !hasTokenApproval && !burnComplete}
         <Status statusStore={burnApprovalTxStatus} />
         {#if !$burnApprovalTxStatus.loading}
             <button on:click={handleApproveBurn}>Approve Burn</button>
