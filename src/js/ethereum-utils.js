@@ -1,7 +1,7 @@
 import { web3, selectedAccount, chainData } from 'svelte-web3'
 import { get } from "svelte/store";
 import BN from 'bignumber.js'
-import { swapInfo, getNetworkStore, selectedToken } from '../stores/globalStores';
+import { swapInfo, getNetworkStore, selectedToken, selectedNetwork } from '../stores/globalStores';
 import { ethChainBalance, ethChainTokenBalance } from '../stores/ethereumStores';
 import { saveSwap } from './localstorage-utils' 
 import { isString } from './global-utils' 
@@ -79,7 +79,7 @@ export function sendProofToEthereum(resultTracker, callback){
     }else{
         resultTracker.set({loading: true, status: `Sending ${swapInfoStore.token.symbol} tokens from Lamden to Ethereum (check for Metamask popup)...`})
         
-        let proofData = swapInfoStore.proofData
+        let proofData = swapInfoStore.proofData        
     
         if (!proofData){
             resultTracker.set({loading: false, errors: ['Unable to get Proof Data from swap info.']})
@@ -106,6 +106,14 @@ export function sendProofToEthereum(resultTracker, callback){
             proofData.r,
             proofData.s,
         )
+
+        if (get(selectedNetwork) !== 'mainnet'){
+            console.log({metamask_address})
+            console.log({proofData})
+            console.log({withdraw})
+            console.log({networkInfo})
+        }
+
     
     
         try {
