@@ -16,7 +16,7 @@ export const mainnet = {
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
-        interop: ['ethereum'],
+        interop: ['ethereum', 'binance'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
             version: "1.0.3", // any version to start, increment later versions to update connection info
