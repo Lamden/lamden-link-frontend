@@ -95,7 +95,7 @@ export const mainnet = {
             {
                 name: "Block Duelers",
                 symbol: 'BDT',
-                address: '0x286a61a9b193f1b92d3a0fab4fd16028786273f3',
+                address: '0x286a61a9B193F1b92d3A0FaB4Fd16028786273f3',
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             }]
