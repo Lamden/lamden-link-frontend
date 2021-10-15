@@ -77,7 +77,7 @@ export function sendProofToEthereum(resultTracker, callback){
         resultTracker.set({loading: true, status: `Accepted By Network. Awaiting transaction result. This could take awhile depending on gas used.`})
         checkEthTransactionUntilResult(swapInfoStore.withdrawHash, callback)
     }else{
-        resultTracker.set({loading: true, status: `Sending ${swapInfoStore.token.symbol} tokens from Lamden to Ethereum (check for Metamask popup)...`})
+        resultTracker.set({loading: true, status: `Sending ${swapInfoStore.token.symbol} tokens from Lamden to ${swapInfoStore.to} (check for Metamask popup)...`})
         
         let proofData = swapInfoStore.proofData        
     
