@@ -1,6 +1,6 @@
 import BN from 'bignumber.js'
 import { get } from "svelte/store";
-import { lamdenNetwork, ethereumNetwork, selectedToken, swapInfo  } from '../stores/globalStores'
+import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore  } from '../stores/globalStores'
 import { lamden_vk, lamdenCurrencyBalance, lwc, lamdenTokenApprovalAmount } from '../stores/lamdenStores'
 import { TransactionResultHandler } from './lamdenTxResultsHandler'
 
@@ -43,12 +43,14 @@ export async function checkLamdenBalance() {
 
 export async function checkLamdenTokenApproval() {
     let lamdenNetworkInfo = get(lamdenNetwork)
-    let token_contract = get(selectedToken).address
+    let token = get(selectedToken)
+    let token_contract = token.address
+    let clearinghouse = token.lamden_clearinghouse
     let vk = get(lamden_vk)
 
     try {
         const res = await fetch(
-            `${lamdenNetworkInfo.apiLink}/states/${token_contract}/balances/${vk}:${lamdenNetworkInfo.clearingHouse.contractName}`, {
+            `${lamdenNetworkInfo.apiLink}/states/${token_contract}/balances/${vk}:${clearinghouse}`, {
                 method: 'GET',
             },
         ).catch((e) => console.log({e}))
@@ -75,6 +77,7 @@ export async function sendBurnApproval(resultsTracker, callback){
 function sendLamdenApproval (resultsTracker, callback){
     let lamdenNetworkInfo = get(lamdenNetwork)
     let token = get(selectedToken)
+
     let swapInfoStore = get(swapInfo)
     let walletController = get(lwc)
 
@@ -84,7 +87,7 @@ function sendLamdenApproval (resultsTracker, callback){
         methodName: 'approve',
         kwargs: {
             amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
-            to: lamdenNetworkInfo.clearingHouse.contractName,
+            to: token.lamden_clearinghouse,
         },
         stampLimit: lamdenNetworkInfo.stamps.approval,
     }
@@ -122,23 +125,27 @@ export function startBurn(resultsTracker, callback) {
 
 function sendBurn (resultsTracker, callback) {
     let lamdenNetworkInfo = get(lamdenNetwork)
-    let ethNetworkInfo = get(ethereumNetwork)
+
+    let swapInfoStore = get(swapInfo)
+    let toNetworkInfo = get(getNetworkStore(swapInfoStore.to))
+
+    console.log(toNetworkInfo)
 
     let lamdenToken = get(selectedToken)
-    let swapInfoStore = get(swapInfo)
     let metamask_address = swapInfoStore.metamask_address
 
-    let ethTokenInfo = ethNetworkInfo.tokens.find(t => t.symbol === lamdenToken.symbol)
+    let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol)
 
-    if (!ethTokenInfo){
-        resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the Ethereum network.`]})
+    if (!tokenInfo){
+        resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the ${swapInfoStore.to} network.`]})
         return
     }
-    let ethereum_contract = ethTokenInfo.address
+    let ethereum_contract = tokenInfo.address
 
     let walletController = get(lwc)
 
     const txInfo = {
+        contractName: lamdenToken.lamden_clearinghouse,
         networkType: lamdenNetworkInfo.clearingHouse.networkType,
         methodName: 'burn',
         kwargs: {
@@ -212,7 +219,8 @@ const getProof = (unSignedABI, resultsTracker) =>
         let timesChecked = 0
 
         let lamdenNetworkInfo = get(lamdenNetwork)
-
+        let token = get(selectedToken)
+        
         const checkAgain = () => {
             timesChecked = timesChecked + 1
             if (timesChecked <= timesToCheck) setTimeout(checkForProof, 1000)
@@ -223,8 +231,7 @@ const getProof = (unSignedABI, resultsTracker) =>
         }
 
         const checkForProof = () => {
-            //console.log({ timesChecked })
-            fetch(`${lamdenNetworkInfo.apiLink}/states/${lamdenNetworkInfo.clearingHouse.contractName}/proofs/${unSignedABI.replace(/'/g, '')}`,)
+            fetch(`${lamdenNetworkInfo.apiLink}/states/${token.lamden_clearinghouse}/proofs/${unSignedABI.replace(/'/g, '')}`)
                 .then((res) => res.json())
                 .then((json) => {
                     //console.log({ json })
