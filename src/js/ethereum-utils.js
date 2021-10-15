@@ -113,8 +113,6 @@ export function sendProofToEthereum(resultTracker, callback){
             console.log({withdraw})
             console.log({networkInfo})
         }
-
-    
     
         try {
             withdraw
