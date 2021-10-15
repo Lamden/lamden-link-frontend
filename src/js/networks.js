@@ -95,11 +95,18 @@ export const testnet = {
             contractName: "con_eth_bridge_v2", // Will never change
             networkType: "testnet", // other option is 'mainnet' 
         },
-        tokens: [{
-            name: "Wrapped Ethereum",
-            symbol: 'WETH',
-            address: 'con_weth_lst001_v1'
-        }],
+        tokens: [
+            {
+                name: "Wrapped Ethereum",
+                symbol: 'WETH',
+                address: 'con_weth_lst001_v1'
+            },
+            {
+                name: "Block Duelers",
+                symbol: 'BDT',
+                address: 'con_bdt_lst001'
+            }
+        ],
         networkName: "Lamden Testnet",
         network_symbol: "DTAU",
         currentStampRatio: 13,
