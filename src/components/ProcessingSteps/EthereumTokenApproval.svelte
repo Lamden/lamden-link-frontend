@@ -80,7 +80,7 @@
                     {#if $approvalTxStatus.errors}
                         <ResultLink title="Transaction Failed" network={$networkInfo} type="transaction" hash={$swapInfo.metamaskApprovalPending}/>
                     {:else}
-                        Need ERC-20 token approval
+                        Need {$swapInfo.from === "ethereum" ? "ERC-20 " : "BEP-20 "} token approval
                     {/if}
                 {/if}
             </li>
