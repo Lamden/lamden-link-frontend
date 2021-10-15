@@ -6,6 +6,9 @@
     import LogoBinance from '../Logos/LogoBinance.svelte'
     import LogoLamden from '../Logos/LogoLamden.svelte'
 
+    // Icons
+    import IconSquareCheck from '../SVG/SquareCheck.svelte'
+
     export let stepInfo
     export let complete
     export let current
@@ -22,6 +25,7 @@
 
 <style>
     .step-container{
+        position: relative;
         box-sizing: border-box;
         padding: 1rem 1rem 2rem;
         margin: 1rem 0;
@@ -75,6 +79,13 @@
         opacity: 100%;
         color: var(--success-color);
     }
+    .complete-icon{
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 50px;
+
+    }
     @media screen and (min-width: 430px) {
 
     }
@@ -98,6 +109,11 @@
                 {/if}
             </div>
         </div>
+        {#if complete}
+            <div class="complete-icon">
+                <IconSquareCheck />
+            </div>
+        {/if}
     </div>
 </div>
 

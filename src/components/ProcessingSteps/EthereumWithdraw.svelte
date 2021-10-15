@@ -67,7 +67,7 @@
     <ul>
         {#if swapComplete}
             <li class:yes={swapComplete}>
-                Ethereum withdraw complete!
+                Token withdraw complete!
             </li>
         {/if}
     </ul>

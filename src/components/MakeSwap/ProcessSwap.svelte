@@ -16,7 +16,7 @@
     import { selectedNetwork, swapInfo } from '../../stores/globalStores'
     import { setSwapInHistory } from '../../js/localstorage-utils'
     import { copyToClipboard } from '../../js/global-utils'
-import App from '../../App.svelte';
+
 
     const connectLamdenWalletStep = {
         name: "Lamden Wallet",
@@ -26,23 +26,23 @@ import App from '../../App.svelte';
         component: LamdenWalletStep
     }
 
-    const connectMetaMaskStep = {
+    const connectMetaMaskStep = (network) => Object({
         name: "Connect Metamask",
         desc: "Install and connect the Metamask to Lamden Link.",
         type: "wallet",
         wallet: 'metamask',
-        network: "ethereum",
+        network,
         component: MetamaskStep
-    }
+    })
 
     const swapStepsMap = {
         'lamden': {
             'ethereum':[
                 connectLamdenWalletStep,
-                connectMetaMaskStep,
+                connectMetaMaskStep('ethereum'),
                 {
                     name: `Burn Tokens`,
-                    desc: `This transaction will burn you tokens on the Lamden Network.  Creating this Proof-of-Burn will allow the tokens to be minted on the Ethereum network.`,
+                    desc: `This transaction will burn your tokens on the Lamden Network.  Creating this Proof-of-Burn will allow the tokens to be minted on the Ethereum network.`,
                     type: "transaction",
                     network: 'lamden',
                     component: LamdenBurnStep
@@ -54,11 +54,29 @@ import App from '../../App.svelte';
                     network: 'ethereum',
                     component: EthereumWithdraw
                 }
+            ],
+            'binance':[
+                connectLamdenWalletStep,
+                connectMetaMaskStep('binance'),
+                {
+                    name: `Burn Tokens`,
+                    desc: `This transaction will burn your tokens on the Lamden Network.  Creating this Proof-of-Burn will allow the tokens to be minted on Binance Smart Chain.`,
+                    type: "transaction",
+                    network: 'lamden',
+                    component: LamdenBurnStep
+                },
+                {
+                    name: "Withdraw Tokens",
+                    desc: "This transaction will use the Proof-of-Burn to from the previous transation to withdraw your tokens on Binance Smart Chain.",
+                    type: "transaction",
+                    network: 'binance',
+                    component: EthereumWithdraw
+                }
             ]
         },
         'ethereum':{
             'lamden': [
-                connectMetaMaskStep,
+                connectMetaMaskStep('ethereum'),
                 connectLamdenWalletStep,
                 {
                     name: "Token Approval",
@@ -78,20 +96,20 @@ import App from '../../App.svelte';
         },
         'binance':{
             'lamden': [
-                connectMetaMaskStep,
+                connectMetaMaskStep('binance'),
                 connectLamdenWalletStep,
                 {
                     name: "Token Approval",
-                    desc: "A standard ERC-20 token approval to allow the lamden-link contract to transfer your tokens.",
+                    desc: "A standard BEP-20 token approval to allow the lamden-link contract to transfer your tokens.",
                     type: "transaction",
-                    network: 'ethereum',
+                    network: 'binance',
                     component: EthereumTokenApproval
                 },
                 {
                     name: "Token Deposit",
                     desc: "This will deposit your tokens in the Lamden Link Contract.",
                     type: "transaction",
-                    network: 'ethereum',
+                    network: 'binance',
                     component: EthereumDeposit
                 }
             ]
@@ -231,10 +249,14 @@ import App from '../../App.svelte';
 
     </div>
 {:else}
-    <h2>Complete the following steps</h2>
-    {#each getProcessingSteps() as stepInfo, index }
-        <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
-    {/each}
+    <h2>Complete the following {getProcessingSteps().length} steps</h2>
+    <div class="flex col reverse">
+        {#each getProcessingSteps() as stepInfo, index }
+            {#if currentProcessingStep >= index}
+                <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
+            {/if}
+        {/each}
+    </div>
 
 {/if}
 

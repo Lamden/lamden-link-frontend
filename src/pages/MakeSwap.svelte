@@ -48,7 +48,7 @@
     }
 
     function getSupportedTokens(){
-        return networks[$selectedNetwork][$swapInfo.from].tokens
+        return networks[$selectedNetwork][$swapInfo.from].tokens[$swapInfo.to]
     }
 
     function setStep(step){

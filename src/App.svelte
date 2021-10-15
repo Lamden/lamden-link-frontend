@@ -23,7 +23,7 @@ onMount(() => {
 
 function unregisterOldServiceWorkers(){
 	if (typeof navigator === "undefined") return
-	//if (typeof navigator.serviceWorker === "undefined") return
+	if (typeof navigator.serviceWorker === "undefined") return
 
 	navigator.serviceWorker.getRegistrations()
 	.then(registrations => {
