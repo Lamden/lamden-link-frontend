@@ -134,7 +134,7 @@ function sendBurn (resultsTracker, callback) {
     let lamdenToken = get(selectedToken)
     let metamask_address = swapInfoStore.metamask_address
 
-    let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol)
+    let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol || t.lamden_equivalent === lamdenToken.symbol)
 
     if (!tokenInfo){
         resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the ${swapInfoStore.to} network.`]})

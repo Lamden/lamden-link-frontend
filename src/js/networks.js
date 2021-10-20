@@ -33,12 +33,29 @@ export const mainnet = {
                 lamden_clearinghouse: 'con_lamden_link_v1'
                 
             }],
-            binance: [{
+            binance: [
+                {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: 'con_bdt_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            }]
+                },
+                {
+                    name: "Binance-Peg USDT",
+                    symbol: 'BSC-USD',
+                    address: 'con_usdt_bsc_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Lamden USD",
+                    symbol: 'LUSD',
+                    equivalents: {
+                        binance:['USDT']
+                    },
+                    address: 'con_lusd_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                }
+            ]
         },
         networkName: "Lamden Mainnet",
         network_symbol: "TAU",
@@ -90,7 +107,7 @@ export const mainnet = {
                 symbol: 'TAU',
                 address: '0xdFa3b0019EcF48c753B58908B5A21d11641bA56f',
                 decimals: 18,
-                lamden_clearinghouse: 'direct'
+                lamden_clearinghouse: 'direct',
             },
             {
                 name: "Block Duelers",
@@ -98,8 +115,16 @@ export const mainnet = {
                 address: '0x286a61a9B193F1b92d3A0FaB4Fd16028786273f3',
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            }]
-        }
+            },
+            {
+                name: "BEP-20 USDT",
+                symbol: 'USDT',
+                lamden_equivalent: 'LUSD',
+                address: '0x55d398326f99059fF775485246999027B3197955',
+                decimals: 18,
+                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+            }
+        ]}
     }
 }
 
@@ -129,9 +154,25 @@ export const testnet = {
             ],
             binance: [
                 {
+                    name: "Lamden Testnet Token",
+                    symbol: 'dTAU',
+                    address: 'currency',
+                    lamden_clearinghouse: 'direct',
+                    one_way: true
+                },
+                {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: 'con_bdt_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Lamden USD",
+                    symbol: 'LUSD',
+                    equivalents: {
+                        binance:['USDT']
+                    },
+                    address: 'con_usdt_bsc_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 }
             ]
@@ -193,6 +234,14 @@ export const testnet = {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: '0x1A023125a11968Ea5685291fBbDF484D98b4E41e',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "BEP-20 USDT",
+                    symbol: 'USDT',
+                    lamden_equivalent: 'LUSD',
+                    address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
                     decimals: 18,
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 }

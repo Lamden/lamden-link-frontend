@@ -8,6 +8,7 @@
 
     // Misc
     import { swapInfo } from '../../stores/globalStores'
+
 </script>
 
 <style>
@@ -16,8 +17,15 @@
     }
     .arrows{
         width: 30px;
+        margin: 0 1em;
     }
     .selected-token{
+        margin-left: -54px;
+    }
+    .minted-token{
+        z-index: 1;
+    }
+    .to-logo{
         margin-left: -54px;
     }
 </style>
@@ -33,6 +41,10 @@
     
     <div class="arrows">
         <IconArrowRight />
+    </div>
+
+    <div class="minted-token">
+        <TokenLogo token={$swapInfo.mintedToken} clickable={false} margin={false}/>
     </div>
 
     <div class="to-logo">

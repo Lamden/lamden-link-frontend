@@ -186,7 +186,6 @@
     }
 
     function handleCopyData(){
-        console.log("CLICK")
         copyToClipboard(JSON.stringify($swapInfo))
         copiedSwapInfo = true
         buttonTimer = setTimeout(() => copiedSwapInfo = false, 2000)

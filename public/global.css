@@ -154,10 +154,10 @@ button {
     border-radius: 0.4em;
     width: fit-content;
     font-family: inherit;
-    font-size: 0.7em;
-    font-weight: 300;
+    font-size: 1em;
+    font-weight: 500;
     -webkit-padding: 0.65em 0;
-    padding: 0.5em 0.7em;
+    padding: 0.8em 1.6em;
     margin-top: 1rem;
     box-sizing: border-box;
     cursor: pointer;
