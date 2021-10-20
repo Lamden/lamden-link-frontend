@@ -77,6 +77,8 @@
     .token{
         margin: 0 0px;
         padding: 1em;
+        min-width: 100px;
+        text-align: center;
 
     }
     .token:hover{
@@ -90,6 +92,7 @@
     }
     p.token-name{
         margin: 0.5rem 0 0.25rem;
+        width: max-content;
     }
     p.token-symbol{
         font-weight: bold;
@@ -109,7 +112,7 @@
     <SwapVisual />
 
     <h2>Select a supported token</h2>
-    <div class="flex row align-center just-center tokens">
+    <div class="flex row wrap align-center just-center tokens">
         {#each supportedTokens() as token (token.address)}
             {#if !token.one_way}
                 <div class="flex col align-center token" on:click={() => handleTokenClicked(token)}>
