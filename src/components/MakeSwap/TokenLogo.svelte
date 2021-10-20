@@ -9,6 +9,7 @@
     import Token_BNB from '../Tokens/Token_BNB.svelte'
     import Token_LUSD from '../Tokens/Token_LUSD.svelte'
     import Token_USDT from '../Tokens/Token_USDT.svelte'
+    import Token_DC from '../Tokens/Token_DC.svelte'
 
     export let token = null;
     export let clickable = true;
@@ -30,7 +31,8 @@
         BNB: Token_BNB,
         TBNB: Token_BNB,
         USDT: Token_USDT,
-        LUSD: Token_LUSD
+        LUSD: Token_LUSD,
+        DC: Token_DC
     }
 
     function handleClick(){

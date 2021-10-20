@@ -35,15 +35,22 @@ export const mainnet = {
             }],
             binance: [
                 {
+                    name: "Lamden",
+                    symbol: 'TAU',
+                    address: 'currency',
+                    lamden_clearinghouse: 'direct',
+                    one_way: true
+                },
+                {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: 'con_bdt_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
-                    name: "Binance-Peg USDT",
-                    symbol: 'BSC-USD',
-                    address: 'con_usdt_bsc_lst001',
+                    name: "Duelers Credits",
+                    symbol: 'DC',
+                    address: 'con_dc_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
@@ -117,6 +124,13 @@ export const mainnet = {
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             },
             {
+                name: "Duelers Credits",
+                symbol: 'DC',
+                address: '0x7990ad6dBE9bCE17Ed91E72B30899b77a415f6CC',
+                decimals: 18,
+                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+            },
+            {
                 name: "BEP-20 USDT",
                 symbol: 'USDT',
                 lamden_equivalent: 'LUSD',
@@ -164,6 +178,12 @@ export const testnet = {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: 'con_bdt_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Duelers Credits",
+                    symbol: 'DC',
+                    address: 'con_dc_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
@@ -234,6 +254,13 @@ export const testnet = {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: '0x1A023125a11968Ea5685291fBbDF484D98b4E41e',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Duelers Credits",
+                    symbol: 'DC',
+                    address: '0x7126Bf8fafa29Eb55B13C2C3956e617aB181ffaa',
                     decimals: 18,
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
