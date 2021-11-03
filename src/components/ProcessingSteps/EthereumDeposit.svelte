@@ -90,7 +90,6 @@
 
     {#if !isComplete}
         <Status statusStore={depositTxStatus} />
-        <p class="text-warning">It could take 30 minutes or more for your tokens to be minted on the Lamden Network.</p>
     {/if}
 
     {#if !$depositTxStatus.loading}
