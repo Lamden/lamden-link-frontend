@@ -47,6 +47,10 @@
         display: block;
         margin: 2rem 0 0;
     }
+    a:hover{
+        color: var(--color-white);
+        text-decoration: underline;
+    }
 
 </style>
 
