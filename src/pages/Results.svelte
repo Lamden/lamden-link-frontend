@@ -38,6 +38,15 @@
         border-style: none;
         height: 1px;
     }
+    .text-warning{
+        font-size: 0.7em;
+        margin: 1rem 0;
+    }
+    .add-token-link{
+        text-align: center;
+        display: block;
+        margin: 2rem 0 0;
+    }
 
 </style>
 
@@ -52,6 +61,9 @@
 
     {#if $lastSwap}
         <h2>Thank you for using Lamden Link!</h2>
+        {#if $lastSwap.from !== 'lamden'}
+            <p class="text-warning">Please allow 30-60 minutes for your tokens to be available on the Lamden Network.</p>
+        {/if}
         <hr>
         <div class="flex row">
             <TokenLogo token={$lastSwap.token} clickable={false} />
@@ -60,6 +72,9 @@
             </p>
         </div>
         <p class="date text-primary-dim">sent on {new Date($lastSwap.completeDate).toLocaleString()}</p>
+
+        <a class="add-token-link" href="https://youtu.be/Bv_RT0-j8zw" target="_blank" rel="noopener noreferrer">Learn to add tokens to the Lamden Wallet</a>
+
 
         <div class="buttons flex row align-center just-center">
             <button on:click={handleGoHome}>Lamden Link Home</button>
