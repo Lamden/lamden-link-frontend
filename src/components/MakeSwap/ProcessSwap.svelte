@@ -10,6 +10,7 @@
     import EthereumWithdraw from '../ProcessingSteps/EthereumWithdraw.svelte'
     import EthereumTokenApproval from '../ProcessingSteps/EthereumTokenApproval.svelte'
     import EthereumDeposit from '../ProcessingSteps/EthereumDeposit.svelte'
+    import EthereumWaitForConfirmations from '../ProcessingSteps/EthereumWaitForConfirmations.svelte'
     import SwapVisual from './SwapVisual.svelte'
 
     // Misc
@@ -91,6 +92,13 @@
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumDeposit
+                },
+                {
+                    name: "Validating Tokens",
+                    desc: "Waiting 20 Ethereum Confirmations before tokens will be minted. If the tokens are not minted after 20 confirmations please contact us on Telegram (Lamden Link Support).",
+                    type: "transaction",
+                    network: 'lamden',
+                    component: EthereumWaitForConfirmations
                 }
             ]
         },

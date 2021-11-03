@@ -82,7 +82,7 @@
         {/if }
 
         {#if swapComplete}
-            <button class="success" on:click={handleNextStep}>Finsh</button>
+            <button class="success" on:click={handleNextStep}>Finish</button>
         {/if }
     {/if}
 {/if}

@@ -20,7 +20,7 @@
     $: hasPending = $swapInfo.metamaskDepositPending || false
     $: isComplete = $swapInfo.complete || false
 
-    const { done } = getContext('process_swap')
+    const { done, nextStep } = getContext('process_swap')
 
     function handleDepositTx(){
         sendEthChainDeposit(depositTxStatus, handleDepositResult)
@@ -105,7 +105,11 @@
         {/if}
 
         {#if isComplete}
-            <button class="success" on:click={handleFinish}>Finish</button>
+            {#if $swapInfo.from === 'binance'}
+                <button class="success" on:click={handleFinish}>Finish</button>
+            {:else}
+                <button class="success" on:click={nextStep}>Next Step</button>
+            {/if}
         {/if}
     {/if}
 {/if}

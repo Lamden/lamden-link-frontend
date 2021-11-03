@@ -337,3 +337,63 @@ function toBaseUnit(value, decimals) {
 
     return new w3.utils.BN(wei.toString(10), 10)
 }
+
+export function waitForConfirmations (resultTracker, txHash, confirmationsToWait){
+    const w3 = get(web3)
+
+    return new Promise(async (resolve, reject) => {
+        let txResult = await getTransactionHashResult(txHash)
+        console.log({txResult})
+
+        if (txResult === null) {
+            reject("Could not get block number from transaction hash.")
+            return
+        }
+
+        const { blockNumber } = txResult 
+
+        if (!blockNumber) {
+            reject("Could not get block number from transaction hash.")
+            return
+        }
+
+        let startingBlock = blockNumber
+
+        resultTracker.set({
+            loading: true,
+            message: `Starting at block ${startingBlock}, waiting ${confirmationsToWait} confirmations...`
+        })
+        console.log(`Starting at block ${startingBlock}, waiting ${confirmationsToWait} confirmations...`)
+
+        const checkBlock = async () => {
+            let nextBlock = await w3.eth.getBlockNumber()
+
+            let confirmations = nextBlock - startingBlock
+
+            if (confirmations > confirmationsToWait) {
+                console.log(`Ended at block ${startingBlock} and waited ${confirmations} confirmations.`)
+                resolve(confirmations)
+            }
+            else {
+                resultTracker.set({
+                    loading: true,
+                    message: `Waited ${confirmations} confirmations...`
+                })
+                setTimeout(checkBlock, 5000)
+            }
+        }
+
+        setTimeout(checkBlock, 1000)
+    })
+}
+
+const getTransactionHashResult = (txHash) => {
+    const w3 = get(web3)
+
+    return new Promise((resolver) => {
+        w3.eth.getTransaction(txHash, function(err, tx){
+            if (err) return null
+            resolver(tx)
+        });
+    })
+}
