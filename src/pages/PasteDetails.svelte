@@ -56,7 +56,7 @@
             swapInfo.set(validData)
             console.log({$swapInfo})
             saveSwap()
-            //setTimeout(gotoSwapPage, 1000)
+            setTimeout(gotoSwapPage, 1000)
         }
     }
 
@@ -66,36 +66,6 @@
 
     const handleInput = (e) => datavalid = null
     
-    let x = {
-    "from": "lamden",
-    "to": "binance",
-    "token": {
-      "name": "Lamden USD",
-      "symbol": "LUSD",
-      "equivalents": {
-        "binance": [
-          "USDT"
-        ]
-      },
-      "address": "con_lusd_lst001",
-      "lamden_clearinghouse": "con_lamden_link_bsc_v1"
-    },
-    "mintedToken": {
-      "name": "BEP-20 USDT",
-      "symbol": "USDT",
-      "lamden_equivalent": "LUSD",
-      "address": "0x55d398326f99059fF775485246999027B3197955",
-      "decimals": 18,
-      "lamden_clearinghouse": "con_lamden_link_bsc_v1"
-    },
-    "startDate": "2021-11-05T17:13:00.999Z",
-    "lamden_address": "af0a8679b759e884c08e71a2482ff66ea2c1c6f38b9221b22584f46ff4eb4f13",
-    "metamask_address": "0xa09d3068bf4c3bd10576a5d1337f6b9760486a99",
-    "tokenAmount": "311.15996574",
-    "burnHash": "626d26f3d151b102fac8cabbae6a1cf35bd34b4e184411e73de84b61774f038e",
-    "networkType": "mainnet",
-    "burnApproveHash": "97cd4f8c365f69e9e3554a989fc1b6eb6356beda3754788ebee99f08dfce017a"
-  }
 
 </script>
 
