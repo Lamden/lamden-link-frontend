@@ -57,6 +57,9 @@
 	<a class="help-link" href="https://help.lamdenlink.com/" target="_blank" rel="noopener noreferrer" > more info </a>
 </div>
 
+<h2 class="text-warning" style="margin: 3rem 0;"> Currently down for maintenance we will be back shortly</h2>
+<!--
+
 <div class="buttons flex">
 	{#if hasPendingSwap}
 		<BigButton title={"Resume A Swap"} icon="resume" action={handleResume} />
@@ -68,5 +71,5 @@
 		<BigButton title={"View Last Swap"} icon="results" action={handleViewLast} />
 	{/if}
 </div>
-
+-->
 
