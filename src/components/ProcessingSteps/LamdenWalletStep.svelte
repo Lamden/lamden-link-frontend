@@ -67,6 +67,7 @@
         if (tokenFromMe) await checkLamdenTokenApproval()
         nextStep()
     }
+
 </script>
 
 
@@ -164,7 +165,7 @@
                 {#if $lamden_vk && current && !$isTrackedAddress}
                     {#if tokenFromMe}
                         <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !$swapInfo.burnHash} on:click={handleNextStep}>
-                            {!hasEnoughTokens && !$swapInfo.burnHash ? "Insufficient Balance" : "Next Step"}
+                            {$swapInfo.burnHash ? "Resume Swap" : "Next Step"}
                         </button>
                     {:else}
                         <button class="success" on:click={handleNextStep}>Next Step</button>

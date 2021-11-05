@@ -1,9 +1,13 @@
 <script>
     // Components
     import TokenLogo from '../MakeSwap/TokenLogo.svelte'
+    import IconCheckmark from '../SVG/CheckmarkSVG.svelte'
+    import ResultLink from '../ResultLink.svelte'
+
+
 
     // Misc
-    import { selectedToken, swapInfo } from '../../stores/globalStores'
+    import { selectedToken, swapInfo, networkInfo } from '../../stores/globalStores'
     import { stringToFixed } from '../../js/global-utils' 
 
 
@@ -11,15 +15,27 @@
 
 <style>
     div{
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         color: var(--success-color);
+    }
+    .icon{
+        width: 1.5em;
+        margin-right: 0.5em;
+    }
+    span{
+        margin-right: 1em;
     }
 </style>
 
 
 <div class="flex row align-center">
-    <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-    {`Approved to send ${stringToFixed($swapInfo.tokenAmount, 8)} ${$selectedToken.symbol}`}
+    <div class="icon">
+        <IconCheckmark />
+    </div>
+   
+    <span>Approval sent</span>
+
+    <ResultLink type="address" hash={$swapInfo.metamaskApproval} title={$swapInfo.metamaskApproval} network={$networkInfo}/>
 </div>
 
 

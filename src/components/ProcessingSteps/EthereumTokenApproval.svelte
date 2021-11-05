@@ -84,12 +84,6 @@
                     {/if}
                 {/if}
             </li>
-            
-            {#if hasApproval}
-                <li class="no-bullet">
-                    <TokenApprovalInfo />
-                </li>
-            {/if}
     </ul>
     {#if !complete}
         {#if !hasApproval}

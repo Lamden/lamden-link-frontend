@@ -51,27 +51,30 @@
     }
     p{
         margin: 2rem 0 0.25rem;
-        font-size: 0.7em;
-        color: var(--font-primary-dim);
+        font-size: 0.8em;
     }
+
 </style>
 
-<div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
-    <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-    {`${stringToFixed($lamdenTokenBalance, 8)} ${$selectedToken.symbol}`}
-</div>
 
 {#if input && !burnComplete}
-    <p>Amount of {$selectedToken.symbol} to send:</p>
+    <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
+        <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
+        {`${stringToFixed($lamdenTokenBalance, 8)} ${$selectedToken.symbol}`}
+    </div>
+
+    <p>How much {$selectedToken.symbol} to send?</p>
     <div class="input-number">
         <InputNumber on:input={handleInput} disabled={complete}/>
      </div>
 {/if}
 
 {#if burnComplete}
-    <p>Resuming Swap of {$selectedToken.symbol}:</p>
-    <div class="input-number">
-        <InputNumber startingValue={$swapInfo.tokenAmount} disabled={true}/>
-     </div>
+    <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
+        <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
+        {`Resuming Swap for ${tokensToSend} ${$selectedToken.symbol}`}
+    </div>
 {/if}
+
+
 

@@ -27,7 +27,7 @@
     $: hasEnoughTokens = tokensToSend.isGreaterThan(0) && $ethChainTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
     $: hasApproval = $swapInfo.metamaskApproval || false
 
-    const { nextStep, setStep, startOver } = getContext('process_swap')
+    const { nextStep, setStep, restart } = getContext('process_swap')
 
     chainData.subscribe(() => {
         if (complete){
@@ -154,9 +154,15 @@
             {#if tokenFromMe}
                 <div class="flex row just-end buttons">
                     {#if hasApproval}
-                        <button on:click={handleStartOver}>Start Over</button>
+                        <button on:click={restart}>Start Over</button>
+                        <button class:success={hasEthBalnnce && hasEnoughTokens } disabled={!hasEthBalnnce} on:click={handleNextStep}>
+                            Resume Swap
+                        </button>
+                    {:else}
+                        <button class:success={hasEthBalnnce && hasEnoughTokens } disabled={!hasEthBalnnce || !hasEnoughTokens} on:click={handleNextStep}>
+                            Next Step
+                        </button>
                     {/if}
-                    <button class:success={hasEthBalnnce && hasEnoughTokens } disabled={!hasEthBalnnce || !hasEnoughTokens} on:click={handleNextStep}>Next Step</button>
                 </div>
             {:else}
                 <button class="success" disabled={!hasEthBalnnce} on:click={handleNextStep}>Next Step</button>
