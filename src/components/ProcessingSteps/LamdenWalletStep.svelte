@@ -9,7 +9,7 @@
     import BN from 'bignumber.js'
     import WalletController from 'lamden_wallet_controller';
     import { selectedNetwork, lamdenNetwork, swapInfo } from '../../stores/globalStores.js';
-    import { lamdenWalletInfo, lamden_vk, lwc, hasNetworkApproval, lamdenTokenBalance } from '../../stores/lamdenStores.js';
+    import { lamdenWalletInfo, lamden_vk, lwc, hasNetworkApproval, lamdenTokenBalance, isTrackedAddress } from '../../stores/lamdenStores.js';
     import { checkLamdenTokenApproval } from '../../js/lamden-utils'
 
     export let current
@@ -89,6 +89,10 @@
     a:visited{
         color: var(--font-primary);
     }
+    button{
+        min-width: fit-content;
+        margin-left: 1rem;
+    }
     @media screen and (min-width: 430px) {
 
     }
@@ -157,7 +161,7 @@
                     <button on:click={sendLamdenApproval}>Create Linked Account</button>
                 {/if}
                 
-                {#if $lamden_vk && current}
+                {#if $lamden_vk && current && !$isTrackedAddress}
                     {#if tokenFromMe}
                         <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !$swapInfo.burnHash} on:click={handleNextStep}>
                             {!hasEnoughTokens && !$swapInfo.burnHash ? "Insufficient Balance" : "Next Step"}
@@ -165,7 +169,15 @@
                     {:else}
                         <button class="success" on:click={handleNextStep}>Next Step</button>
                     {/if}
-                {/if} 
+                {/if}
+                {#if $lamden_vk && $isTrackedAddress}
+                    <p class="text-warning">
+                        The Lamden Wallet provided the address value of "tracked_addess".  
+                        This is because you have selected a watched account from your Dapp connection settings.  
+                        Please selected a different account in your Lamden Wallet Dapp settings.
+                    </p>
+                    <button  disabled>Unsupported Account</button>
+                {/if}
             {/if}
         {/if}
     </div>
