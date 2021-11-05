@@ -51,20 +51,25 @@
     }
     p{
         margin: 2rem 1em 0.25rem 0;
-        font-size: 0.7em;
-        color: var(--font-primary-dim);
+        font-size: 0.8em;
     }
 
 </style>
 
-<div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
-    <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-    {`${stringToFixed($ethChainTokenBalance, 8)} ${$selectedToken.symbol}`}
-</div>
-
 {#if input}
-    <p>Amount of {$selectedToken.symbol} to send:</p>
+    <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
+        <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
+        {`${stringToFixed($ethChainTokenBalance, 8)} ${$selectedToken.symbol}`}
+    </div>
+
+    <p>How much {$selectedToken.symbol} to send?</p>
     <div class="input-number"><InputNumber on:input={handleInput} disabled={complete}/></div>
+{:else}
+    <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
+        <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
+        {`Resuming Swap for ${tokensToSend} ${$selectedToken.symbol}`}
+    </div>
+
 {/if}
 
 

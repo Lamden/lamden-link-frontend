@@ -3,6 +3,7 @@
     import IconLightningBolt from './SVG/LightningBoltSVG.svelte'
     import IconResults from './SVG/ResultsSVG.svelte'
     import IconArrowCircle from './SVG/ArrowCircleSVG.svelte'
+    import IconTelegram from './SVG/Telegram.svelte'
 
     export let title
     export let icon
@@ -11,7 +12,8 @@
     const iconMap = {
         start: IconLightningBolt,
         results: IconResults,
-        resume: IconArrowCircle
+        resume: IconArrowCircle,
+        telegram: IconTelegram
     }
 
 </script>

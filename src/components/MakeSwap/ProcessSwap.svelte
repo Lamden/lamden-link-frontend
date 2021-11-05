@@ -16,7 +16,13 @@
     import { selectedNetwork, swapInfo } from '../../stores/globalStores'
     import { setSwapInHistory } from '../../js/localstorage-utils'
     import { copyToClipboard } from '../../js/global-utils'
+    import { openURL } from '../../js/global-utils'
 
+    $: hasBurnHash = $swapInfo.burnHash
+    $: fromLamden = $swapInfo.from ? $swapInfo.from === "lamden" :  false
+    $: hasMetamaskApproval = $swapInfo.metamaskApproval
+    $: hasMetamaskDeposit = $swapInfo.metamaskDeposit
+    $: hasMetamaskWithdrawHash = $swapInfo.withdrawHash
 
     const connectLamdenWalletStep = {
         name: "Lamden Wallet",
@@ -119,7 +125,8 @@
     setContext('process_swap', {
         nextStep,
         setStep,
-        done
+        done,
+        restart
     })
 
     const { startOver, goHome } = getContext('current_swap')
@@ -155,14 +162,9 @@
         scrollToStep()
     }
 
-    function handleDebugBack(){
-        let newStep = currentProcessingStep - 1
-        if (newStep >= 0) currentProcessingStep = newStep
-        
-    }
-
     function scrollToStep(){
-        var elmnt = document.getElementById(`process-step-${currentProcessingStep}`);
+        // var elmnt = document.getElementById(`process-step-${currentProcessingStep}`);
+        var elmnt = document.getElementById(`scroll-here`);
         if (elmnt) elmnt.scrollIntoView();
         
     }
@@ -177,18 +179,19 @@
         setSwapInHistory($swapInfo)
         navigate("/finish", { replace: true });
     }
-    function handleStartOver(){
-        if (validateStartOver) startOver()
-        validateStartOver = true
-    }
-    function cancelStartOver(){
-        validateStartOver = false
+
+    async function restart(){
+        navigate("/restart", { replace: true });
     }
 
     function handleCopyData(){
         copyToClipboard(JSON.stringify($swapInfo))
         copiedSwapInfo = true
         buttonTimer = setTimeout(() => copiedSwapInfo = false, 2000)
+    }
+
+    function handleOpenSuport(){
+        openURL("https://t.me/lamdenlinksupport")
     }
 </script>
 
@@ -206,7 +209,7 @@
         margin: 1rem 0;
     }
     button{
-        transition: all 1s ease-in;
+        
         margin: 0 10px;
     }
     .start-over{
@@ -228,35 +231,30 @@
     <SwapVisual />
 {/if}
 
+
+{#if fromLamden && hasBurnHash}
+    <h2 id="scroll-here">Resuming {$swapInfo.token.symbol} Swap from {$swapInfo.from} to {$swapInfo.to}</h2>
+{:else}
+    <h2 id="scroll-here">Complete the following {getProcessingSteps().length} steps</h2>
+{/if}
+<div class="flex col reverse">
+    {#each getProcessingSteps() as stepInfo, index }
+        {#if currentProcessingStep >= index}
+            <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
+        {/if}
+    {/each}
+</div>
+
+{#if (fromLamden && !hasBurnHash) || (!fromLamden && !hasMetamaskApproval)}
+    <div class="buttons flex row just-center">
+        <button class="warning" on:click={restart}>Restart Swap Process</button>
+    </div>
+{/if}
+
 <div class="buttons flex row just-center">
     <button on:click={goHome}>Home</button>
-    {#if !validateStartOver}
-        <button class="copyButton" on:click={handleCopyData} class:copied={copiedSwapInfo}>Copy Swap Info</button>
-        <button class="secondary" class:warning={validateStartOver} on:click={handleStartOver}>{validateStartOver ? "ARE YOU SURE?" : "Start Swap Over"}</button>
-    {/if}
+    <button on:click={handleOpenSuport} >Get Help</button>
 </div>
-{#if validateStartOver}
-    <h2>Start Swap Over?</h2>
-    <div class="start-over text-center">
-        <p> Restarting the swap will clear any swap data gathered so far such as amounts and successful transaction hashes.</p>
-        <p>Be sure to copy the current swap info for your records before doing this.</p>
-        <div class="flex just-center">
-            <button class="warning" on:click={handleStartOver}>Start Swap Over</button>
-            <button class="copyButton" on:click={handleCopyData} class:copied={copiedSwapInfo}>Copy Swap Info</button>
-            <button class="secondary" on:click={cancelStartOver}>Cancel</button>
-        </div>
 
-    </div>
-{:else}
-    <h2>Complete the following {getProcessingSteps().length} steps</h2>
-    <div class="flex col reverse">
-        {#each getProcessingSteps() as stepInfo, index }
-            {#if currentProcessingStep >= index}
-                <Step {stepInfo} complete={currentProcessingStep > index} current={currentProcessingStep === index} stepNum={index + 1}/>
-            {/if}
-        {/each}
-    </div>
-
-{/if}
 
 

@@ -16,7 +16,6 @@
         function errorIfInvalid(property){
             const { [property]: value } = pastedData
             if (typeof value === "undefined") throw new Error(`'${property}' property does not exists in Swap Data`)
-            
         }
 
         error = null
@@ -52,9 +51,7 @@
         handleValidateData()
         if (validData && datavalid) {
             if (!validData.startDate) validData.startDate = new Date()
-            console.log({validData})
             swapInfo.set(validData)
-            console.log({$swapInfo})
             saveSwap()
             setTimeout(gotoSwapPage, 1000)
         }

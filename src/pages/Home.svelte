@@ -8,6 +8,7 @@
 	// MISC
 	import { lastSwap, swapInfo } from '../stores/globalStores'
 	import { clearCurrentSwap } from '../js/localstorage-utils'
+	import { openURL } from '../js/global-utils'
 
 	$: hasLastSwap = !$lastSwap ? false : true
 	$: hasPendingSwap = Object.keys($swapInfo).length > 0 ? true : false
@@ -24,6 +25,10 @@
 	function handleViewLast(){
 		navigate("/results", { replace: true });
 	}
+
+    function handleOpenSuport(){
+        openURL("https://t.me/lamdenlinksupport")
+    }
 
 </script>
 
@@ -67,6 +72,7 @@
 	{#if hasLastSwap}
 		<BigButton title={"View Last Swap"} icon="results" action={handleViewLast} />
 	{/if}
+	<BigButton title={"Get Help"} icon="telegram" action={handleOpenSuport} />
 </div>
 
 

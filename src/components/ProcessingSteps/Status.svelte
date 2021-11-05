@@ -6,7 +6,16 @@
     import IconInfo from '../SVG/InfoSVG.svelte'
     import IconError from '../SVG/ErrorSVG.svelte'
 
+    // Misc
+    import { openURL } from '../../js/global-utils'
+
     export let statusStore
+
+    function handleOpenSuport(){
+        openURL("https://t.me/lamdenlinksupport")
+    }
+
+
 </script>
 
 <style>
@@ -38,6 +47,7 @@
         </div>
         {#each $statusStore.errors as error}
             <p class="text-error">{error}</p>
+            <button on:click={handleOpenSuport}>Get Help</button>
         {/each}
     </div>  
 {/if}

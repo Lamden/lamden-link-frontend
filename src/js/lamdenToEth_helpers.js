@@ -535,3 +535,4 @@ export const handleAmountInvalid = (e) =>
 export const handleTxHashInput = (e) => e.target.setCustomValidity('')
 export const handleTxHashInvalid = (e) =>
     e.target.setCustomValidity('Invalid Lamden Transaction Hash')
+
