@@ -6,9 +6,11 @@ import Home from "./pages/Home.svelte";
 import MakeSwap from "./pages/MakeSwap.svelte";
 import Results from "./pages/Results.svelte";
 import Finish from "./pages/Finish.svelte";
+import PasteDetails from "./pages/PasteDetails.svelte";
 import Banner from "./components/Banner.svelte";
 import NavBar from "./components/Nav/NavigationBar.svelte";
 import Footer from "./components/Footer.svelte";
+
 
 // Misc
 import { hydrateSwapHistory, hydrateSwapInfo } from './js/localstorage-utils'
@@ -70,6 +72,7 @@ function unregisterOldServiceWorkers(){
 	<Route path="/swap/:testnet" component={MakeSwap} />
 	<Route path="/results" component={Results} />
 	<Route path="/finish" component={Finish} />
+	<Route path="/pastedetails" component={PasteDetails} />
 </main>
 <Footer />
 </Router>
