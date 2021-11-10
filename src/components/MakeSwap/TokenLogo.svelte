@@ -10,6 +10,7 @@
     import Token_LUSD from '../Tokens/Token_LUSD.svelte'
     import Token_USDT from '../Tokens/Token_USDT.svelte'
     import Token_DC from '../Tokens/Token_DC.svelte'
+    import Token_LIQ from '../Tokens/Token_LIQ.svelte'
 
     export let token = null;
     export let clickable = true;
@@ -32,7 +33,8 @@
         TBNB: Token_BNB,
         USDT: Token_USDT,
         LUSD: Token_LUSD,
-        DC: Token_DC
+        DC: Token_DC,
+        LIQ: Token_LIQ
     }
 
     function handleClick(){
@@ -60,7 +62,9 @@
     }
     .logo{
         min-width: initial;
-        width: 30px;
+        width: 54px;
+        border-radius: 99px;
+        overflow: hidden;
     }
     .logo.tiny{
         min-width: initial;

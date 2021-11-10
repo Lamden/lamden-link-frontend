@@ -54,6 +54,12 @@ export const mainnet = {
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
+                    name: "Liquidus Finance",
+                    symbol: 'LIQ',
+                    address: 'con_liquidus_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
                     name: "Lamden USD",
                     symbol: 'LUSD',
                     equivalents: {
@@ -131,6 +137,13 @@ export const mainnet = {
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             },
             {
+                name: "Liquidus Finance",
+                symbol: 'LIQ',
+                address: '0xc7981767f644C7F8e483DAbDc413e8a371b83079',
+                decimals: 18,
+                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+            },
+            {
                 name: "BEP-20 USDT",
                 symbol: 'USDT',
                 lamden_equivalent: 'LUSD',
@@ -184,6 +197,12 @@ export const testnet = {
                     name: "Duelers Credits",
                     symbol: 'DC',
                     address: 'con_dc_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Liquidus Finance",
+                    symbol: 'LIQ',
+                    address: 'con_liquidus_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
@@ -261,6 +280,13 @@ export const testnet = {
                     name: "Duelers Credits",
                     symbol: 'DC',
                     address: '0x7126Bf8fafa29Eb55B13C2C3956e617aB181ffaa',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Liquidus Finance",
+                    symbol: 'LIQ',
+                    address: '0x481E0c66d2cC0bC41AA75D135cC6C7137a5A21EC',
                     decimals: 18,
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
