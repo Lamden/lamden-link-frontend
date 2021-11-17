@@ -19,7 +19,7 @@
 
 	import { onMount } from 'svelte'
 
-	let maintenance_on = true
+	let maintenance_on = false
 
 	onMount(() => {
 		hydrateSwapHistory()
