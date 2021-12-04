@@ -17,7 +17,7 @@
 
     let timer = null
 
-    $: burnComplete = $swapInfo.burnHash || false
+    $: burnComplete = $swapInfo.burnHash || $swapInfo.depositHash || false
     $: tokensToSend = $swapInfo.tokenAmount || new BN(0)
     $: hasEnoughTokens = $lamdenTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
 
@@ -65,7 +65,7 @@
 
     <p>How much {$selectedToken.symbol} to send?</p>
     <div class="input-number">
-        <InputNumber on:input={handleInput} disabled={complete}/>
+        <InputNumber on:input={handleInput} disabled={complete} startingValue={$swapInfo.tokenAmount ? $swapInfo.tokenAmount.toString() : ""}/>
      </div>
 {/if}
 

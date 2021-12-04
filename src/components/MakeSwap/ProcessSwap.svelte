@@ -1,5 +1,5 @@
 <script>
-    import { setContext, getContext, tick } from 'svelte'
+    import { setContext, getContext } from 'svelte'
     import { navigate } from "svelte-routing";
 
     // Components
@@ -10,6 +10,9 @@
     import EthereumWithdraw from '../ProcessingSteps/EthereumWithdraw.svelte'
     import EthereumTokenApproval from '../ProcessingSteps/EthereumTokenApproval.svelte'
     import EthereumDeposit from '../ProcessingSteps/EthereumDeposit.svelte'
+    import TWB_EthereumWithdraw from '../ProcessingSteps/TWB_EthereumWithdraw.svelte'
+    import LamdenTokenDepositStep from '../ProcessingSteps/LamdenTokenDepositStep.svelte'
+    import LamdenMintTokens from '../ProcessingSteps/LamdenMintTokens.svelte'
     import SwapVisual from './SwapVisual.svelte'
 
     // Misc
@@ -20,9 +23,8 @@
 
     $: hasBurnHash = $swapInfo.burnHash
     $: fromLamden = $swapInfo.from ? $swapInfo.from === "lamden" :  false
+    $: origin_lamden = $swapInfo.token.origin_lamden
     $: hasMetamaskApproval = $swapInfo.metamaskApproval
-    $: hasMetamaskDeposit = $swapInfo.metamaskDeposit
-    $: hasMetamaskWithdrawHash = $swapInfo.withdrawHash
 
     const connectLamdenWalletStep = {
         name: "Lamden Wallet",
@@ -41,7 +43,7 @@
         component: MetamaskStep
     })
 
-    const swapStepsMap = {
+    const getSwapSteps = () => { return {
         'lamden': {
             'ethereum':[
                 connectLamdenWalletStep,
@@ -55,13 +57,31 @@
                 },
                 {
                     name: "Withdraw Tokens",
-                    desc: "This transaction will use the Proof-of-Burn to from the previous transation to withdraw your tokens on the Ethereum network.",
+                    desc: "This transaction will use the Proof-of-Burn from the previous transation to withdraw your tokens on the Ethereum network.",
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumWithdraw
                 }
             ],
-            'binance':[
+            'binance': origin_lamden ? [
+                connectLamdenWalletStep,
+                connectMetaMaskStep('binance'),
+                {
+                    name: "Token Deposit",
+                    desc: "This transaction will create a Proof-of-Deposit on the Lamden Blockchain to allow the minting of TAU tokens on the Binance Smart Chain.",
+                    type: "transaction",
+                    network: 'lamden',
+                    component: LamdenTokenDepositStep
+                },
+                {
+                    name: "Withdraw Tokens",
+                    desc: "This transaction will use the Proof-of-Deposit from the previous transation to withdraw your tokens on Binance Smart Chain.",
+                    type: "transaction",
+                    network: 'binance',
+                    component: TWB_EthereumWithdraw
+                }
+            ] :
+            [
                 connectLamdenWalletStep,
                 connectMetaMaskStep('binance'),
                 {
@@ -79,6 +99,7 @@
                     component: EthereumWithdraw
                 }
             ]
+            
         },
         'ethereum':{
             'lamden': [
@@ -86,17 +107,24 @@
                 connectLamdenWalletStep,
                 {
                     name: "Token Approval",
-                    desc: "A standard ERC-20 token approval to allow the lamden-link contract to transfer your tokens.",
+                    desc: "Click the button to create a standard ERC-20 token approval to allow the Lamden Link contract to transfer your tokens. This step will continue when Lamden Link has detected you have enough allowance to make a deposit.",
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumTokenApproval
                 },
                 {
                     name: "Token Deposit",
-                    desc: "This will deposit your tokens in the Lamden Link Contract.",
+                    desc: "Click the button to create a Deposit transactions. The process will continue when Lamden Link has detected your Deposit event on the Ethereum network.",
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumDeposit
+                },
+                {
+                    name: "Get Tokens on Lamden",
+                    desc: "Lamden Link is checking for your tokens on the Lamden network. Your tokens will be be available after 20 confirmations on the Ethereum network. Please be patient.",
+                    type: "transaction",
+                    network: 'lamden',
+                    component: LamdenMintTokens
                 }
             ]
         },
@@ -106,21 +134,31 @@
                 connectLamdenWalletStep,
                 {
                     name: "Token Approval",
-                    desc: "A standard BEP-20 token approval to allow the lamden-link contract to transfer your tokens.",
+                    desc: "Click the button to create a standard BEP-20 token approval to allow the Lamden Link contract to transfer your tokens. This step will continue when Lamden Link has detected you have enough allowance to make a deposit.",
                     type: "transaction",
                     network: 'binance',
                     component: EthereumTokenApproval
                 },
                 {
                     name: "Token Deposit",
-                    desc: "This will deposit your tokens in the Lamden Link Contract.",
+                    desc: [
+                        "Click the button to create a Deposit transactions. The process will continue when Lamden Link has detected your Deposit event on the Binance Smart Chain.",
+                        "Create just ONE Deposit transaction and wait patiently for it to complete."
+                    ],
                     type: "transaction",
                     network: 'binance',
                     component: EthereumDeposit
+                },
+                {
+                    name: "Get Tokens on Lamden",
+                    desc: "Lamden Link is checking for your tokens on the Lamden network. Your tokens will be be available after 20 confirmations on the Binance network. Please be patient.",
+                    type: "transaction",
+                    network: 'lamden',
+                    component: LamdenMintTokens
                 }
             ]
         }
-    }
+    }}
 
     setContext('process_swap', {
         nextStep,
@@ -129,20 +167,14 @@
         restart
     })
 
-    const { startOver, goHome } = getContext('current_swap')
+    const { goHome } = getContext('current_swap')
 
     let currentProcessingStep = 0
-    let validateStartOver = false
-    let processingDone = false
-    let copiedSwapInfo = false
-    let buttonTimer = null
-
-    let from = $swapInfo.from.toUpperCase()
-    let to = $swapInfo.to.toUpperCase()
-    let tokenSymbole = $swapInfo.token.symbol
 
     function getProcessingSteps(){
+        let swapStepsMap = getSwapSteps()
         let steps = swapStepsMap[$swapInfo.from][$swapInfo.to]
+
         if ($swapInfo.from === "binance") steps[0].network = "binance"
         else connectMetaMaskStep.network = "ethereum"
         return steps
@@ -199,31 +231,12 @@
     h2{
         text-align: center;
     }
-    button.copyButton{
-        transition: background-color 0.5s ease-in;
-    }
-    button.copied{
-        background-color: var(--success-color-dark);
-    }
     .buttons{
         margin: 1rem 0;
     }
     button{
         
         margin: 0 10px;
-    }
-    .start-over{
-        max-width: 650px;
-        margin: 0 auto;
-        text-align: center;
-        line-height: 1.5;
-    }
-    .start-over > p {
-        font-weight: 100;
-        font-size: 0.8em;
-    }
-    .start-over > div{
-        margin-top: 2rem;
     }
 </style>
 

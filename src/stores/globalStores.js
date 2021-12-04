@@ -2,11 +2,10 @@ import { writable, derived } from "svelte/store";
 import * as networks from '../js/networks'
 
 export const selectedNetwork = writable("mainnet")
+export const tabHidden = writable(false);
 
 export const swapInfo = writable({})
 export const swapHistory = writable([])
-
-
 
 export const selectedToken = derived(swapInfo, ($swapInfo) => $swapInfo.token)
 

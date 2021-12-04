@@ -17,14 +17,13 @@
             let toNetwork = get(getNetworkStore(curr.to))
 
             curr.token = e.detail
-            console.log({curr_token: curr.token})
+
             if (curr.token.lamden_equivalent){
                 curr.mintedToken = $lamdenNetwork.tokens[curr.from].find(t => t.symbol === curr.token.lamden_equivalent)
             }else{
-                console.log({toNetwork})
                 if (curr.token.equivalents){
                     let equivalentTokens = curr.token.equivalents[curr.to]
-                    console.log({equivalentTokens})
+ 
                     if (equivalentTokens.length === 1) curr.mintedToken = toNetwork.tokens[curr.from].find(t => t.symbol === equivalentTokens[0])
                 }else{
                     curr.mintedToken = toNetwork.tokens[curr.from].find(t => t.symbol === curr.token.symbol)

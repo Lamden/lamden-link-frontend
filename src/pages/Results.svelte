@@ -65,9 +65,6 @@
 
     {#if $lastSwap}
         <h2>Thank you for using Lamden Link!</h2>
-        {#if $lastSwap.from !== 'lamden'}
-            <p class="text-warning">Please allow 30-60 minutes for your tokens to be available on the Lamden Network.</p>
-        {/if}
         <hr>
         <div class="flex row">
             <TokenLogo token={$lastSwap.token} clickable={false} />

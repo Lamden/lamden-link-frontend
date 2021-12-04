@@ -7,7 +7,7 @@ body {
 body {
     --primary-color-lighter: #642eff;
     --primary-color: #461BC2;
-    --primary-color-dark: #1e0c53;
+    --primary-color-dark: #1e0c537a;
     --secondary-color: #303030;
     --overlay-color: #FFF;
     --accent-color: #3bcec6;
@@ -37,7 +37,7 @@ body {
     --black-color: #121212;
     --success-color: #31ce31;
     --success-color-dark: #159415;
-    --success-color-darker: #003100;
+    --success-color-darker: #00310070;
 
 }
 
@@ -264,18 +264,39 @@ a:visited {
 li {
     color: var(--warning-color);
     list-style-image: url("/static/images/icons/icon_nope.svg");
-    line-height: 1.5;
+    font-size: 2.2em;
+    line-height: 0.6em;
+    margin-left: -10px;
+}
+
+ul{
+    line-height: 0.8em;
 }
 
 li.yes {
     color: var(--success-color);
     list-style-image: url("/static/images/icons/icon_check.svg");
 }
+li.none {
+    color: var(--color-white);
+    list-style-image: none;
+    list-style-type: none;
+}
+li > *{
+    font-size: 0.4em;
+    position: relative;
+    top: -4px;
+}
 
 li.no-bullet{
     color: var(--font-primary-color);
     list-style-image: none;
     list-style-type: none;
+}
+.ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 

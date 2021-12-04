@@ -1,56 +1,79 @@
 <script>
-    import { getContext } from 'svelte'
+    import { getContext, onMount } from 'svelte'
 
     // Components
     import ResultLink from '../ResultLink.svelte'
     import Status from '../ProcessingSteps/Status.svelte'
 
     // Misc
-    import { sendEthChainDeposit } from '../../js/ethereum-utils'
+    import { sendEthChainDeposit, attemptToGetCurrentBlock, checkForEthereumEvents } from '../../js/ethereum-utils'
     import { saveSwap } from '../../js/localstorage-utils'
-    import { depositTxStatus } from '../../stores/ethereumStores'
-    import { getNetworkStore } from '../../stores/globalStores'
+    import { depositTxStatus, currentBlockStatus, checkEthEverntsStatus } from '../../stores/ethereumStores'
+    import { getNetworkStore, tabHidden } from '../../stores/globalStores'
     import { swapInfo } from '../../stores/globalStores'
 
     export let current
     export let complete
 
     let networkInfo = getNetworkStore($swapInfo.from)
+    let clicked = false
+    
+    $: isComplete = $swapInfo.metamaskDeposit || false
 
-    $: hasPending = $swapInfo.metamaskDepositPending || false
-    $: isComplete = $swapInfo.complete || false
+    const { nextStep } = getContext('process_swap')
+    let ethereumEventChecker = checkForEthereumEvents(checkEthEverntsStatus, handleNextStep)
 
-    const { done } = getContext('process_swap')
+    tabHidden.subscribe((curr) => {
+        if (curr) ethereumEventChecker.stopChecking()
+        else {
+            if (ethereumEventChecker.stopped()) ethereumEventChecker.startChecking()
+        }
+    })
+
+    onMount(getBlockNum)
+
+    function getBlockNum(){
+        attemptToGetCurrentBlock(currentBlockStatus)
+        .then((block) => {
+            if (!$swapInfo.lastETHBlockNum){
+                swapInfo.update(curr => {
+                    curr.lastETHBlockNum = block
+                    return curr
+                })
+                saveSwap()
+            }
+            if (ethereumEventChecker.stopped()) ethereumEventChecker.startChecking()
+        })
+        .catch(err => console.log(err))
+    }
+
 
     function handleDepositTx(){
+        clicked = true
         sendEthChainDeposit(depositTxStatus, handleDepositResult)
     }
 
-    function handleNewDepositTx(){
-        swapInfo.update(curr => {
-            delete curr.metamaskDepositPending
-            return curr
-        })
-        sendEthChainDeposit(depositTxStatus, handleDepositResult)
-    }
 
     function handleDepositResult(depositTxResult){
         if (depositTxResult.status){
             depositTxStatus.set({loading: false})
-            swapInfo.update(curr => {
-                curr.metamaskDeposit = JSON.parse(JSON.stringify(curr.metamaskDepositPending))
-                delete curr.metamaskDepositPending
-                curr.complete = true
-                return curr
-            })
-            saveSwap()
         }else{
             depositTxStatus.set({errors: ['Transactoin Failed. Check blockexplorer for details.']})
         }
     }
 
-    function handleFinish(){
-        done()
+    function handleGetBlockNum(){
+        getBlockNum()
+    }
+
+    function handleNextStep(){
+        ethereumEventChecker.stopChecking()
+        nextStep()
+    }
+
+    function handleNewDepositTx(){
+        let agree = confirm("WARNING\n\nYou should only ever have 1 deposit transaction pending. Only select OK if your previous tx failed and Lamden Link did not pick up the failure.\n\nDo not use this if your transaction is taking too long because of a slow network or low gas used. If that case use the SPEED UP function in metamask.\n\nSelect CANCEL if you already have a pending Depost transaction.")
+        if (agree) handleDepositTx()
     }
 
 
@@ -62,50 +85,32 @@
         display: block;
         margin: 0 0 0 auto;
     }
-    .buttons > button{
-        margin: 0;
-        margin-left: 10px;
-    }
-    .button-margin{
-        margin-left: 10px;
-    }
 </style>
 
 {#if current || complete}
-    <ul>
-        {#if hasPending || isComplete}
+    {#if !$swapInfo.lastETHBlockNum}
+        <Status statusStore={currentBlockStatus} />
+        {#if $currentBlockStatus.errors}
+            <button on:click={handleGetBlockNum} > Try Again </button>
+        {/if}
+    {:else}
+        <ul>
             {#if isComplete}
                 <li class:yes={isComplete}>
-                    <ResultLink title="Tokens successfully deposited" network={$networkInfo} type="transaction" hash={$swapInfo.metamaskDeposit}/>
+                    <span>
+                        <ResultLink title="Tokens successfully deposited" network={$networkInfo} type="transaction" hash={$swapInfo.metamaskDeposit}/>
+                    </span>
                 </li>
-            {:else}
-                {#if $depositTxStatus.errors}
-                    <li class:yes={isComplete}>
-                        <ResultLink title="Transaction Failed" network={$networkInfo} type="transaction" hash={$swapInfo.metamaskDepositPending}/>
-                    </li>
-                {/if}
             {/if}
-        {/if}
-    </ul>
+        </ul>
 
-    {#if !isComplete}
-        <Status statusStore={depositTxStatus} />
-    {/if}
-
-    {#if !$depositTxStatus.loading}
-        {#if !isComplete && !hasPending}
-            <button on:click={handleDepositTx} >Deposit Tokens</button>
-        {/if}
-
-        {#if hasPending && !isComplete}
-            <div class="buttons flex row just-end">
-                <button on:click={handleDepositTx}>Check Again</button>
-                <button on:click={handleNewDepositTx} class="button-margin">Try Deposit Again</button>
-            </div>
-        {/if}
-
-        {#if isComplete}
-            <button class="success" on:click={handleFinish}>Finish</button>
+        {#if !isComplete}
+            <Status statusStore={checkEthEverntsStatus} />
+            {#if clicked}
+                <button class="secondary" on:click={handleNewDepositTx}>Resend Deposit Transaction</button>
+            {:else}
+                <button class="success" on:click={handleDepositTx}>Create Deposit Transaction</button>
+            {/if}
         {/if}
     {/if}
 {/if}

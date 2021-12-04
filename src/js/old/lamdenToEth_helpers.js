@@ -1,4 +1,4 @@
-import { projectConf } from './networks'
+import { projectConf } from '../networks'
 import BN from 'bignumber.js'
 import {
 
@@ -13,7 +13,7 @@ import {
     token_selected,
     currentNetwork,
     swap_finished,
-} from '../stores/lamden'
+} from '../../stores/old/lamden'
 import {get } from 'svelte/store'
 import { web3, selectedAccount, chainData } from 'svelte-web3'
 let latest_network = get(currentNetwork)
@@ -488,7 +488,7 @@ const continueBurn = async(unSignedABI) => {
         //console.log({ latest_status })
 
     const proofData = processProof(unSignedABI, signedABI)
-    console.log({ proofData })
+
     if (!proofData) {
         message.set('Malformed Proof')
         isLoading.set(false)

@@ -16,3 +16,7 @@ export const isTrackedAddress = derived(lamden_vk, ($lamden_vk) => $lamden_vk ==
 // Results Trackers
 export const burnTxStatus = writable({})
 export const burnApprovalTxStatus = writable({})
+export const depositTxStatus = writable({})
+export const depositApprovalTxStatus = writable({})
+export const checkLamdenCurrentBlockStatus = writable({})
+export const checkLamdenEventStatus = writable({})

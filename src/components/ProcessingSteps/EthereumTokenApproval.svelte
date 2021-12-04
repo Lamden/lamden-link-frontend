@@ -1,5 +1,6 @@
 <script>
-    import { getContext } from 'svelte'
+    import { getContext, onDestroy, onMount, tick } from 'svelte'
+    import { Diamonds } from 'svelte-loading-spinners'
 
     // Components
     import ResultLink from '../ResultLink.svelte'
@@ -7,53 +8,105 @@
     import Status from './Status.svelte'
 
     // Misc
-    import { sendEthChainApproval } from '../../js/ethereum-utils'
+    import { sendEthChainApproval, checkTokenAllowance } from '../../js/ethereum-utils'
     import { saveSwap } from '../../js/localstorage-utils'
-    import { approvalTxStatus } from '../../stores/ethereumStores'
-    import { getNetworkStore } from '../../stores/globalStores'
+    import { approvalTxStatus, ethChainTokenAllowance } from '../../stores/ethereumStores'
+    import { getNetworkStore, tabHidden } from '../../stores/globalStores'
     import { swapInfo } from '../../stores/globalStores'
 
     export let current
     export let complete
 
-    let networkInfo = getNetworkStore($swapInfo.from)
+    let timer = null
+    let checking = false
+    let skipped = false
 
-    $: hasPending = $swapInfo.metamaskApprovalPending || false
-    $: hasApproval = $swapInfo.metamaskApproval || false
-
+    $: needsApproval = $swapInfo.tokenAmount.isGreaterThan($ethChainTokenAllowance)
+  
     const { nextStep } = getContext('process_swap')
 
-    function handleApproveTx(){
-        sendEthChainApproval(approvalTxStatus, handleApproveResult)
+    tabHidden.subscribe((curr) => {
+        if (!current || complete) {
+            stopCheckingForAllowance()
+            return
+        }
+        if (curr) stopCheckingForAllowance()
+        else {
+            if (timer) return
+            loopAllowanceCheck()
+        }
+    })
+
+    onMount(() => {
+
+        checkAllowance()
+        // loopAllowanceCheck()
+
+        return stopCheckingForAllowance
+    })
+
+    function loopAllowanceCheck(){
+        if ($tabHidden) return
+        clearInterval(timer)
+        timer = setInterval(checkAllowance, 5000)
     }
 
-    function handleNewApproveTx(){
-        swapInfo.update(curr => {
-            delete curr.metamaskApprovalPending
-            return curr
+    function checkAllowance(){
+        if ($tabHidden || checking) return
+        checking = true
+
+        checkTokenAllowance().then(async (amount) => {
+
+            if (amount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)) handleNextStep()
+            checking = false
         })
+    }
+
+    function handleApproveTx(){
+        if (!needsApproval) return
         sendEthChainApproval(approvalTxStatus, handleApproveResult)
     }
 
     function handleApproveResult(approveTxResult){
-        if (approveTxResult.status){
-            approvalTxStatus.set({loading: false})
-            swapInfo.update(curr => {
-                curr.metamaskApproval = JSON.parse(JSON.stringify(curr.metamaskApprovalPending))
-                delete curr.metamaskApprovalPending
-                return curr
-            })
-            saveSwap()
-        }else{
+        if (!approveTxResult.status){
             approvalTxStatus.set({errors: ['Transactoin Failed. Check blockexplorer for details.']})
         }
     }
 
+    function handleCancelTx(){
+        swapInfo.update(curr => {
+            delete curr.metamaskApprovalPending
+            return curr
+        })
+        approvalTxStatus.set({})
+    }
+
+    function stopCheckingForAllowance(){
+        clearInterval(timer)
+        timer = null
+    }
+
     function handleNextStep(){
+        stopCheckingForAllowance()
+        approvalTxStatus.set({})
         nextStep()
     }
 
+    function handleNewTx(){
+        let agree = confirm("Only create a new approval transaction if the previous one failed and Lamden Link did not pick it up.\n\nIf you have already submitted a transaction and it's taking a long time then use the SPEED UP function in metamask.\n\nHit CANCEL if you already have a pending transaction.");
+        if (agree) {
+            handleCancelTx()
+            handleApproveTx()
+        }
+    }
 
+    function handleSkip(){
+        let agree = confirm("Only select OK if you have a completed approval transaction that Lamden Link did not pickup.\n\nIf you do not have an approval then skipping this step will cause the next step to fail 100% of the time. You are not saving money by skipping the approval; it is mandatory.\n\nHit CANCEL if you don't have a successful approval transaction.");
+        if (agree) {
+            skipped = true
+            handleNextStep()
+        }
+    }
 </script>
 
 <style>
@@ -66,46 +119,59 @@
         margin: 0;
         margin-left: 10px;
     }
-    .button-margin{
-        margin-left: 10px;
+    .check-allowance{
+        margin-top: 1em;
+    }
+    .check-allowance-text{
+        margin-right: 0.5em;
+    }
+    ul.skipped{
+        margin-bottom: 4em;
     }
 </style>
 
 {#if current || complete}
-    <ul>
-            <li class:yes={hasApproval}>
-                {#if hasApproval}
-                    <ResultLink title="Tokens successfully approved" network={$networkInfo} type="transaction" hash={$swapInfo.metamaskApproval}/>
-                {:else}
-                    {#if $approvalTxStatus.errors}
-                        <ResultLink title="Transaction Failed" network={$networkInfo} type="transaction" hash={$swapInfo.metamaskApprovalPending}/>
+    <ul class:skipped={skipped}>
+        {#if !skipped}
+            <li class:yes={!needsApproval}>
+                <span>
+                    {#if needsApproval}
+                        Need {$swapInfo.from === "ethereum" ? "ERC-20 " : "BEP-20 "} token approval.
                     {:else}
-                        Need {$swapInfo.from === "ethereum" ? "ERC-20 " : "BEP-20 "} token approval
+                        Tokens successfully approved
                     {/if}
-                {/if}
+                </span>
             </li>
-    </ul>
-    {#if !complete}
-        {#if !hasApproval}
-            <Status statusStore={approvalTxStatus} />
+            <!--
+            {#if needsApproval}
+                <li class="none ">
+                    <div class="flex row align-center check-allowance">
+                        <span class="check-allowance-text">{`Current allowance ${$ethChainTokenAllowance.toString()} ${$swapInfo.token.symbol}`}</span>
+                        <Diamonds size="3" unit="em" color="white" duration="2.5s"/>
+                    </div>
+                </li>
+            {/if}
+            -->
         {/if}
+    </ul>
+    
+    {#if !complete}
+        <Status statusStore={approvalTxStatus} />
 
-        {#if !$approvalTxStatus.loading}
-            {#if !hasApproval && !hasPending}
-                <button on:click={handleApproveTx} >Send Token Approval</button>
+        <div class="flex row just-end buttons">
+            {#if !$approvalTxStatus.loading && needsApproval}
+                <button class="success" on:click={handleApproveTx}>Send Token Approval</button>
+            {:else}
+                {#if needsApproval}
+                    <button class="secondary" on:click={handleNewTx}>Create New Transaction</button>
+                {/if}
             {/if}
-
-            {#if hasPending && !hasApproval}
-                <div class="buttons flex row just-end">
-                    <button on:click={handleApproveTx}>Check Again</button>
-                    <button on:click={handleNewApproveTx} class="button-margin">Try New Approval</button>
-                </div>
-            {/if}
-
-            {#if hasApproval}
+            {#if !needsApproval}
                 <button class="success" on:click={handleNextStep}>Next Step</button>
             {/if}
-        {/if}
+            {#if $swapInfo.lastETHBlockNum}
+                <button class="secondary" on:click={handleSkip}>Skip Step</button>
+            {/if}
+        </div>
     {/if}
 {/if}
-

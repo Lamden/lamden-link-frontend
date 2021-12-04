@@ -14,20 +14,28 @@
     export let placeholder = "";
     export let styles = "";
     export let margin = "unset";
-    export let startingValue = 0;
+    export let startingValue = undefined;
     export let disabled = true;
 
+    let prevValue = startingValue
+
 	const handleInputChange = (e) => {
-		let validateValue = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')
+        let value = new BN(e.target.value)
+        if (value.isNaN()) value = new BN(0)
+        if (determinePrecision(value) > 8){
+            value = new BN(stringToFixed(value, 8))
+            inputElm.value = stringToFixed(value, 8)
+        }
+        dispatchEvent(value)
+
+    }
+
+    const handleValidateInput = (e) => {
+        let validateValue = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')
 		if (validateValue !== e.target.value) {
-			inputElm.value = validateValue
+			inputElm.value = prevValue.toString()
 		}else{
-			let value = new BN(e.target.value)
-			if (determinePrecision(value) > 8){
-				value = new BN(stringToFixed(value, 8))
-				inputElm.value = stringToFixed(value, 8)
-			}
-			dispatchEvent(value)
+            prevValue = inputElm.value
 		}
     }
     
@@ -47,7 +55,8 @@
 <label style={`margin: ${margin}; ${styles}`}>{title}
     <input class="primaryInput"
         bind:this={inputElm}
-        on:input={handleInputChange}
+        on:change={handleInputChange}
+        on:input={handleValidateInput}
         value={startingValue}
         {placeholder}
         readonly={disabled}

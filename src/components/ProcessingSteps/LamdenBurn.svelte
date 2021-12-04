@@ -75,15 +75,19 @@
     </div> 
     <ul>
         <li class:yes={hasTokenApproval || burnComplete}>
-            {#if hasTokenApproval || burnComplete}
-                Burn Approved
-            {:else}
-                Approval Needed
-            {/if}
+            <span>
+                {#if hasTokenApproval || burnComplete}
+                    Burn Approved
+                {:else}
+                    Approval Needed
+                {/if}
+            </span>
         </li>
         {#if burnComplete}
             <li class:yes={burnComplete}>
-                Tokens Burned
+                <span>
+                    Tokens Burned
+                </span>
             </li>
         {/if}
     </ul>

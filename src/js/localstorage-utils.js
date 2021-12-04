@@ -12,7 +12,8 @@ export function getLastSwap(){
         return null
     } else {
         value = JSON.parse(value)
-        value.tokenAmount = new BN(value.tokenAmount)
+        let tokenAmount = new BN(value.tokenAmount)
+        if (!tokenAmount.isNaN()) value.tokenAmount = tokenAmount
         return value
     }
 }
