@@ -39,8 +39,8 @@ export const mainnet = {
                     name: "Lamden",
                     symbol: 'TAU',
                     address: 'currency',
-                    lamden_clearinghouse: 'direct',
-                    one_way: true
+                    lamden_clearinghouse: 'con_tau_bridge_v1',
+                    origin_lamden: true
                 },
                 {
                     name: "Block Duelers",
@@ -73,7 +73,7 @@ export const mainnet = {
         },
         networkName: "Lamden Mainnet",
         network_symbol: "TAU",
-        currentStampRatio: 65,
+        currentStampRatio: 169,
         stamps: {
             burn: 65,
             approval: 65
@@ -103,7 +103,7 @@ export const mainnet = {
         }
     },
     binance: {
-        network: "wss://ws-nd-463-770-272.p2pify.com/8411e4e71f588f5c0b80b936d3081378",
+        network: "wss://ws-nd-240-845-842.p2pify.com/4f418ee905ac8b6effbaa5fad89cd133",
         interop: ['lamden'],
         blockexplorer: "https://bscscan.com",
         blockexplorer_tx: "tx",
@@ -119,9 +119,14 @@ export const mainnet = {
             lamden:[{
                 name: "Lamden Mainnet Token",
                 symbol: 'TAU',
-                address: '0xdFa3b0019EcF48c753B58908B5A21d11641bA56f',
+                address: '0x78813bABEbC899EaC01656ef6180cCF55008F458',
                 decimals: 18,
                 lamden_clearinghouse: 'direct',
+                clearingHouse: {
+                    address: '0x4D635E82c801dCF121F61389167605C5A7117D77',
+                    abi: twb_clearinghouse_abi.abi
+                },
+                origin_lamden: true
             },
             {
                 name: "Block Duelers",
@@ -162,7 +167,7 @@ export const testnet = {
         blockexplorer: "https://testnet.lamden.io",
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
-        blockservice: "http://165.227.181.34:3535/contract_history",
+        wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
         interop: ['ethereum', 'binance'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
@@ -264,8 +269,7 @@ export const testnet = {
         networkName: "Binance Smart Chain Test Network",
         clearingHouse: {
             address: '0xA57dd4494D991840D43df0146f51a0A10A34327f',
-            abi: clearinghouse_abi.abi,
-            topic: "0xa1cea84c3651d7ad0249918f31f1b68bdef6e1be41cebab5ffe654e4ff86e407"
+            abi: clearinghouse_abi.abi
         },
         tokens: {
             lamden: [
@@ -277,8 +281,7 @@ export const testnet = {
                     lamden_clearinghouse: 'direct',
                     clearingHouse: {
                         address: '0x349D52D92ad99dF4d424D815f9f8A5d2aFE4eFc1',
-                        abi: twb_clearinghouse_abi.abi,
-                        topic: "0x0666a5f6ae65e87496c94a5940ca3dc5c870546b598ed2992a4e9a61265f1d1e"
+                        abi: twb_clearinghouse_abi.abi
                     },
                     origin_lamden: true
                 },

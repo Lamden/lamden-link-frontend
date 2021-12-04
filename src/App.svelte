@@ -21,6 +21,7 @@
 	import { onMount } from 'svelte'
 
 	let maintenance_on = true
+	let allow_maintenance_swaps = true
 
 	onMount(() => {
 		hydrateSwapHistory()
@@ -83,6 +84,9 @@
 	<main>
 		{#if maintenance_on}
 			<Route path="/" component={Maintenance} />
+			{#if allow_maintenance_swaps}
+				<Route path="/swap" component={MakeSwap} />
+			{/if}
 		{:else}
 			<Route path="/" component={Home} />
 			<Route path="/swap" component={MakeSwap} />

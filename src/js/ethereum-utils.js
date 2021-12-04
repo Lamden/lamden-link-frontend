@@ -6,7 +6,6 @@ import { ethChainBalance, ethChainTokenBalance, ethChainTokenAllowance } from '.
 import { saveSwap } from './localstorage-utils' 
 import { isString, toBaseUnit } from './global-utils' 
 import { ERC20_ABI } from './erc20_abi'
-import { getBSCEvent } from './bscscan_api'
 
 
 function getCorrectNetwork(){
@@ -601,7 +600,12 @@ export function sendEthChainDeposit(resultTracker, callback){
         )
     }
     
-
+    console.log({
+        token,
+        quantity: quantity.toString(),
+        clearingHouse,
+        swapInfoStore
+    })
 
     try {
         deposit

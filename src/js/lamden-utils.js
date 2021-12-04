@@ -511,7 +511,7 @@ const getProof = (unSignedABI, resultsTracker) =>
             timesChecked = timesChecked + 1
             if (timesChecked <= timesToCheck) setTimeout(checkForProof, 1000)
             else {
-                resultsTracker.set({loading: false, message: `Timed out attempting to get Proof-of-Burn from the Lamden Blockchain. Checked ${timesToCheck} times.`})
+                resultsTracker.set({loading: false, message: `Timed out attempting to get Proof from the Lamden Blockchain. Checked ${timesToCheck} times.`})
                 resolve(null)
             }
         }
