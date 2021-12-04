@@ -57,7 +57,7 @@
                 },
                 {
                     name: "Withdraw Tokens",
-                    desc: "This transaction will use the Proof-of-Burn from the previous transation to withdraw your tokens on the Ethereum network.",
+                    desc: "This transaction will use the Proof-of-Burn from the previous transaction to withdraw your tokens on the Ethereum network.",
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumWithdraw
@@ -75,7 +75,7 @@
                 },
                 {
                     name: "Withdraw Tokens",
-                    desc: "This transaction will use the Proof-of-Deposit from the previous transation to withdraw your tokens on Binance Smart Chain.",
+                    desc: "This transaction will use the Proof-of-Deposit from the previous transaction to withdraw your tokens on the Binance Smart Chain.",
                     type: "transaction",
                     network: 'binance',
                     component: TWB_EthereumWithdraw
@@ -86,14 +86,14 @@
                 connectMetaMaskStep('binance'),
                 {
                     name: `Burn Tokens`,
-                    desc: `This transaction will burn your tokens on the Lamden Network.  Creating this Proof-of-Burn will allow the tokens to be minted on Binance Smart Chain.`,
+                    desc: `This transaction will burn your tokens on the Lamden Network.  Creating this Proof-of-Burn will allow the tokens to be minted on the Binance Smart Chain.`,
                     type: "transaction",
                     network: 'lamden',
                     component: LamdenBurnStep
                 },
                 {
                     name: "Withdraw Tokens",
-                    desc: "This transaction will use the Proof-of-Burn to from the previous transation to withdraw your tokens on Binance Smart Chain.",
+                    desc: "This transaction will use the Proof-of-Burn from the previous transaction to withdraw your tokens on the Binance Smart Chain.",
                     type: "transaction",
                     network: 'binance',
                     component: EthereumWithdraw
