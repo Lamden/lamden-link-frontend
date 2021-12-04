@@ -163,7 +163,7 @@
                 <button class="success" on:click={handleApproveTx}>Send Token Approval</button>
             {:else}
                 {#if needsApproval}
-                    <button class="secondary" on:click={handleNewTx}>Create New Transaction</button>
+                    <button class="secondary" on:click={handleNewTx}>Create Approval Transaction</button>
                 {/if}
             {/if}
             {#if !needsApproval}

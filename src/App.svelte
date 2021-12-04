@@ -86,6 +86,11 @@
 			<Route path="/" component={Maintenance} />
 			{#if allow_maintenance_swaps}
 				<Route path="/swap" component={MakeSwap} />
+				<Route path="/swap/:testnet" component={MakeSwap} />
+				<Route path="/results" component={Results} />
+				<Route path="/finish" component={Finish} />
+				<Route path="/pastedetails" component={PasteDetails} />
+				<Route path="/restart" component={Restart} />
 			{/if}
 		{:else}
 			<Route path="/" component={Home} />

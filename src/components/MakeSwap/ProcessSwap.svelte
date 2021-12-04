@@ -107,14 +107,21 @@
                 connectLamdenWalletStep,
                 {
                     name: "Token Approval",
-                    desc: "Click the button to create a standard ERC-20 token approval to allow the Lamden Link contract to transfer your tokens. This step will continue when Lamden Link has detected you have enough allowance to make a deposit.",
+                    desc: [
+                        "A standard ERC-20 token approval is needed to give Lamden Link access to your tokens. This step will continue when Lamden Link has detected you have enough allowance to make a deposit.",
+                        "Click the 'Create Approval Transaction' button."
+                        ],
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumTokenApproval
                 },
                 {
                     name: "Token Deposit",
-                    desc: "Click the button to create a Deposit transactions. The process will continue when Lamden Link has detected your Deposit event on the Ethereum network.",
+                    desc: [
+                        "In this step you will lock your tokens in the Ethereum Lamden Link contract.",
+                        "Create just ONE Deposit transaction and wait patiently for it to complete.",
+                        "Click the 'Create Deposit Transaction' button."
+                    ],
                     type: "transaction",
                     network: 'ethereum',
                     component: EthereumDeposit
@@ -134,7 +141,10 @@
                 connectLamdenWalletStep,
                 {
                     name: "Token Approval",
-                    desc: "Click the button to create a standard BEP-20 token approval to allow the Lamden Link contract to transfer your tokens. This step will continue when Lamden Link has detected you have enough allowance to make a deposit.",
+                    desc: [
+                        "A standard BEP-20 token approval is needed to give Lamden Link access to your tokens. This step will continue when Lamden Link has detected you have enough allowance to make a deposit.",
+                        "Click the 'Create Token Approval' button."
+                        ],
                     type: "transaction",
                     network: 'binance',
                     component: EthereumTokenApproval
@@ -142,8 +152,9 @@
                 {
                     name: "Token Deposit",
                     desc: [
-                        "Click the button to create a Deposit transactions. The process will continue when Lamden Link has detected your Deposit event on the Binance Smart Chain.",
-                        "Create just ONE Deposit transaction and wait patiently for it to complete."
+                        "In this step you will lock your tokens in the Binance Lamden Link contract.",
+                        "Create just ONE Deposit transaction and wait patiently for it to complete.",
+                        "Click the 'Create Deposit Transaction' button."
                     ],
                     type: "transaction",
                     network: 'binance',
@@ -151,7 +162,10 @@
                 },
                 {
                     name: "Get Tokens on Lamden",
-                    desc: "Lamden Link is checking for your tokens on the Lamden network. Your tokens will be be available after 20 confirmations on the Binance network. Please be patient.",
+                    desc: [
+                        "Lamden Link is checking for your tokens on the Lamden network. Your tokens will be be available after 20 Binance confirmations. ",
+                        "Please be patient."
+                    ],
                     type: "transaction",
                     network: 'lamden',
                     component: LamdenMintTokens
