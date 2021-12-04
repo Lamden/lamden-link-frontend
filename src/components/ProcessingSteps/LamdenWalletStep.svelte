@@ -23,6 +23,7 @@
     $: tokenFromMe = $swapInfo.from === "lamden"
     $: tokensToSend = $swapInfo.tokenAmount || new BN(0)
     $: hasEnoughTokens = tokensToSend.isGreaterThan(0) && $lamdenTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
+    $: resuming = $swapInfo.burnHash || $swapInfo.depositHash || false
 
     const { nextStep } = getContext('process_swap')
 
@@ -48,6 +49,7 @@
             if (Object.keys(info.approvals).includes($selectedNetwork)){
                 hasNetworkApproval.set({approved: true})
                 lamden_vk.set($lwc.walletAddress)
+                resuming && !complete ? nextStep() : null
             }
         }
         if (!info.errors){
@@ -59,6 +61,7 @@
     const sendLamdenApproval = () => {
         $lwc.sendConnection()
     }
+
     async function handleNextStep(){
         swapInfo.update(curr => {
             curr.lamden_address = $lamden_vk
@@ -94,6 +97,9 @@
         min-width: fit-content;
         margin-left: 1rem;
     }
+    ul{
+        margin: 2rem 0;
+    }
     @media screen and (min-width: 430px) {
 
     }
@@ -101,53 +107,54 @@
 
 {#if current || complete}
     <ul>
-        <li class:yes={installed}>
-            {#if !installed}
-                {#if notAttempted}
-                    Not Connected
+        <li class:yes={installed}> 
+            <span>
+                {#if !installed}
+                    {#if notAttempted}
+                        Not Connected
+                    {:else}
+                        Not Installed
+                    {/if}
                 {:else}
-                    Not Installed
+                    Installed
                 {/if}
-            {:else}
-                Installed
-            {/if}
+            </span>
         </li>
 
         {#if installed}
             <li class:yes={!locked}>
-                {#if !locked}
-                    Wallet Unlocked 
-                {:else}
-                    Wallet is Locked
-                {/if}
+                <span>
+                    {#if !locked}
+                        Wallet Unlocked 
+                    {:else}
+                        Wallet is Locked
+                    {/if}
+                </span>
             </li>
         {/if}
     
         {#if installed}
             <li class:yes={connected}>
-                {#if !connected}
-                    Lamden Link Not Connected
-                {:else}
-                    Connected to Lamden Link
-                {/if}
+                <span>
+                    {#if !connected}
+                        Lamden Link Not Connected
+                    {:else}
+                        Connected to Lamden Link
+                    {/if}
+                </span>
             </li>
         {/if}
-
-        {#if $lamden_vk}
-            <li class="no-bullet">
-                <LamdenBalance />
-            </li>
-        {/if}
-
-        {#if $lamden_vk && tokenFromMe}
-            {#if !depositComplete}
-                <li class="no-bullet">
-                    <LamdenTokenInput {complete}/>
-                </li>
-            {/if}
-        {/if}
-
     </ul>
+
+    {#if $lamden_vk}
+            <LamdenBalance />
+    {/if}
+
+    {#if $lamden_vk && tokenFromMe}
+        {#if !depositComplete}
+                <LamdenTokenInput {complete}/>
+        {/if}
+    {/if}
 
     <div class="flex row align-center just-end buttons">
         {#if current}
@@ -164,8 +171,8 @@
                 
                 {#if $lamden_vk && current && !$isTrackedAddress}
                     {#if tokenFromMe}
-                        <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !$swapInfo.burnHash} on:click={handleNextStep}>
-                            {$swapInfo.burnHash ? "Resume Swap" : "Next Step"}
+                        <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !resuming } on:click={handleNextStep}>
+                            {resuming ? "Resume Swap" : "Next Step"}
                         </button>
                     {:else}
                         <button class="success" on:click={handleNextStep}>Next Step</button>

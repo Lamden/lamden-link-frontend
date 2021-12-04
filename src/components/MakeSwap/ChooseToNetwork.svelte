@@ -18,11 +18,22 @@
         setStep(2)
     }
 
+    function back(){
+        swapInfo.update(curr => {
+            delete curr.to
+            return curr
+        })
+        setStep(0)
+    }
+
 </script>
 
 <style>
     h2{
         text-align: center;
+    }
+    button{
+        margin: 2em auto;
     }
 
     @media screen and (min-width: 430px) {
@@ -39,3 +50,5 @@
         {/each}
     </div>
 </div>
+
+<button class="secondary" on:click={back}>Back</button>

@@ -35,6 +35,7 @@
     }
 
     async function handleSendProofResult(withdrawTxResult){
+        console.log({withdrawTxResult})
         if (withdrawTxResult.status){
             withdrawTxStatus.set({loading: false})
             swapInfo.update(curr => {
@@ -47,7 +48,7 @@
         }else{
             withdrawTxStatus.set({errors: ['Transactoin Failed. Check blockexplorer for details.']})
         }
-    }   
+    } 
 
     function handleNextStep(){
         done()
@@ -67,7 +68,9 @@
     <ul>
         {#if swapComplete}
             <li class:yes={swapComplete}>
-                Token withdraw complete!
+                <span>
+                    Token withdraw complete!
+                </span>
             </li>
         {/if}
     </ul>

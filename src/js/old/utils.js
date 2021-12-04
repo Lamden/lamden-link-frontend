@@ -1,6 +1,6 @@
 import { ethStore, web3, connected, selectedAccount } from 'svelte-web3'
-import WalletController from './LamdenWalletController'
-import { projectConf } from './networks'
+import WalletController from '../LamdenWalletController'
+import { projectConf } from '../networks'
 import {
     vk,
     ethBalance,
@@ -13,11 +13,11 @@ import {
     lamden_token_balance,
     currentNetwork,
 
-} from '../stores/lamden'
+} from '../../stores/old/lamden'
 import {get } from 'svelte/store'
 import BN from 'bignumber.js'
-import { startBurn, resumeBurn } from './lamdenToEth_helpers'
-import { startSwap } from './ethToLamden_helpers'
+import { startBurn, resumeBurn } from './old/lamdenToEth_helpers'
+import { startSwap } from './old/ethToLamden_helpers'
 
 export default connected
 
@@ -195,7 +195,6 @@ export let network_from = function(from_lamden) {
 }
 
 export let set_swap_func = function(from_lamden) {
-    console.log({ from_lamden, resume_burn: get(resume_burn) })
     if (get(resume_burn)) {
         return resumeBurn
     } else {

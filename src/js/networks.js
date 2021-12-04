@@ -1,4 +1,5 @@
 import * as clearinghouse_abi from './clearinghouse_abi.js'
+import * as twb_clearinghouse_abi from './twb_clearinghouse_abi.js'
 
 /*
     BDT Mainnet info
@@ -161,6 +162,7 @@ export const testnet = {
         blockexplorer: "https://testnet.lamden.io",
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
+        blockservice: "http://165.227.181.34:3535/contract_history",
         interop: ['ethereum', 'binance'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
@@ -184,8 +186,8 @@ export const testnet = {
                     name: "Lamden Testnet Token",
                     symbol: 'dTAU',
                     address: 'currency',
-                    lamden_clearinghouse: 'direct',
-                    one_way: true
+                    lamden_clearinghouse: 'con_tau_bridge_v1',
+                    origin_lamden: true
                 },
                 {
                     name: "Block Duelers",
@@ -248,26 +250,37 @@ export const testnet = {
         }
     },
     binance: {
-        network: "wss://ws-nd-088-476-707.p2pify.com/04675114bb8fa340f6c15f995fe3c367",
+        network: "https://nd-867-543-091.p2pify.com/3cfe90b4204a0cd275ff8f31f992dbd0",
         interop: ['lamden'],
         blockexplorer: "https://testnet.bscscan.com",
         blockexplorer_tx: "tx",
         blockexplorer_address: "address",
+        bsc_scan: {
+            api_url: "https://api-testnet.bscscan.com/api?module=logs&action=getLogs",
+            key: "7GX2TBH7TB2SIBWBA69E1C9PJ2S69Y7SZE"
+        },
         network_symbol: "TBNB",
         chainId: 97,
         networkName: "Binance Smart Chain Test Network",
         clearingHouse: {
             address: '0xA57dd4494D991840D43df0146f51a0A10A34327f',
-            abi: clearinghouse_abi.abi
+            abi: clearinghouse_abi.abi,
+            topic: "0xa1cea84c3651d7ad0249918f31f1b68bdef6e1be41cebab5ffe654e4ff86e407"
         },
         tokens: {
             lamden: [
                 {
                     name: "Lamden Testnet Token",
                     symbol: 'dTAU',
-                    address: '0x14Cdc7f44D497B47c26196Aef2C4f779875b0846',
+                    address: '0xFD8C3286320fE9B3E331DB0967803cf74a2472Ea',
                     decimals: 18,
-                    lamden_clearinghouse: 'direct'
+                    lamden_clearinghouse: 'direct',
+                    clearingHouse: {
+                        address: '0x349D52D92ad99dF4d424D815f9f8A5d2aFE4eFc1',
+                        abi: twb_clearinghouse_abi.abi,
+                        topic: "0x0666a5f6ae65e87496c94a5940ca3dc5c870546b598ed2992a4e9a61265f1d1e"
+                    },
+                    origin_lamden: true
                 },
                 {
                     name: "Block Duelers",

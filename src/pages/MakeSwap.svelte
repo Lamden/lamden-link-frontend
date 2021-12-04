@@ -30,6 +30,7 @@
         if (testnet) selectedNetwork.set('testnet')
 
         let lastSwapInfo = getLastSwap()
+        if (!lastSwapInfo) lastSwapInfo = {}
         if (!lastSwapInfo.to && !lastSwapInfo.from && !lastSwapInfo.token){
             // Do nothing
         }else{

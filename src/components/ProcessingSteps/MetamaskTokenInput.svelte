@@ -6,7 +6,7 @@
     import InputNumber from '../InputNumber.svelte'
 
     // Misc
-    import { selectedAccount } from 'svelte-web3'
+    import { selectedAccount, chainData } from 'svelte-web3'
     import BN from 'bignumber.js'
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { ethChainTokenBalance } from '../../stores/ethereumStores'
@@ -21,8 +21,10 @@
 
     let timer = null
 
+    selectedAccount.subscribe(checkChainTokenBalance)
+    chainData.subscribe(checkChainTokenBalance);
+
     onMount(() => {
-        timer = setTimeout(refreshMetaMaskTokenBalance, 10000)
         refreshMetaMaskTokenBalance()
 
         return () => {
@@ -33,10 +35,18 @@
     async function refreshMetaMaskTokenBalance(){
         if (timer === null) return
         if (!$selectedAccount) return
-        checkChainTokenBalance()
+        if (!complete) {
+            checkChainTokenBalance()
+            .then(() => {
+                console.log("Checking token balance again")
+                setTimeout(refreshMetaMaskTokenBalance, 10000)
+            })
+        }
+        
     }
 
     function handleInput(e){
+        console.log(e.detail)
         swapInfo.update(curr => {
             curr.tokenAmount = e.detail
             return curr
@@ -63,7 +73,7 @@
     </div>
 
     <p>How much {$selectedToken.symbol} to send?</p>
-    <div class="input-number"><InputNumber on:input={handleInput} disabled={complete}/></div>
+    <div class="input-number"><InputNumber on:input={handleInput} disabled={complete} startingValue={$swapInfo.tokenAmount ? $swapInfo.tokenAmount.toString() : ""}/></div>
 {:else}
     <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
         <TokenLogo token={$selectedToken} clickable={false} size="tiny" />

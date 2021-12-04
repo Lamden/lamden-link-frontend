@@ -31,11 +31,12 @@
         margin: 1rem 0;
         width: 100%;
         opacity: 50%;
-        border: 2px solid var(--color-gray-2);
+        border: 0.1em solid var(--color-gray-2);
         border-radius: 10px;
     }
     .logo-container{
         margin-right: 1rem;
+        padding-top: 0.25em;
     }
     .step-container.metamask{
         opacity: 100%;
@@ -44,12 +45,11 @@
     }
     .step-container.current{
         opacity: 100%;
-        border: 2px solid var(--primary-color);
+        border: 0.1em solid var(--primary-color);
         background: var(--primary-color-dark);
     }
     .step-container.complete{
         opacity: 100%;
-        border: 1px solid var(--success-color);
         background: var(--success-color-darker);
     }
 
@@ -103,7 +103,13 @@
             </div>
             <div class="width-100">
                 <p class="step-name">{stepInfo.name}</p>
-                <p class="step-desc">{stepInfo.desc}</p>
+                {#if Array.isArray(stepInfo.desc)}
+                    {#each stepInfo.desc as desc}
+                        <p class="step-desc">{desc}</p>
+                    {/each}
+                {:else}
+                    <p class="step-desc">{stepInfo.desc}</p>
+                {/if}
                 {#if stepInfo.component}
                     <svelte:component this={stepInfo.component} {current} {complete} {stepInfo}/>
                 {/if}

@@ -26,10 +26,7 @@
 </script>
 
 <style>
-    a{
-        font-size: 0.8em;
 
-    }
     .address-link{
         white-space: nowrap;
         overflow: hidden;

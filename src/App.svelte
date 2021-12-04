@@ -16,6 +16,7 @@
 
 	// Misc
 	import { hydrateSwapHistory, hydrateSwapInfo } from './js/localstorage-utils'
+	import { tabHidden } from './stores/globalStores'
 
 	import { onMount } from 'svelte'
 
@@ -25,7 +26,16 @@
 		hydrateSwapHistory()
 		hydrateSwapInfo()
 		unregisterOldServiceWorkers()
+
+		document.addEventListener("visibilitychange", setTabActive);
+		return () => {
+			document.removeEventListener("visibilitychange", setTabActive);
+		}
 	})
+
+	const setTabActive = () => {
+		tabHidden.set(document.hidden)
+	}
 
 	function unregisterOldServiceWorkers(){
 		if (typeof navigator === "undefined") return

@@ -1,12 +1,10 @@
 import BN from 'bignumber.js'
 import { get } from "svelte/store";
-import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore  } from '../stores/globalStores'
+import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore, selectedNetwork, tabHidden  } from '../stores/globalStores'
 import { lamden_vk, lamdenCurrencyBalance, lwc, lamdenTokenApprovalAmount } from '../stores/lamdenStores'
 import { TransactionResultHandler } from './lamdenTxResultsHandler'
-
-export const start_burn = () => {
-
-}
+import { toBaseUnit } from './global-utils'
+import { saveSwap } from './localstorage-utils'
 
 export async function checkLamdenTokenBalance() {
     let lamdenNetworkInfo = get(lamdenNetwork)
@@ -38,6 +36,208 @@ export async function checkLamdenBalance() {
     } catch (error) {
         console.log({error})
         return new BN(0)
+    }
+}
+
+export async function getCurrentLamdenBlockNum(){
+    let networkType = get(selectedNetwork)
+
+    return fetch(`/.netlify/functions/getLamdenCurrentBlock?&network=${networkType}`)
+        .then(res => res.json())
+        .then(synced_stats => {
+            console.log(synced_stats)
+            const { latest_block } = synced_stats
+            return latest_block
+        })
+        .catch(err => {
+            console.log(err)
+            return err
+        });
+}
+
+
+export function attemptToGetLamdenCurrentBlock(statusStore){
+    let timesToCheck = 10
+    let checked = 0
+
+    return new Promise((resolve, reject) => {
+        async function check(){
+            getCurrentLamdenBlockNum()
+            .then((block) => {
+                console.log(block)
+                if (block && !block.error) {
+                    statusStore.set({})
+                    resolve(block)
+                }
+                else {
+                    checked = checked + 1
+                    if (checked > timesToCheck){
+                        statusStore.set({errors: [`Timed out getting current block number from Lamden. Check your internet connection and try again.`]})
+                        reject("timed out")
+                    }else{
+                        setTimeout(check, 2000)
+                    }
+                }
+            })
+            .catch((err)=> {
+                console.log(err)
+                statusStore.set({errors: [`Error getting current block number: ${err.message}`]})
+                reject(err)
+            })
+        }
+        statusStore.set({loading: true, status: `Getting current Lamden block...`})
+        check()
+    })
+}
+
+export const checkForLamdenEvents = (statusStore, doneCallback) => {
+    let timer = null
+    let lastCheckedBlockNum = null
+
+    let swapInfoStore = get(swapInfo)
+
+    const { mintedToken, token } = swapInfoStore
+
+    let contract = mintedToken.address
+    let networkType = get(selectedNetwork)
+
+    let clearingHouse = mintedToken.lamden_clearinghouse
+    
+    function check(){
+        console.log("checking for lamden events")
+
+        if (get(tabHidden)) {
+            console.log("tab not active")
+            return
+        }
+
+        let blockNum = get(swapInfo).lastLamdenBlockNum - 1
+
+        if (lastCheckedBlockNum === blockNum) return
+
+        console.log("checking for lamden events at blocknumber " + blockNum)
+
+        fetch(`/.netlify/functions/getLamdenContractHistory?contract=${contract}&blockNum=${blockNum}&network=${networkType}`)
+		.then(res => res.json())
+        .then(handleResponse)
+        .catch(err => {
+            console.log(err)
+            statusStore.set({errors: [`Error checking for Lamden Mint event: ${err.message}`]})
+            stopChecking()
+        });
+    }
+
+    function handleResponse(events){
+        console.log(events)
+
+        const { history } = events
+        
+        if (!history || !Array.isArray(history) || history.length === 0) return
+
+        try{
+            for (let event of history){
+                const { txInfo, blockNum } = event
+
+                let isMatch = checkForMatchingEvent(txInfo)
+                console.log({isMatch})
+
+                if (isMatch){
+                    if (txInfo.status === 0){
+                        swapInfo.update(curr => {
+                            curr.LamdenMintHash = txInfo.hash
+                            curr.complete = true
+                            return curr
+                        })
+                        saveSwap()
+                        stopChecking()
+                        doneCallback()
+                        break
+                    }else{
+                        statusStore.set({errors: [`Error sending tokens: ${txInfo.result}`]})
+                    }
+                }
+
+                updateLastCheckedBlock(blockNum)
+            }
+        }catch(e){
+            console.log(e)
+            statusStore.set({errors: [`Error checking for Lamden Mint event: ${e.message}`]})
+        }
+    }
+
+    function updateLastCheckedBlock(blockNumber){
+        console.log({blockNumber})
+        swapInfo.update(curr => {
+            curr.lastLamdenBlockNum = blockNumber
+            return curr
+        })
+        lastCheckedBlockNum = blockNumber
+        saveSwap()
+    }
+
+    function checkForMatchingEvent(txInfo){
+
+        const { transaction } = txInfo
+        const { payload } = transaction
+        const { kwargs, contract, function: method } = payload
+
+        if (token.origin_lamden){
+            const { amount, to } = kwargs
+
+            console.log({
+                txInfo, contract, clearingHouse, method, amount, to
+            })
+
+            if (!to || !amount) return false
+
+            console.log(contract === clearingHouse)
+            console.log(method === "withdraw")
+            console.log(to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase())
+            console.log(new BN(amount.__fixed__).isEqualTo(new BN(swapInfoStore.tokenAmount)))
+
+            return  contract === clearingHouse && 
+                    method === "withdraw" &&
+                    to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
+                    new BN(amount.__fixed__).isEqualTo(new BN(swapInfoStore.tokenAmount))
+
+
+        }else{
+            const { amount, ethereum_contract, lamden_wallet } = kwargs
+
+            let tokenAmount = toBaseUnit(swapInfoStore.tokenAmount.toString(), swapInfoStore.token.decimals).toString()
+
+            console.log({
+                txInfo, contract, method, ethereum_contract, lamden_wallet, amount: new BN(amount).toString()
+            })
+
+            if (!ethereum_contract || !lamden_wallet || !amount) return false
+
+            return  contract === clearingHouse && 
+                    method === "mint" &&
+                    lamden_wallet.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
+                    new BN(amount).toString() === tokenAmount
+        }
+    }
+
+    function startChecking(){
+        statusStore.set({loading: true, status: `Checking Lamden for your ${swapInfoStore.mintedToken.symbol} tokens. This shouldn't take long...`})
+        check()
+        if (timer) stopChecking()
+        timer = setInterval(check, 30000)
+    }
+
+    function stopChecking(){
+        console.log("STOPPING CHECKING FOR LAMDEN EVENTS")
+        statusStore.set({})
+        clearInterval(timer)
+        timer = null
+    }
+
+    return {
+        startChecking,
+        stopChecking,
+        stopped: () => timer === null,
+        started: () => timer !== null
     }
 }
 
@@ -73,6 +273,18 @@ export async function sendBurnApproval(resultsTracker, callback){
         sendLamdenApproval(resultsTracker, callback)
     }
 }
+export async function sendDepositApproval(resultsTracker, callback){
+    if (!hasEnoughTauToSendTx("approval")) {
+        let lamdenNetworkInfo = get(lamdenNetwork)
+
+        let message = `Not enough Lamden ${lamdenNetworkInfo.currencySymbol} to send transactions. Send ${lamdenNetworkInfo.currencySymbol} to your Lamden Link account from within the Lamden Wallet.`
+
+        resultsTracker.set({loading: false, message})
+    } else {
+        resultsTracker.set({loading: true, status: 'Sending Deposit Approval. Check for Lamden Wallet Popup.'})
+        sendLamdenApproval(resultsTracker, callback)
+    }
+}
 
 function sendLamdenApproval (resultsTracker, callback){
     let lamdenNetworkInfo = get(lamdenNetwork)
@@ -105,6 +317,43 @@ function handleTxResults(txResults, resultsTracker, callback){
         let lamdenTxResultsHandler = TransactionResultHandler()
         lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, callback)
     }
+}
+
+export function startDeposit(resultsTracker, callback) {
+    if (!hasEnoughTauToSendTx("burn")) {
+        let lamdenNetworkInfo = get(lamdenNetwork)
+
+        let message = `Not enough Lamden ${lamdenNetworkInfo.currencySymbol} to send transactions. Send ${lamdenNetworkInfo.currencySymbol} to your Lamden Link account from within the Lamden Wallet.`
+
+        resultsTracker.set({loading: false, message})
+    } else {
+        let token = get(selectedToken)
+        resultsTracker.set({loading: true, status: `Attempting to Deposit ${token.name} into the Lamden Link Contract. Please check for Lamden Wallet popup...`})
+
+        sendDeposit(resultsTracker, callback)
+    }
+}
+
+function sendDeposit (resultsTracker, callback){
+    let lamdenNetworkInfo = get(lamdenNetwork)
+    let token = get(selectedToken)
+
+    let swapInfoStore = get(swapInfo)
+    let walletController = get(lwc)
+    const { tokenAmount, metamask_address } = swapInfoStore
+
+    const txInfo = {
+        networkType: lamdenNetworkInfo.clearingHouse.networkType,
+        contractName: token.lamden_clearinghouse,
+        methodName: 'deposit',
+        kwargs: {
+            amount: { __fixed__: tokenAmount.toString() },
+            ethereum_address: metamask_address
+        },
+        stampLimit: lamdenNetworkInfo.stamps.approval
+    }
+
+    walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
 }
 
 
@@ -159,6 +408,43 @@ function sendBurn (resultsTracker, callback) {
     walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
 }
 
+export async function continueDeposit(resultsTracker, callback){
+    let swapInfoStore = get(swapInfo)
+    let unSignedABI = swapInfoStore.unSignedABI
+
+    if (!unSignedABI){
+        if (swapInfoStore.depositHash){
+            resultsTracker.set({loading: true, status: 'Recovering Proof-of-Deposit from Lamden blockchain.'})
+            unSignedABI = await getUnsignedABIFromBlockchain()
+
+            if (!unSignedABI){
+                resultsTracker.set({loading: false, errors: ['Could not get Proof-of-Deposit the Lamden Blockchain.']})
+                return
+            }
+        }else{
+            resultsTracker.set({loading: false, errors: ['Could not find deposit hash in swap details.']})
+            return
+        }
+    }
+
+    const signedABI = await getProof(unSignedABI, resultsTracker)
+    
+    if (!signedABI) {
+        if (signedABI === null) return
+        resultsTracker.set({loading: false, errors: ['Invalid Proof-of-Deposit stored in deposit hash.']})
+        return
+    }
+
+    const proofData = processProof(unSignedABI, signedABI)
+
+    if (!proofData) {
+        resultsTracker.set({loading: false, errors: ['Malformed Proof-of-Deposit stored in deposit hash.']})
+        return
+    }
+
+    callback(proofData)
+}
+
 export async function continueBurn(resultsTracker, callback){
     let swapInfoStore = get(swapInfo)
     let unSignedABI = swapInfoStore.unSignedABI
@@ -198,9 +484,9 @@ export async function continueBurn(resultsTracker, callback){
 function getUnsignedABIFromBlockchain(){
     let lamdenNetworkInfo = get(lamdenNetwork)
     let swapInfoStore = get(swapInfo)
-    let burnTxHash = swapInfoStore.burnHash
+    let txHash = swapInfoStore.burnHash || swapInfoStore.depositHash
 
-    return fetch(`${lamdenNetworkInfo.apiLink}/transactions/get/${burnTxHash}`)
+    return fetch(`${lamdenNetworkInfo.apiLink}/transactions/get/${txHash}`)
         .then((res) => {
             if (res.status === 404) return
             else return res.json()
