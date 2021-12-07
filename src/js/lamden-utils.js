@@ -7,18 +7,19 @@ import { toBaseUnit } from './global-utils'
 import { saveSwap } from './localstorage-utils'
 
 export async function checkLamdenTokenBalance() {
-    let lamdenNetworkInfo = get(lamdenNetwork)
     let token_contract = get(selectedToken).address
     let vk = get(lamden_vk)
+    let networkType = get(selectedNetwork)
+
+    console.log({token_contract, vk, url:`/.netlify/functions/getLamdenTokenBalance?network=${networkType}&contract=${token_contract}&vk=${vk}`})
 
     try {
-        const res = await fetch(
-            `${lamdenNetworkInfo.apiLink}/states/${token_contract}/balances/${vk}`, {
-                method: 'GET',
-            },
-        )
-        return await getValueFromResponse(res)
+        const res = await fetch(`/.netlify/functions/getLamdenTokenBalance?network=${networkType}&contract=${token_contract}&vk=${vk}`)
+        console.log({res})
+        let val = await getValueFromResponse(res)
+        return val
     } catch (error) {
+        console.log(error)
         return new BN(0)
     }
 }
