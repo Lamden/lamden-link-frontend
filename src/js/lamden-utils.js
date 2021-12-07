@@ -11,11 +11,8 @@ export async function checkLamdenTokenBalance() {
     let vk = get(lamden_vk)
     let networkType = get(selectedNetwork)
 
-    console.log({token_contract, vk, url:`/.netlify/functions/getLamdenTokenBalance?network=${networkType}&contract=${token_contract}&vk=${vk}`})
-
     try {
         const res = await fetch(`/.netlify/functions/getLamdenTokenBalance?network=${networkType}&contract=${token_contract}&vk=${vk}`)
-        console.log({res})
         let val = await getValueFromResponse(res)
         return val
     } catch (error) {

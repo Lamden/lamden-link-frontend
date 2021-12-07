@@ -33,7 +33,7 @@
     async function refreshLamdenTokenBalance(){
         if (timer === null) return
         if (!$lamden_vk) return
-        console.log({lamden_vk: $lamden_vk})
+
         let val = await checkLamdenTokenBalance($lamden_vk)
         lamdenTokenBalance.set(val)
     }
