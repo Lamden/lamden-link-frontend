@@ -45,6 +45,7 @@
                 return curr
             })
             saveSwap()
+            done()
         }else{
             withdrawTxStatus.set({errors: ['Transactoin Failed. Check blockexplorer for details.']})
         }
