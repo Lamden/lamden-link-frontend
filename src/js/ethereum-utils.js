@@ -471,11 +471,12 @@ export function sendProofToEthereum(resultTracker, callback){
 async function checkEthTransactionUntilResult (txHash, w3, callback) {
     let txHashInfo = await checkEthTxStatus(txHash, w3)
     console.log({txHashInfo})
-    if (!txHashInfo || !txHashInfo.status)
+    if (!txHashInfo){
         setTimeout(
             () => checkEthTransactionUntilResult(txHash, w3, callback),
             30000,
         )
+    }
     else callback(txHashInfo)
 }
 
