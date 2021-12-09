@@ -49,6 +49,7 @@
                 return curr
             })
             saveSwap()
+            handleNextStep()
         }else{
             TWB_withdrawTxStatus.set({errors: ['Transactoin Failed. Check blockexplorer for details.']})
         }

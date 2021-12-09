@@ -499,7 +499,7 @@ function getUnsignedABIFromBlockchain(){
 
 const getProof = (unSignedABI, resultsTracker) =>
     new Promise((resolve) => {
-        let timesToCheck = 60
+        let timesToCheck = 30
         let timesChecked = 0
 
         let lamdenNetworkInfo = get(lamdenNetwork)
@@ -507,7 +507,7 @@ const getProof = (unSignedABI, resultsTracker) =>
         
         const checkAgain = () => {
             timesChecked = timesChecked + 1
-            if (timesChecked <= timesToCheck) setTimeout(checkForProof, 1000)
+            if (timesChecked <= timesToCheck) setTimeout(checkForProof, 5000)
             else {
                 resultsTracker.set({loading: false, message: `Timed out attempting to get Proof from the Lamden Blockchain. Checked ${timesToCheck} times.`})
                 resolve(null)

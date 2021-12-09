@@ -123,6 +123,7 @@ export async function checkTokenAllowance() {
 
 export function checkChain() {
     let networkInfo = getCorrectNetwork()
+    if (!networkInfo) return true // return true because we are not in swap
     let chainInfo = get(chainData)
     return chainInfo.chainId === networkInfo.chainId
 }
