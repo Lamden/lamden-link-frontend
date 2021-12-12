@@ -46,8 +46,6 @@
     }
 
     function handleBurnComplete(txResults){
-        txResults = {recheckFailed: true}
-
         if (txResults.recheckFailed) {
             recheckFailed = true
             return
