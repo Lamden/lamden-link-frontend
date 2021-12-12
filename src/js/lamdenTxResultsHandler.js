@@ -3,42 +3,53 @@ export const TransactionResultHandler = () => {
 
 	function parseTxResult(txResults, resultsTracker, callback) {
 		console.log({txResults})
-		if (txResults.errors) {
-			parseTxErrors(txResults.errors)
+		if (txResults.errors || txResults.error) {
+			parseTxErrors(txResults.errors || txResults.error)
 		}else{
-			if (txResults?.txBlockResult?.errors?.length > 0) {
-				let errors = txResults?.txBlockResult?.errors
-				parseTxErrors(errors)
-			}else{
-				if (txResults.resultInfo.title === "Transaction Pending"){
-					resultsObj.status = "Transaction sent, pending result"
+			if (txResults.hash){
+				if (txResults.status === 0) {
+					callback({txHash: txResults.hash})
+					return
 				}
-				if (typeof txResults.txBlockResult.status !== 'undefined') {
-					if (txResults.txBlockResult.status === 0) {
-						callback(txResults)
-						return
+				if (txResults.status === 1) {
+					parseTxErrors(txResults.result)
+				}
+			}else{
+				if (txResults?.txBlockResult?.errors?.length > 0) {
+					let errors = txResults?.txBlockResult?.errors
+					parseTxErrors(errors)
+				}else{
+					if (txResults.resultInfo.title === "Transaction Pending"){
+						resultsObj.status = "Transaction sent, pending result"
 					}
-					if (txResults.txBlockResult.status === 1) {
-						parseTxErrors(txResults.txBlockResult.errors)
+					if (typeof txResults.txBlockResult.status !== 'undefined') {
+						if (txResults.txBlockResult.status === 0) {
+							callback(txResults)
+							return
+						}
+						if (txResults.txBlockResult.status === 1) {
+							parseTxErrors(txResults.txBlockResult.errors)
+						}
 					}
+	
 				}
 			}
-
 		}
 
 		resultsTracker.set({loading: false, ...resultsObj})
     }
     
 	function parseTxErrors(errors){
+		console.log({errors})
 		if (Array.isArray(errors)){
 			resultsObj.errors = errors
 			for (let error in errors){
-				if (error.includes("10 hit while checking for TX Result")) callback({recheck: true, txHash: txResults.txHash})
+				if (error.includes("10 hit while checking for TX Result")) callback({recheck: true, txHash: txResults.hash || txResults.txHash})
 			}
 		}else{
 			if (typeof errors === 'string'){
 				resultsObj.errors = [error]
-				if (error.includes("10 hit while checking for TX Result")) callback({recheck: true, txHash: txResults.txHash})
+				if (error.includes("10 hit while checking for TX Result")) callback({recheck: true, txHash: txResults.hash || txResults.txHash})
 			}else{
 				resultsObj.errors = ['Unknown Transaction Error']
 			}

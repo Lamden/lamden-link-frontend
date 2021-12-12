@@ -92,7 +92,7 @@ export function checkLamdenTransaction(txHash, statusStore, callback){
         }
 
 
-        if (!txResults || !txResults.txHash || error){
+        if (!txResults || !txResults.hash || error){
             statusStore.set({loading: true, status: "Error: Cannot get transaction result from masternode."})
             callback({recheckFailed: true})
             return
@@ -115,7 +115,7 @@ export function checkLamdenTransaction(txHash, statusStore, callback){
         
     }
 
-    check()
+    setTimeout(check, 30000)
 }
 
 
