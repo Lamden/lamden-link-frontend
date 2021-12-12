@@ -67,24 +67,24 @@ export async function getLamdenTxResults(txHash){
 
     console.log(`https://${masternode}/tx?hash=${txHash}`)
 
-    return await fetch(`https://${masternode}/tx?hash=${txHash}`)
+    return fetch(`https://${masternode}/tx?hash=${txHash}`)
 
 }
 
-export async function checkLamdenTransaction(txHash, statusStore, callback){   
+export function checkLamdenTransaction(txHash, statusStore, callback){   
     console.log({txHash, statusStore, callback})
     let timesChecked = 0
     let timesToCheck = 60
 
     statusStore.set({loading: true, status: "Checking status of burn transaction..."})
 
-    function check(){
+    async function check(){
         timesChecked = timesChecked + 1
 
         let error = false
 
         try{
-            var txResults = getLamdenTxResults(txHash)
+            var txResults = await getLamdenTxResults(txHash)
             console.log({txResults})
         }catch(e){
             console.log(e)
