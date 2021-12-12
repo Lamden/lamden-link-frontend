@@ -46,7 +46,7 @@
     }
 
     function handleBurnComplete(txResults){
-        txResults = {txHash: txResults.txHash, recheck: true}
+        txResults = {recheckFailed: true}
 
         if (txResults.recheckFailed) {
             recheckFailed = true
@@ -75,7 +75,7 @@
 
 
     }
-    
+
     function handleCheckAgain(){
         checkLamdenTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
     }
