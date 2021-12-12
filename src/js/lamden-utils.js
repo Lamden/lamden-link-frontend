@@ -61,6 +61,8 @@ export async function getCurrentLamdenBlockNum(){
 export async function getLamdenTxResults(txHash){
     let networkType = get(selectedNetwork)
 
+    console.log({networkType})
+
     let masternode = masternode_MAP[networkType]
 
     console.log(`https://${masternode}/tx?hash=${txHash}`)
