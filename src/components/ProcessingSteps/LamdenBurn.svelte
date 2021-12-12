@@ -47,7 +47,7 @@
 
     function handleBurnComplete(txResults){
         txResults = {txHash: txResults.txHash, recheck: true}
-        
+
         if (txResults.recheckFailed) {
             recheckFailed = true
             return
@@ -75,9 +75,11 @@
 
 
     }
+    
     function handleCheckAgain(){
-        checkLamdenTransaction($swapInfo.burnHash, burnApprovalTxStatus, handleBurnComplete)
+        checkLamdenTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
     }
+
     function handleInputBurnHash(){
         var burnHash = prompt("Please enter the tx hash of your successful burn transaction.  This can be found by looking up your lamden wallet address at www.tauhq.com", "");
 

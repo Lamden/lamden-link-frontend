@@ -71,12 +71,17 @@ export async function getLamdenTxResults(txHash){
 
 }
 
-export function checkLamdenTransaction(txHash, statusStore, callback){   
-    console.log({txHash, statusStore, callback})
+export function checkLamdenTransaction(txHash, resultsTracker, callback){   
+    console.log({txHash, resultsTracker, callback})
     let timesChecked = 0
     let timesToCheck = 60
 
-    statusStore.set({loading: true, status: "Checking status of burn transaction..."})
+    resultsTracker.set({loading: true, status: "Checking status of burn transaction..."})
+
+    function handleTxResults(txResults){
+        let lamdenTxResultsHandler = TransactionResultHandler()
+        lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, callback)
+    }
 
     async function check(){
         timesChecked = timesChecked + 1
@@ -93,7 +98,7 @@ export function checkLamdenTransaction(txHash, statusStore, callback){
 
 
         if (!txResults || !txResults.hash || error){
-            statusStore.set({loading: true, status: "Error: Cannot get transaction result from masternode."})
+            resultsTracker.set({loading: true, status: "Error: Cannot get transaction result from masternode."})
             callback({recheckFailed: true})
             return
         }
@@ -101,16 +106,16 @@ export function checkLamdenTransaction(txHash, statusStore, callback){
         if (txResults.error){
             if (txResults.error === "Transaction not found.") {
                 if (timesToCheck <= timesChecked){
-                    statusStore.set({error: "Error: Cannot find status of burn transaction."})
+                    resultsTracker.set({error: "Error: Cannot find status of burn transaction."})
                     callback({recheckFailed: true})
                 }else {
                     setTimeout(check, 5000)
                 }
             }else{
-                handleTxResults(txResults, statusStore, callback)
+                handleTxResults(txResults)
             }
         }else{
-            handleTxResults(txResults, statusStore, callback)
+            handleTxResults(txResults)
         }
         
     }
