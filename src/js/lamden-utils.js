@@ -67,7 +67,7 @@ export async function getLamdenTxResults(txHash){
 
     console.log(`https://${masternode}/tx?hash=${txHash}`)
 
-    return fetch(`https://${masternode}/tx?hash=${txHash}`)
+    return fetch(`https://${masternode}/tx?hash=${txHash}`).then(res => res.json())
 
 }
 
