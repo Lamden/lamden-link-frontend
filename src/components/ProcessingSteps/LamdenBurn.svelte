@@ -46,6 +46,8 @@
     }
 
     function handleBurnComplete(txResults){
+        txResults = {txHash: txResults.txHash, recheck: true}
+        
         if (txResults.recheckFailed) {
             recheckFailed = true
             return
@@ -90,7 +92,7 @@
         }
         handleCheckAgain()
     }
-    
+
     function handleNextStep(){
         nextStep()
     }
