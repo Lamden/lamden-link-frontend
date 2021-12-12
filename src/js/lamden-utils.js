@@ -6,6 +6,11 @@ import { TransactionResultHandler } from './lamdenTxResultsHandler'
 import { toBaseUnit } from './global-utils'
 import { saveSwap } from './localstorage-utils'
 
+let masternode_MAP = {
+    testnet: "testnet-master-1.lamden.io",
+    mainnet: "masternode-01.lamden.io"
+}
+
 export async function checkLamdenTokenBalance() {
     let token_contract = get(selectedToken).address
     let vk = get(lamden_vk)
@@ -51,6 +56,59 @@ export async function getCurrentLamdenBlockNum(){
             console.log(err)
             return err
         });
+}
+
+export async function getLamdenTxResults(txHash){
+    let networkType = get(selectedNetwork)
+
+    let masternode = masternode_MAP[networkType]
+
+    return fetch(`https://${masternode}/tx?hash=${txHash}`)
+
+}
+
+export async function checkLamdenTransaction(txHash, statusStore, callback){   
+    let timesChecked = 0
+    let timesToCheck = 60
+
+    statusStore.set({loading: true, status: "Checking status of burn transaction..."})
+
+    function check(){
+        timesChecked = timesChecked + 1
+
+        let error = false
+
+        try{
+            var txResults = getLamdenTxResults(txHash)
+        }catch(e){
+            error = true
+        }
+
+
+        if (!txResults || !txResults.txHash || error){
+            statusStore.set({loading: true, status: "Error: Cannot get transaction result from masternode."})
+            callback({recheckFailed: true})
+            return
+        }
+
+        if (txResults.error){
+            if (txResults.error === "Transaction not found.") {
+                if (timesToCheck <= timesChecked){
+                    statusStore.set({error: "Error: Cannot find status of burn transaction."})
+                    callback({recheckFailed: true})
+                }else {
+                    setTimeout(check, 5000)
+                }
+            }else{
+                handleTxResults(txResults, statusStore, callback)
+            }
+        }else{
+            handleTxResults(txResults, statusStore, callback)
+        }
+        
+    }
+
+    check()
 }
 
 

@@ -9,7 +9,7 @@
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { burnTxStatus, burnApprovalTxStatus, lamdenTokenApprovalAmount, lamdenCurrencyBalance } from '../../stores/lamdenStores'
     import { stringToFixed } from '../../js/global-utils'
-    import { checkLamdenTokenApproval, sendBurnApproval, startBurn, checkLamdenBalance } from '../../js/lamden-utils'
+    import { checkLamdenTokenApproval, sendBurnApproval, startBurn, checkLamdenBalance, checkLamdenTransaction } from '../../js/lamden-utils'
     import { saveSwap } from '../../js/localstorage-utils'
 
     export let current
@@ -18,8 +18,10 @@
 
     const { nextStep } = getContext('process_swap')
 
+    let recheckFailed = false
+
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
-    $: burnComplete = $swapInfo.burnHash || false
+    $: burnComplete = $swapInfo.burnSuccess || false
 
     async function refreshApprovalAmount(){
         lamdenTokenApprovalAmount.set(await checkLamdenTokenApproval())
@@ -44,12 +46,35 @@
     }
 
     function handleBurnComplete(txResults){
-        swapInfo.update(curr => {
-            curr.burnHash = txResults.txHash
-            curr.started = new Date()
-            return curr
-        })
-        saveSwap()
+        if (txResults.recheckFailed) {
+            recheckFailed = true
+            return
+        }
+        if (txResults.recheck){
+            if (!$swapInfo.burnHash){
+                swapInfo.update(curr => {
+                    curr.burnHash = txResults.txHash
+                    curr.started = new Date()
+                    return curr
+                })
+                saveSwap()
+            }
+            handleCheckAgain()
+        }else{
+            recheckFailed = false
+            swapInfo.update(curr => {
+                curr.burnHash = txResults.txHash
+                curr.burnSuccess = true
+                curr.started = new Date()
+                return curr
+            })
+            saveSwap()
+        }
+
+
+    }
+    function handleCheckAgain(){
+        checkLamdenTransaction($swapInfo.burnHash, burnApprovalTxStatus, handleBurnComplete)
     }
     function handleNextStep(){
         nextStep()
@@ -113,6 +138,9 @@
         <button class="success" on:click={handleNextStep}>Next Step</button>
     {/if}
 
+    {#if recheckFailed}
+        <button on:click={handleCheckAgain}>Check Again</button>
+    {/if}
     
 
 {/if}

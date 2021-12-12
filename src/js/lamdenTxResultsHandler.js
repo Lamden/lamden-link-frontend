@@ -32,9 +32,13 @@ export const TransactionResultHandler = () => {
 	function parseTxErrors(errors){
 		if (Array.isArray(errors)){
 			resultsObj.errors = errors
+			for (let error in errors){
+				if (error.includes("10 hit while checking for TX Result")) callback({recheck: true, txHash: txResults.txHash})
+			}
 		}else{
 			if (typeof errors === 'string'){
-                resultsObj.errors = [error]
+				resultsObj.errors = [error]
+				if (error.includes("10 hit while checking for TX Result")) callback({recheck: true, txHash: txResults.txHash})
 			}else{
 				resultsObj.errors = ['Unknown Transaction Error']
 			}
