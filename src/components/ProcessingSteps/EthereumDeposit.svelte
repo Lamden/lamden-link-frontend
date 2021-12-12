@@ -7,9 +7,11 @@
 
     // Misc
     import { sendEthChainDeposit, attemptToGetCurrentBlock, checkForEthereumEvents } from '../../js/ethereum-utils'
+    import { attemptToGetLamdenCurrentBlock } from '../../js/lamden-utils'
     import { saveSwap } from '../../js/localstorage-utils'
     import { depositTxStatus, currentBlockStatus, checkEthEverntsStatus } from '../../stores/ethereumStores'
     import { getNetworkStore, tabHidden } from '../../stores/globalStores'
+    import { checkLamdenCurrentBlockStatus } from '../../stores/lamdenStores'
     import { swapInfo } from '../../stores/globalStores'
 
     export let current
@@ -45,6 +47,18 @@
             if (ethereumEventChecker.stopped()) ethereumEventChecker.startChecking()
         })
         .catch(err => console.log(err))
+
+        if (!$swapInfo.lastLamdenBlockNum){
+            attemptToGetLamdenCurrentBlock(checkLamdenCurrentBlockStatus)
+            .then((block) => {
+                swapInfo.update(curr => {
+                    curr.lastLamdenBlockNum = block
+                    return curr
+                })
+                saveSwap()
+            })
+            .catch(err => console.log(err))
+        }
     }
 
 
