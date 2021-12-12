@@ -63,11 +63,14 @@ export async function getLamdenTxResults(txHash){
 
     let masternode = masternode_MAP[networkType]
 
+    console.log(`https://${masternode}/tx?hash=${txHash}`)
+
     return fetch(`https://${masternode}/tx?hash=${txHash}`)
 
 }
 
 export async function checkLamdenTransaction(txHash, statusStore, callback){   
+    console.log({txHash, statusStore, callback})
     let timesChecked = 0
     let timesToCheck = 60
 
@@ -80,7 +83,9 @@ export async function checkLamdenTransaction(txHash, statusStore, callback){
 
         try{
             var txResults = getLamdenTxResults(txHash)
+            console.log({txResults})
         }catch(e){
+            console.log(e)
             error = true
         }
 
