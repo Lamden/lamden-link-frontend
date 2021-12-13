@@ -4,6 +4,7 @@
     // Misc
     import { swapInfo } from '../stores/globalStores'
     import { clearCurrentSwap } from '../js/localstorage-utils';
+    import { copyToClipboard } from '../js/global-utils';
 
     let copiedSwapInfo = false
 
