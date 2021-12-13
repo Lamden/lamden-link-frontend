@@ -71,56 +71,103 @@ export async function getLamdenTxResults(txHash){
 
 }
 
-export function checkLamdenTransaction(txHash, resultsTracker, callback){   
-    console.log({txHash, resultsTracker, callback})
-    let timesChecked = 0
-    let timesToCheck = 60
+export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
+    const onSuccessfulResult = (txResults) => {
+        let swapInfoStore = get(swapInfo)
+
+        const { token } = swapInfoStore
+
+        if (txResults.recheck) callback(txResults)
+        try{
+            const { payload } = txResults.transaction
+            const { contract, function: method, kwargs } = payload
+            const { amount, ethereum_address } = kwargs
+
+            let tokenAmount = getValueFromFixed(amount)
+
+            if (contract !== token.lamden_clearinghouse){
+                resultsTracker.set({errors: [`Error: Invalid Lamden Link Contract Name in burn hash.`]})
+                return
+            }
+
+            if (method !== "burn"){
+                resultsTracker.set({errors: [`Error: This is not a Burn Transaction.`]})
+                return
+            }
+
+            if (ethereum_address !== swapInfoStore.metamask_address){
+                resultsTracker.set({errors: [`Error: This burn hash is for a different metamask address than the one selected.`]})
+                return
+            }
+
+            if (!swapInfoStore.tokenAmount.isEqualTo(tokenAmount)){
+                resultsTracker.set({errors: [`Error: Amount in burn hash does not match swap details.`]})
+                return
+            }
+
+            callback(txResults)
+
+        }catch(e){
+            console.log(e)
+            resultsTracker.set({errors: ["Error: Invalid Burn Transcation Hash."]})
+        }
+
+    }
 
     resultsTracker.set({loading: true, status: "Checking status of burn transaction..."})
 
-    function handleTxResults(txResults){
-        let lamdenTxResultsHandler = TransactionResultHandler()
-        lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, callback)
-    }
-
-    async function check(){
-        timesChecked = timesChecked + 1
-
-        let error = false
-
-        try{
-            var txResults = await getLamdenTxResults(txHash)
-            console.log({txResults})
-        }catch(e){
-            console.log(e)
-            error = true
-        }
-
-
-        if (!txResults || !txResults.hash || error){
-            resultsTracker.set({loading: true, status: "Error: Cannot get transaction result from masternode."})
-            callback({recheckFailed: true})
-            return
-        }
-
+    getLamdenTransaction(txHash).then(txResults => {
+        console.log({txResults})
         if (txResults.error){
-            if (txResults.error === "Transaction not found.") {
-                if (timesToCheck <= timesChecked){
-                    resultsTracker.set({error: "Error: Cannot find status of burn transaction."})
-                    callback({recheckFailed: true})
-                }else {
-                    setTimeout(check, 5000)
+            resultsTracker.set({errors: [txResults.error]})
+            callback({recheckFailed: true})
+        }
+    
+        let lamdenTxResultsHandler = TransactionResultHandler()
+        lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, onSuccessfulResult)
+    })
+}
+
+export function getLamdenTransaction(txHash, resultsTracker, callback){
+    return new Promise(resolver => {
+        console.log({txHash, resultsTracker, callback})
+        let timesChecked = 0
+        let timesToCheck = 2
+
+        function recheck(){
+            if (timesToCheck <= timesChecked){
+                resolver({error: "Error: Cannot find burn transaction result on Lamden."})
+            }else {
+                setTimeout(check, 5000)
+            }
+        }
+
+        async function check(){
+            timesChecked = timesChecked + 1
+
+            try{
+                var txResults = await getLamdenTxResults(txHash)
+            }catch(e){
+                console.log(e)
+                var txResults = {error: e.message}
+            }
+
+            console.log({txResults})
+
+            if (txResults.error){
+                if (txResults.error === "Transaction not found.") {
+                    recheck()
+                }else{
+                    resolver(txResults)
                 }
             }else{
-                handleTxResults(txResults)
-            }
-        }else{
-            handleTxResults(txResults)
-        }
-        
-    }
+                resolver(txResults)
 
-    setTimeout(check, 30000)
+            }
+        }
+        setTimeout(check, 5000)
+    })   
+    
 }
 
 
@@ -310,18 +357,15 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
 }
 
 export async function checkLamdenTokenApproval() {
-    let lamdenNetworkInfo = get(lamdenNetwork)
+    let networkType = get(selectedNetwork)
     let token = get(selectedToken)
     let token_contract = token.address
     let clearinghouse = token.lamden_clearinghouse
     let vk = get(lamden_vk)
 
     try {
-        const res = await fetch(
-            `${lamdenNetworkInfo.apiLink}/states/${token_contract}/balances/${vk}:${clearinghouse}`, {
-                method: 'GET',
-            },
-        ).catch((e) => console.log({e}))
+        const res = await fetch(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${clearinghouse}`)
+            .catch((e) => console.log({e}))
         let value = await getValueFromResponse(res)
         lamdenTokenApprovalAmount.set(value)
     } catch (error) {
@@ -635,13 +679,16 @@ function processProof(unSignedABI, signedABI) {
 async function getValueFromResponse(res){
     if (res.status === 200) {
         let json = await res.json()
-        let value = json.value
-        if (value) {
-            if (value.__fixed__) return new BN(value.__fixed__)
-            else return new BN(value)
-        } else {
-            return new BN(0)
-        }
+        return getValueFromFixed(json.value)
+    } else {
+        return new BN(0)
+    }
+}
+
+function getValueFromFixed(value){
+    if (value) {
+        if (value.__fixed__) return new BN(value.__fixed__)
+        else return new BN(value)
     } else {
         return new BN(0)
     }

@@ -9,7 +9,7 @@
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { burnTxStatus, burnApprovalTxStatus, lamdenTokenApprovalAmount, lamdenCurrencyBalance } from '../../stores/lamdenStores'
     import { stringToFixed } from '../../js/global-utils'
-    import { checkLamdenTokenApproval, sendBurnApproval, startBurn, checkLamdenBalance, checkLamdenTransaction } from '../../js/lamden-utils'
+    import { sendBurnApproval, startBurn, checkLamdenBalance, checkLamdenBurnTransaction } from '../../js/lamden-utils'
     import { saveSwap } from '../../js/localstorage-utils'
 
     export let current
@@ -22,16 +22,21 @@
 
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
     $: burnComplete = $swapInfo.burnSuccess || false
+    $: autoNext = burnComplete ? handleNextStep() : null
+    $: hasBurnHash = $swapInfo.burnHash || false
 
-    async function refreshApprovalAmount(){
-        lamdenTokenApprovalAmount.set(await checkLamdenTokenApproval())
-    }
 
     function handleApproveBurn(){
+
         sendBurnApproval(burnApprovalTxStatus, handleApproveBurnComplete)
     }
 
     function handleStartBurn(){
+        if ($swapInfo.burnHash){
+            let agree = confirm("Lamden Link has detected that you already created a burn transaction for this swap.\nCreating a second burn transaction will almost always result in loss of funds.\n\nClick the OK button if your previous Burn Transaction failed and you would like to create a new one.\nClick CANCEL if you have a pending Burn Transaction.");
+            if (!agree) return
+        }
+
         startBurn(burnTxStatus, handleBurnComplete)
     }
 
@@ -42,6 +47,7 @@
             curr.burnApproveHash = txResults.txHash
             return curr
         })
+        saveSwap()
         lamdenCurrencyBalance.set(await checkLamdenBalance())
     }
 
@@ -69,28 +75,41 @@
                 return curr
             })
             saveSwap()
+            handleNextStep()
         }
 
 
     }
 
     function handleCheckAgain(){
-        checkLamdenTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
+        if ($swapInfo.burnHash != null && $swapInfo.burnHash.length === 64) {
+            checkLamdenBurnTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
+        }else{
+            burnTxStatus.set({errors:"Invalid Burn Transaction hash."})
+        }
+        
     }
 
     function handleInputBurnHash(){
-        var burnHash = prompt("Please enter the tx hash of your successful burn transaction.  This can be found by looking up your lamden wallet address at www.tauhq.com", "");
+        var burnHash = prompt("Please enter the tx hash of your successful burn transaction.  This can be found by looking up your lamden wallet address at www.tauhq.com\n\nIf you haven't created a Burn Transaction yet then click CANCEL and click the 'Create Burn Transaction' button.", "");
+
+        if (burnHash === null) return
 
         burnHash = burnHash.trim()
 
-        if (burnHash != null && burnHash.length === 64) {
+        console.log({burnHash})
+
+        if (burnHash.length === 64) {
             swapInfo.update(curr => {
-                curr.burnHash = txResults.txHash
+                curr.burnHash = burnHash
                 return curr
             })
             saveSwap()
+            handleCheckAgain()
+        }else{
+            burnTxStatus.set({errors:"Invalid Burn Transaction hash."})
         }
-        handleCheckAgain()
+        
     }
 
     function handleNextStep(){
@@ -100,8 +119,7 @@
 
 <style>
     button{
-        margin: 0 0 0 auto;
-        display: block;
+        margin-left: 1em;
     }
     strong{
         margin-right: 1em;
@@ -134,31 +152,43 @@
         {/if}
     </ul>
 
-
     {#if !hasTokenApproval && !burnComplete}
         <Status statusStore={burnApprovalTxStatus} />
-        {#if !$burnApprovalTxStatus.loading}
-            <button on:click={handleApproveBurn}>Approve Burn</button>
-        {/if}
-        
     {/if}
 
     {#if hasTokenApproval && !burnComplete}
         <Status statusStore={burnTxStatus} />
-        {#if !$burnTxStatus.loading}
-            <button on:click={handleStartBurn}>Start Burn</button>
-        {/if}
-        
     {/if}
 
-    {#if burnComplete && current}
-        <button class="success" on:click={handleNextStep}>Next Step</button>
-    {/if}
+    {#if current || !complete}
+        <div class="flex row just-end">
+            {#if !hasTokenApproval && !burnComplete}
+                {#if !$burnApprovalTxStatus.loading}
+                    <button on:click={handleApproveBurn}>Approve Burn</button>
+                {/if}
+                
+            {/if}
 
-    {#if recheckFailed}
-        <button on:click={handleCheckAgain}>Check Again</button>
-        <button on:click={handleInputBurnHash}>Input Burn Hash</button>
-    {/if}
-    
+            {#if hasTokenApproval}
+                {#if !burnComplete}
+                    {#if !$burnTxStatus.loading}
+                        {#if $swapInfo.burnHash}
+                            <button class="secondary" on:click={handleStartBurn}>Create Another Burn Transaction</button>
+                        {:else}
+                            <button class="success" on:click={handleStartBurn}>Create Burn Transaction</button>
+                        {/if}
+                        
+                    {/if}
 
+                    {#if hasBurnHash }
+                        <button on:click={handleCheckAgain}>Check Transaction Again</button>
+                    {/if}
+
+                    <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
+                {/if}
+
+
+            {/if}
+        </div>
+    {/if}
 {/if}

@@ -8,7 +8,7 @@ export const TransactionResultHandler = () => {
 		}else{
 			if (txResults.hash){
 				if (txResults.status === 0) {
-					callback({txHash: txResults.hash})
+					callback({...txResults, txHash: txResults.hash})
 					return
 				}
 				if (txResults.status === 1) {
