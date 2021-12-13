@@ -65,7 +65,6 @@
         {#if networkName && txHash}
             <button on:click={handleOpenTxHash}>View Transaction</button>
         {/if}
-        <button on:click={handleOpenSuport}>Get Help</button>
     </div>
 {/if}
 

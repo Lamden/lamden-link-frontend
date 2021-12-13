@@ -49,7 +49,6 @@
             if (Object.keys(info.approvals).includes($selectedNetwork)){
                 hasNetworkApproval.set({approved: true})
                 lamden_vk.set($lwc.walletAddress)
-                resuming && !complete ? nextStep() : null
             }
         }
         if (!info.errors){
@@ -67,6 +66,10 @@
             curr.lamden_address = $lamden_vk
             return curr
         })
+        getAllowanceAndNext()
+    }
+
+    async function getAllowanceAndNext(){
         if (tokenFromMe) await checkLamdenTokenApproval()
         nextStep()
     }
