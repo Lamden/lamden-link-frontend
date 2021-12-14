@@ -69,7 +69,7 @@
         <div class="flex row">
             <TokenLogo token={$lastSwap.token} clickable={false} />
             <p>
-                <strong>{`${stringToFixed($lastSwap.tokenAmount, 8)} ${$lastSwap.token.symbol}`}</strong> successfully sent to the {$lastSwap.toNetwork.networkName}
+                <strong>{`${stringToFixed($lastSwap.tokenAmount, 6)} ${$lastSwap.token.symbol}`}</strong> successfully sent to the {$lastSwap.toNetwork.networkName}
             </p>
         </div>
         <p class="date text-primary-dim">sent on {new Date($lastSwap.completeDate).toLocaleString()}</p>

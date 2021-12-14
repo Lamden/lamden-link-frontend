@@ -61,7 +61,7 @@
 {#if input && !burnComplete}
     <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
         <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-        {`${stringToFixed($lamdenTokenBalance, 8)} ${$selectedToken.symbol}`}
+        {`${stringToFixed($lamdenTokenBalance, 6)} ${$selectedToken.symbol}`}
     </div>
 
     <p>How much {$selectedToken.symbol} to send?</p>
