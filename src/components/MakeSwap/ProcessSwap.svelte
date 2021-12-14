@@ -75,7 +75,10 @@
                 },
                 {
                     name: "Withdraw Tokens",
-                    desc: "This transaction will use the Proof-of-Deposit from the previous transaction to withdraw your tokens on the Binance Smart Chain.",
+                    desc: [
+                        "This transaction will use the Proof-of-Deposit from the previous transaction to withdraw your tokens on the Binance Smart Chain.",
+                        "Be patient and allow the operator to get to your swap. If the proof-of-burn is not found, please click the 'Try Again' button."
+                    ],
                     type: "transaction",
                     network: 'binance',
                     component: TWB_EthereumWithdraw
@@ -93,7 +96,10 @@
                 },
                 {
                     name: "Withdraw Tokens",
-                    desc: "This transaction will use the Proof-of-Burn from the previous transaction to withdraw your tokens on the Binance Smart Chain.",
+                    desc: [
+                        "This transaction will use the proof-of-Bburn from the previous transaction to withdraw your tokens on the Binance Smart Chain.",
+                        "Be patient and allow the operator to get to your swap. If the proof-of-burn is not found, please click the 'Try Again' button."
+                    ],
                     type: "transaction",
                     network: 'binance',
                     component: EthereumWithdraw

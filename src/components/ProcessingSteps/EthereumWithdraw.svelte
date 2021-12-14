@@ -84,7 +84,7 @@
 
     {#if !$withdrawTxStatus.loading }
         {#if !swapComplete}
-                <button on:click={withdrawTokens}>{clicked ? "Withdraw Tokens" : "Try Again"}</button>
+                <button on:click={withdrawTokens}>{clicked ? "Try Again" : "Withdraw Tokens"}</button>
         {/if }
 
         {#if swapComplete}
