@@ -1,6 +1,3 @@
-import * as clearinghouse_abi from './clearinghouse_abi.js'
-import * as twb_clearinghouse_abi from './twb_clearinghouse_abi.js'
-
 /*
     BDT Mainnet info
     {
@@ -90,7 +87,7 @@ export const mainnet = {
         network_symbol: "ETH",
         clearingHouse: {
             address: '0xF881aC8E0BAe5FCFE125e88c5F90A693aF3EA8Cb',
-            abi: clearinghouse_abi.abi
+            abi: 'clearinghouse_abi'
         },
         tokens: {
             lamden:[{
@@ -113,7 +110,7 @@ export const mainnet = {
         networkName: "Binance Smart Chain Mainnet",
         clearingHouse: {
             address: '0x7F15E7c3Dff596291727F1ba46E98D5DE0697e3d',
-            abi: clearinghouse_abi.abi
+            abi: 'clearinghouse_abi'
         },
         tokens: {
             lamden:[{
@@ -124,7 +121,7 @@ export const mainnet = {
                 lamden_clearinghouse: 'direct',
                 clearingHouse: {
                     address: '0x4D635E82c801dCF121F61389167605C5A7117D77',
-                    abi: twb_clearinghouse_abi.abi
+                    abi: 'twb_clearinghouse_abi'
                 },
                 origin_lamden: true
             },
@@ -242,7 +239,7 @@ export const testnet = {
         networkName: "Kovan Test Network",
         clearingHouse: {
             address: '0xF69Fae70CC5Af8f3A8DE496Bf06C6bC021baDea0',
-            abi: clearinghouse_abi.abi
+            abi: 'clearinghouse_abi'
         },
         tokens: {
             lamden: [{
@@ -269,7 +266,7 @@ export const testnet = {
         networkName: "Binance Smart Chain Test Network",
         clearingHouse: {
             address: '0xA57dd4494D991840D43df0146f51a0A10A34327f',
-            abi: clearinghouse_abi.abi
+            abi: 'clearinghouse_abi'
         },
         tokens: {
             lamden: [
@@ -281,7 +278,7 @@ export const testnet = {
                     lamden_clearinghouse: 'direct',
                     clearingHouse: {
                         address: '0x349D52D92ad99dF4d424D815f9f8A5d2aFE4eFc1',
-                        abi: twb_clearinghouse_abi.abi
+                        abi: 'twb_clearinghouse_abi'
                     },
                     origin_lamden: true
                 },

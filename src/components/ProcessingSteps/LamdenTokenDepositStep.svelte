@@ -9,7 +9,7 @@
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { depositTxStatus, depositApprovalTxStatus, lamdenTokenApprovalAmount, lamdenCurrencyBalance } from '../../stores/lamdenStores'
     import { stringToFixed } from '../../js/global-utils'
-    import { sendDepositApproval, startDeposit, checkLamdenBalance } from '../../js/lamden-utils'
+    import { sendDepositApproval, startDeposit, checkLamdenBalance, checkLamdenDepositTransaction } from '../../js/lamden-utils'
     import { saveSwap } from '../../js/localstorage-utils'
 
     export let current
@@ -18,16 +18,20 @@
 
     const { nextStep } = getContext('process_swap')
 
-
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
-    $: depositComplete = $swapInfo.depositHash || false
+    $: depositComplete = $swapInfo.depositSuccess || false
     $: autoNext = depositComplete ? handleNextStep() : null
+    $: hasDepositHash = $swapInfo.depositHash || false
 
     function handleApproveDeposit(){
         sendDepositApproval(depositApprovalTxStatus, handleApproveDepositComplete)
     }
 
     function handleStartDeposit(){
+        if ($swapInfo.depositHash){
+            let agree = confirm("Lamden Link has detected that you already created a deposit transaction for this swap.\nCreating a second deposit transaction will almost always result in loss of funds.\n\nClick the OK button if your previous Deposit Transaction failed and you would like to create a new one.\nClick CANCEL if you have a pending Deposit Transaction.");
+            if (!agree) return
+        }
         startDeposit(depositTxStatus, handleDepositComplete)
     }
 
@@ -38,17 +42,65 @@
             curr.depositApproveHash = txResults.txHash
             return curr
         })
+        saveSwap()
         lamdenCurrencyBalance.set(await checkLamdenBalance())
     }
 
     function handleDepositComplete(txResults){
-        swapInfo.update(curr => {
-            curr.depositHash = txResults.txHash
-            curr.started = new Date()
-            return curr
-        })
-        saveSwap()
+        if (txResults.recheckFailed) return
+
+        if (txResults.recheck){
+            if (!$swapInfo.depositHash){
+                swapInfo.update(curr => {
+                    curr.depositHash = txResults.txHash
+                    curr.started = new Date()
+                    return curr
+                })
+                saveSwap()
+            }
+            handleCheckAgain()
+        }else{
+            swapInfo.update(curr => {
+                curr.depositHash = txResults.txHash
+                curr.depositSuccess = true
+                curr.started = new Date()
+                return curr
+            })
+            saveSwap()
+            handleNextStep()
+        }
     }
+
+    function handleCheckAgain(){
+        if ($swapInfo.depositHash != null && $swapInfo.depositHash.length === 64) {
+            checkLamdenDepositTransaction($swapInfo.depositHash, depositTxStatus, handleDepositComplete)
+        }else{
+            depositTxStatus.set({errors:"Invalid deposit transaction hash."})
+        }   
+    }
+
+    function handleInputDepositHash(){
+        var depositHash = prompt("Please enter the tx hash of your successful deposit transaction.  This can be found by looking up your lamden wallet address at www.tauhq.com\n\nIf you haven't created a depoist transaction yet then click CANCEL and click the 'Create Depoist Transaction' button.", "");
+
+        if (depositHash === null) return
+
+        depositHash = depositHash.trim()
+
+        console.log({depositHash})
+
+        if (depositHash.length === 64) {
+            swapInfo.update(curr => {
+                curr.depositHash = depositHash
+                return curr
+            })
+            saveSwap()
+            handleCheckAgain()
+        }else{
+            depositTxStatus.set({errors:"You entered an invalid deposit transaction hash."})
+        }
+        
+    }
+
     function handleNextStep(){
         nextStep()
     }
@@ -56,8 +108,7 @@
 
 <style>
     button{
-        margin: 0 0 0 auto;
-        display: block;
+        margin-left: 1em;
     }
     strong{
         margin-right: 1em;
@@ -66,6 +117,12 @@
 </style>
 
 {#if current || complete}
+    <div class="flex row align-center">
+        <p class="text-warning"><strong>{depositComplete ? "Deposited" : "Depositing"}</strong></p>
+        <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
+        {`${stringToFixed($swapInfo.tokenAmount, 8)} ${$selectedToken.symbol}`}        
+    </div> 
+
     <ul>
         <li class:yes={hasTokenApproval || depositComplete}>
             <span>
@@ -83,33 +140,43 @@
         {/if}
     </ul>
 
-    <div class="flex row align-center">
-        <p class="text-warning"><strong>{depositComplete ? "Deposited" : "Depositing"}</strong></p>
-        <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-        {`${stringToFixed($swapInfo.tokenAmount, 8)} ${$selectedToken.symbol}`}        
-    </div> 
-
-
     {#if !hasTokenApproval && !depositComplete}
         <Status statusStore={depositApprovalTxStatus} />
-        {#if !$depositApprovalTxStatus.loading}
-            <button on:click={handleApproveDeposit}>Approve Deposit</button>
-        {/if}
-        
     {/if}
 
     {#if hasTokenApproval && !depositComplete}
         <Status statusStore={depositTxStatus} />
-        {#if !$depositTxStatus.loading}
-            <button on:click={handleStartDeposit}>Start Deposit</button>
-        {/if}
-        
     {/if}
 
-    {#if depositComplete && current}
-        <button class="success" on:click={handleNextStep}>Next Step</button>
+    {#if current || !complete}
+        <div class="flex row just-end">
+            {#if !hasTokenApproval && !depositComplete}
+                {#if !$depositApprovalTxStatus.loading}
+                    <button on:click={handleApproveDeposit}>Approve Deposit</button>
+                {/if}
+                
+            {/if}
+
+            {#if hasTokenApproval}
+                {#if !depositComplete}
+                    {#if !$depositTxStatus.loading}
+                        {#if $swapInfo.depositHash}
+                            <button class="secondary" on:click={handleStartDeposit}>Create Another Deposit Transaction</button>
+                        {:else}
+                            <button class="success" on:click={handleStartDeposit}>Create Deposit Transaction</button>
+                        {/if}
+                        
+                    {/if}
+
+                    {#if hasDepositHash }
+                        <button on:click={handleCheckAgain}>Check Transaction Again</button>
+                    {/if}
+
+                    <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
+                {/if}
+
+
+            {/if}
+        </div>
     {/if}
-
-    
-
 {/if}

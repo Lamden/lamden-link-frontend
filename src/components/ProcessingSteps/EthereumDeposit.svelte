@@ -86,7 +86,7 @@
     }
 
     function handleNewDepositTx(){
-        let agree = confirm("WARNING\n\nYou should only ever have 1 deposit transaction pending. Only select OK if your previous tx failed and Lamden Link did not pick up the failure.\n\nDo not use this if your transaction is taking too long because of a slow network or low gas used. If that case use the SPEED UP function in metamask.\n\nSelect CANCEL if you already have a pending Depost transaction.")
+        let agree = confirm("WARNING\n\nYou should only ever have 1 deposit transaction pending. Only select OK if your previous tx failed and Lamden Link did not pick up the failure.\n\nDo not use this if your transaction is taking too long because of a slow network or low gas used (for slow transactions use the SPEED UP function in metamask).\n\nSelect CANCEL if you already have a pending Depost transaction.")
         if (agree) handleDepositTx()
     }
 

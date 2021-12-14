@@ -71,6 +71,63 @@ export async function getLamdenTxResults(txHash){
 
 }
 
+export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
+    const onSuccessfulResult = (txResults) => {
+        let swapInfoStore = get(swapInfo)
+
+        const { token } = swapInfoStore
+
+        if (txResults.recheck) callback(txResults)
+        try{
+            const { payload } = txResults.transaction
+            const { contract, function: method, kwargs } = payload
+            const { amount, ethereum_address } = kwargs
+
+            let tokenAmount = getValueFromFixed(amount)
+
+            if (contract !== token.lamden_clearinghouse){
+                resultsTracker.set({errors: [`Error: Invalid Lamden Link contract name in deposit hash.`]})
+                return
+            }
+
+            if (method !== "deposit"){
+                resultsTracker.set({errors: [`Error: This is not a deposit transaction.`]})
+                return
+            }
+
+            if (ethereum_address !== swapInfoStore.metamask_address){
+                resultsTracker.set({errors: [`Error: This deposit hash is for a different metamask address than the one selected.`]})
+                return
+            }
+
+            if (!swapInfoStore.tokenAmount.isEqualTo(tokenAmount)){
+                resultsTracker.set({errors: [`Error: Amount in deposit hash does not match swap details.`]})
+                return
+            }
+
+            callback(txResults)
+
+        }catch(e){
+            console.log(e)
+            resultsTracker.set({errors: ["Error: Invalid deposit transcation Hash."]})
+        }
+
+    }
+
+    resultsTracker.set({loading: true, status: "Checking status of deposit transaction..."})
+
+    getLamdenTransaction(txHash).then(txResults => {
+        console.log({txResults})
+        if (txResults.error){
+            resultsTracker.set({errors: [txResults.error]})
+            callback({recheckFailed: true})
+        }
+    
+        let lamdenTxResultsHandler = TransactionResultHandler()
+        lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, onSuccessfulResult)
+    })
+}
+
 export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
     const onSuccessfulResult = (txResults) => {
         let swapInfoStore = get(swapInfo)
@@ -86,12 +143,12 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
             let tokenAmount = getValueFromFixed(amount)
 
             if (contract !== token.lamden_clearinghouse){
-                resultsTracker.set({errors: [`Error: Invalid Lamden Link Contract Name in burn hash.`]})
+                resultsTracker.set({errors: [`Error: Invalid Lamden Link contract hame in burn hash.`]})
                 return
             }
 
             if (method !== "burn"){
-                resultsTracker.set({errors: [`Error: This is not a Burn Transaction.`]})
+                resultsTracker.set({errors: [`Error: This is not a burn transaction.`]})
                 return
             }
 
@@ -109,7 +166,7 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
 
         }catch(e){
             console.log(e)
-            resultsTracker.set({errors: ["Error: Invalid Burn Transcation Hash."]})
+            resultsTracker.set({errors: ["Error: Invalid burn transcation Hash."]})
         }
 
     }
@@ -363,10 +420,14 @@ export async function checkLamdenTokenApproval() {
     let clearinghouse = token.lamden_clearinghouse
     let vk = get(lamden_vk)
 
+
+    console.log(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${clearinghouse}`)
+
     try {
         const res = await fetch(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${clearinghouse}`)
             .catch((e) => console.log({e}))
         let value = await getValueFromResponse(res)
+        console.log({value: value.toString()})
         lamdenTokenApprovalAmount.set(value)
     } catch (error) {
         lamdenTokenApprovalAmount.set(new BN(0))

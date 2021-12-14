@@ -18,8 +18,6 @@
 
     const { nextStep } = getContext('process_swap')
 
-    let recheckFailed = false
-
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
     $: burnComplete = $swapInfo.burnSuccess || false
     $: autoNext = burnComplete ? handleNextStep() : null
@@ -27,7 +25,6 @@
 
 
     function handleApproveBurn(){
-
         sendBurnApproval(burnApprovalTxStatus, handleApproveBurnComplete)
     }
 
@@ -52,10 +49,8 @@
     }
 
     function handleBurnComplete(txResults){
-        if (txResults.recheckFailed) {
-            recheckFailed = true
-            return
-        }
+        if (txResults.recheckFailed) return
+
         if (txResults.recheck){
             if (!$swapInfo.burnHash){
                 swapInfo.update(curr => {
@@ -67,7 +62,6 @@
             }
             handleCheckAgain()
         }else{
-            recheckFailed = false
             swapInfo.update(curr => {
                 curr.burnHash = txResults.txHash
                 curr.burnSuccess = true
@@ -85,7 +79,7 @@
         if ($swapInfo.burnHash != null && $swapInfo.burnHash.length === 64) {
             checkLamdenBurnTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
         }else{
-            burnTxStatus.set({errors:"Invalid Burn Transaction hash."})
+            burnTxStatus.set({errors:"Invalid burn transaction hash."})
         }
         
     }
@@ -107,7 +101,7 @@
             saveSwap()
             handleCheckAgain()
         }else{
-            burnTxStatus.set({errors:"Invalid Burn Transaction hash."})
+            burnTxStatus.set({errors:"You entered an invalid burn transaction hash."})
         }
         
     }
