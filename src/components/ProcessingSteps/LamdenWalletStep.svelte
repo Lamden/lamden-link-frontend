@@ -6,11 +6,11 @@
     import LamdenTokenInput from '../ProcessingSteps/LamdenTokenInput.svelte'
 
     // Misc
-    import BN from 'bignumber.js'
     import WalletController from 'lamden_wallet_controller';
     import { selectedNetwork, lamdenNetwork, swapInfo } from '../../stores/globalStores.js';
     import { lamdenWalletInfo, lamden_vk, lwc, hasNetworkApproval, lamdenTokenBalance, isTrackedAddress } from '../../stores/lamdenStores.js';
     import { checkLamdenTokenApproval } from '../../js/lamden-utils'
+    import { BN } from '../../js/global-utils'
 
     export let current
     export let complete

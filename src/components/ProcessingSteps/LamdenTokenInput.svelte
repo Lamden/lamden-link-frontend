@@ -6,11 +6,10 @@
     import InputNumber from '../InputNumber.svelte'
 
     // Misc
-    import BN from 'bignumber.js'
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { lamden_vk, lamdenTokenBalance  } from '../../stores/lamdenStores'
     import { checkLamdenTokenBalance } from '../../js/lamden-utils'
-    import { stringToFixed } from '../../js/global-utils' 
+    import { stringToFixed, BN } from '../../js/global-utils' 
 
     export let input = true;
     export let complete = false;

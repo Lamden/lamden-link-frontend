@@ -22,7 +22,7 @@ exports.handler = async (event, context) => {
 	try {
 		const response = await fetch(url);
 		let data = await response.json()
-		console.log(data)
+
 		if (!data)  {
 			return {
 				statusCode: 500,

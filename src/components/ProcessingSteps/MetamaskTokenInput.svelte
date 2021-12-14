@@ -7,10 +7,9 @@
 
     // Misc
     import { selectedAccount, chainData } from 'svelte-web3'
-    import BN from 'bignumber.js'
     import { selectedToken, swapInfo } from '../../stores/globalStores'
     import { ethChainTokenBalance } from '../../stores/ethereumStores'
-    import { stringToFixed } from '../../js/global-utils' 
+    import { stringToFixed, BN } from '../../js/global-utils' 
     import { checkChainTokenBalance } from '../../js/ethereum-utils' 
 
     export let input = true;
@@ -38,7 +37,6 @@
         if (!complete) {
             checkChainTokenBalance()
             .then(() => {
-                console.log("Checking token balance again")
                 setTimeout(refreshMetaMaskTokenBalance, 10000)
             })
         }
@@ -46,7 +44,6 @@
     }
 
     function handleInput(e){
-        console.log(e.detail)
         swapInfo.update(curr => {
             curr.tokenAmount = e.detail
             return curr

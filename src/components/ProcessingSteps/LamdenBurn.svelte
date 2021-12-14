@@ -91,8 +91,6 @@
 
         burnHash = burnHash.trim()
 
-        console.log({burnHash})
-
         if (burnHash.length === 64) {
             swapInfo.update(curr => {
                 curr.burnHash = burnHash

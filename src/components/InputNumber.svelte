@@ -2,8 +2,7 @@
     import { createEventDispatcher } from 'svelte'
 
     // MISC
-    import { stringToFixed, determinePrecision } from '../js/global-utils'
-    import BN from 'bignumber.js'
+    import { stringToFixed, determinePrecision, BN } from '../js/global-utils'
 
     const dispatch = createEventDispatcher();
 

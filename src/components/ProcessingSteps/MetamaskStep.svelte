@@ -7,12 +7,12 @@
     import TokenApprovalInfo from '../ProcessingSteps/TokenApprovalInfo.svelte'
 
     // Misc
-    import BN from 'bignumber.js'
     import { ethStore, connected, selectedAccount, chainData } from 'svelte-web3'
     import { ethChainBalance, ethChainTokenBalance } from '../../stores/ethereumStores'
     import { getNetworkStore, swapInfo } from '../../stores/globalStores';
     import { checkChain, checkChainBalance, checkChainTokenBalance } from '../../js/ethereum-utils';   
     import { saveSwap } from '../../js/localstorage-utils'
+    import { BN } from '../../js/global-utils'
 
     export let current
     export let complete

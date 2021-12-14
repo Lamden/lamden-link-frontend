@@ -1,6 +1,11 @@
-import BN from 'bignumber.js'
+import BigNumber from 'bignumber.js'
+BigNumber.set({EXPONENTIAL_AT: 31});
+
 import { get } from "svelte/store";
 import { web3 } from 'svelte-web3'
+
+
+export const BN = BigNumber
 
 export function openURL(url){
 	window.open(url, '_blank');
@@ -11,17 +16,19 @@ export function isString(s) {
 }
 
 export const stringToFixed = (value, precision) => {
-	if (BN.isBigNumber(value) && precision ) value = value.toFixed(precision)
 	if (!value) return "0.0"
 		try {
 			var values = value.split('.')
 		} catch {
 			var values = value.toString().split('.')
-		}
+        }
 		if (!values[1]) return value
 		else {
-			if (values[1].length < precision) precision = values[1].length
-				let decValue = parseInt(values[1].substring(0, precision))
+            if (values[1].length > precision) values[1] = values[1].substring(0, precision)
+            if (values[1].length < precision) precision = values[1].length
+            
+            let decValue = parseInt(values[1].substring(0, precision))
+
 			if (decValue === 0) return `${values[0]}`
 			else {
 				let decimals = values[1].substring(0, precision)

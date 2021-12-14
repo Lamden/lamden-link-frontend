@@ -1,5 +1,6 @@
 import { writable, derived } from "svelte/store";
 import BN from 'bignumber.js'
+BN.set({EXPONENTIAL_AT: 31});
 
 export const ethChainBalance = writable(new BN(0))
 export const ethChainTokenBalance = writable(new BN(0))

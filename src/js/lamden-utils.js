@@ -1,9 +1,8 @@
-import BN from 'bignumber.js'
 import { get } from "svelte/store";
 import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore, selectedNetwork, tabHidden  } from '../stores/globalStores'
 import { lamden_vk, lamdenCurrencyBalance, lwc, lamdenTokenApprovalAmount } from '../stores/lamdenStores'
 import { TransactionResultHandler } from './lamdenTxResultsHandler'
-import { toBaseUnit } from './global-utils'
+import { toBaseUnit, BN } from './global-utils'
 import { saveSwap } from './localstorage-utils'
 
 let masternode_MAP = {
@@ -48,7 +47,6 @@ export async function getCurrentLamdenBlockNum(){
     return fetch(`/.netlify/functions/getLamdenCurrentBlock?&network=${networkType}`)
         .then(res => res.json())
         .then(synced_stats => {
-            console.log(synced_stats)
             const { latest_block } = synced_stats
             return latest_block
         })
@@ -60,12 +58,7 @@ export async function getCurrentLamdenBlockNum(){
 
 export async function getLamdenTxResults(txHash){
     let networkType = get(selectedNetwork)
-
-    console.log({networkType})
-
     let masternode = masternode_MAP[networkType]
-
-    console.log(`https://${masternode}/tx?hash=${txHash}`)
 
     return fetch(`https://${masternode}/tx?hash=${txHash}`).then(res => res.json())
 
@@ -117,7 +110,6 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
     resultsTracker.set({loading: true, status: "Checking status of deposit transaction..."})
 
     getLamdenTransaction(txHash).then(txResults => {
-        console.log({txResults})
         if (txResults.error){
             resultsTracker.set({errors: [txResults.error]})
             callback({recheckFailed: true})
@@ -174,7 +166,6 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
     resultsTracker.set({loading: true, status: "Checking status of burn transaction..."})
 
     getLamdenTransaction(txHash).then(txResults => {
-        console.log({txResults})
         if (txResults.error){
             resultsTracker.set({errors: [txResults.error]})
             callback({recheckFailed: true})
@@ -187,7 +178,6 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
 
 export function getLamdenTransaction(txHash, resultsTracker, callback){
     return new Promise(resolver => {
-        console.log({txHash, resultsTracker, callback})
         let timesChecked = 0
         let timesToCheck = 2
 
@@ -208,8 +198,6 @@ export function getLamdenTransaction(txHash, resultsTracker, callback){
                 console.log(e)
                 var txResults = {error: e.message}
             }
-
-            console.log({txResults})
 
             if (txResults.error){
                 if (txResults.error === "Transaction not found.") {
@@ -276,8 +264,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     let clearingHouse = mintedToken.lamden_clearinghouse
     
     function check(){
-        console.log("checking for lamden events")
-
         if (get(tabHidden)) {
             console.log("tab not active")
             return
@@ -286,8 +272,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
         let blockNum = get(swapInfo).lastLamdenBlockNum - 1
 
         if (lastCheckedBlockNum === blockNum) return
-
-        console.log("checking for lamden events at blocknumber " + blockNum)
 
         fetch(`/.netlify/functions/getLamdenContractHistory?contract=${contract}&blockNum=${blockNum}&network=${networkType}`)
 		.then(res => res.json())
@@ -300,8 +284,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function handleResponse(events){
-        console.log(events)
-
         const { history } = events
         
         if (!history || !Array.isArray(history) || history.length === 0) return
@@ -311,7 +293,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
                 const { txInfo, blockNum } = event
 
                 let isMatch = checkForMatchingEvent(txInfo)
-                console.log({isMatch})
 
                 if (isMatch){
                     if (txInfo.status === 0){
@@ -338,7 +319,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function updateLastCheckedBlock(blockNumber){
-        console.log({blockNumber})
         swapInfo.update(curr => {
             curr.lastLamdenBlockNum = blockNumber
             return curr
@@ -356,16 +336,8 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
         if (token.origin_lamden){
             const { amount, to } = kwargs
 
-            console.log({
-                txInfo, contract, clearingHouse, method, amount, to
-            })
 
             if (!to || !amount) return false
-
-            console.log(contract === clearingHouse)
-            console.log(method === "withdraw")
-            console.log(to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase())
-            console.log(new BN(amount.__fixed__).isEqualTo(new BN(swapInfoStore.tokenAmount)))
 
             return  contract === clearingHouse && 
                     method === "withdraw" &&
@@ -377,10 +349,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
             const { amount, ethereum_contract, lamden_wallet } = kwargs
 
             let tokenAmount = toBaseUnit(swapInfoStore.tokenAmount.toString(), swapInfoStore.token.decimals).toString()
-
-            console.log({
-                txInfo, contract, method, ethereum_contract, lamden_wallet, amount: new BN(amount).toString()
-            })
 
             if (!ethereum_contract || !lamden_wallet || !amount) return false
 
@@ -399,7 +367,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function stopChecking(){
-        console.log("STOPPING CHECKING FOR LAMDEN EVENTS")
         statusStore.set({})
         clearInterval(timer)
         timer = null
@@ -421,13 +388,11 @@ export async function checkLamdenTokenApproval() {
     let vk = get(lamden_vk)
 
 
-    console.log(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${clearinghouse}`)
-
     try {
         const res = await fetch(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${clearinghouse}`)
             .catch((e) => console.log({e}))
         let value = await getValueFromResponse(res)
-        console.log({value: value.toString()})
+
         lamdenTokenApprovalAmount.set(value)
     } catch (error) {
         lamdenTokenApprovalAmount.set(new BN(0))
@@ -551,7 +516,6 @@ function sendBurn (resultsTracker, callback) {
     let swapInfoStore = get(swapInfo)
     let toNetworkInfo = get(getNetworkStore(swapInfoStore.to))
 
-    console.log(toNetworkInfo)
 
     let lamdenToken = get(selectedToken)
     let metamask_address = swapInfoStore.metamask_address
