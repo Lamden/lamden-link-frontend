@@ -19,15 +19,12 @@
     let prevValue = startingValue
 
 	const handleInputChange = (e) => {
-        console.log(e.target.value)
         let value = new BN(e.target.value)
-        console.log({value: value.toString()})
         if (value.isNaN()) value = new BN(0)
         if (determinePrecision(value) > 8){
             value = new BN(stringToFixed(value, 8))
             inputElm.value = stringToFixed(value, 8)
         }
-        console.log({value: stringToFixed(value.toString(), 8)})
         dispatchEvent(value)
 
     }

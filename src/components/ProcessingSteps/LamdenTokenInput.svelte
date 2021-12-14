@@ -38,7 +38,6 @@
     }
 
     function handleInput(e){
-        console.log({input: e.detail})
         swapInfo.update(curr => {
             curr.tokenAmount = e.detail
             return curr
@@ -77,8 +76,6 @@
         {`Resuming Swap for ${tokensToSend} ${$selectedToken.symbol}`}
     </div>
 {/if}
-
-{JSON.stringify({lamdenTokenBalance: $lamdenTokenBalance.toString(), tokensToSend: tokensToSend.toString()})}
 
 
 

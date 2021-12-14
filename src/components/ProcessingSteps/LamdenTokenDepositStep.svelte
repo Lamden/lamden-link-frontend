@@ -86,8 +86,6 @@
 
         depositHash = depositHash.trim()
 
-        console.log({depositHash})
-
         if (depositHash.length === 64) {
             swapInfo.update(curr => {
                 curr.depositHash = depositHash

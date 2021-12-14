@@ -35,7 +35,6 @@
     }
 
     async function handleSendProofResult(withdrawTxResult){
-        console.log({withdrawTxResult})
         if (withdrawTxResult.status){
             withdrawTxStatus.set({loading: false})
             swapInfo.update(curr => {

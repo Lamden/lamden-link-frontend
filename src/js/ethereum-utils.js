@@ -46,7 +46,6 @@ export async function checkChainTokenBalance() {
 
     let w3 = get(web3)
 
-    console.log({token, metamask_address})
     try {
         const erc20TokenContract = new w3.eth.Contract(
             ERC20_ABI,
@@ -60,7 +59,7 @@ export async function checkChainTokenBalance() {
         } else {
             val = new BN(0)
         }
-        console.log({tokenBal: val.toString()})
+
         ethChainTokenBalance.set(val)
         return val
 
@@ -71,7 +70,6 @@ export async function checkChainTokenBalance() {
 }
 
 export async function checkTokenAllowance() {
-    console.log("checking token allowance")
     let swapInfoStore = get(swapInfo)
 
     const { token } = swapInfoStore
@@ -84,8 +82,6 @@ export async function checkTokenAllowance() {
         return
     }
 
-    console.log(token)
-
     let clearingHouse = null
 
     if (token.origin_lamden) clearingHouse = token.clearingHouse
@@ -93,8 +89,6 @@ export async function checkTokenAllowance() {
         let network = getCorrectNetwork()
         clearingHouse = network.clearingHouse
     }
-
-    console.log(clearingHouse)
 
     let w3 = get(web3)
     try {
@@ -113,7 +107,6 @@ export async function checkTokenAllowance() {
             val = new BN(0)
         }
         ethChainTokenAllowance.set(val)
-        console.log(val.toString())
         return val
 
     } catch (error) {
@@ -132,7 +125,6 @@ export function checkChain() {
 export async function getCurrentEthereumBlockNum(){
     let w3 = get(web3)
     let blockNum = await w3.eth.getBlockNumber()
-    console.log(blockNum)
     return blockNum
 }
 
@@ -142,7 +134,6 @@ export function checkForEthereumConfirmations(statusStore, startingBlock){
     
         return new Promise((resolve) => {
             async function check(){
-                console.log(`checking for current ${fromNetwork} block.`)
                 getCurrentEthereumBlockNum()
                 .then((block) => {
                     if (block) {
@@ -191,8 +182,6 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
         clearingHouse = networkInfo.clearingHouse
     }
 
-    console.log({clearingHouse, depositEvent})
-
     const clearingHouseContract = new w3.eth.Contract(
         abi_MAP[clearingHouse.abi],
         clearingHouse.address,
@@ -202,8 +191,6 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     function check(){
         let fromBlock = get(swapInfo).lastETHBlockNum
         let toBlock = 'latest'
-        console.log({fromBlock, toBlock})
-        console.log("checking for ethereum events")
 
         clearingHouseContract.getPastEvents('allEvents', {
             fromBlock,
@@ -218,16 +205,12 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     }
 
     function handleResponse(events){
-        console.log({events})
         if (!events || !Array.isArray(events) || events.length === 0) return
         try{
             for (let event of events){
                 const { blockNumber, returnValues, transactionHash } = event
-
-                console.log({event, blockNumber, returnValues, transactionHash})
     
                 let isMatch = checkForMatchingEvent(returnValues)
-                console.log({isMatch})
 
                 if (isMatch){
                     swapInfo.update(curr => {
@@ -237,7 +220,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
                     })
                     saveSwap()
                     stopChecking()
-                    console.log("CAlling DONE")
+
                     doneCallback()
                     break
                 }
@@ -265,8 +248,6 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
         const { token, receiver, amount } = returnValues;
         let tokenAmount = toBaseUnit(swapInfoStore.tokenAmount.toString(), swapInfoStore.token.decimals).toString()
 
-        console.log({token, receiver, amount: new BN(amount).toString()})
-        
         if (depositEvent === "TokensWrapped"){
             if (!token) return false
             if (token.toLowerCase() !== swapInfoStore.token.address.toLowerCase()) return false
@@ -280,7 +261,6 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     }
 
     function startChecking(){
-        console.log("STARTING TO CEHCK FOR ETHEREUM EVENTS")
         statusStore.set({loading: true, status: `Checking ${fromNetwork} for your successful Deposit transaction...`})
         check()
         if (timer) stopChecking()
@@ -288,7 +268,6 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     }
 
     function stopChecking(){
-        console.log("STOPPING CHECKING FOR ETHEREUM EVENTS")
         statusStore.set({})
         clearInterval(timer)
         timer = null
@@ -366,7 +345,6 @@ export function attemptToGetCurrentBlock(statusStore){
 
     return new Promise((resolve, reject) => {
         async function check(){
-            console.log("checking for current ethereum block ")
             getCurrentEthereumBlockNum()
             .then((block) => {
                 if (block) {
@@ -472,7 +450,7 @@ export function sendProofToEthereum(resultTracker, callback){
 
 async function checkEthTransactionUntilResult (txHash, w3, callback) {
     let txHashInfo = await checkEthTxStatus(txHash, w3)
-    console.log({txHashInfo})
+
     if (!txHashInfo){
         setTimeout(
             () => checkEthTransactionUntilResult(txHash, w3, callback),
@@ -483,10 +461,8 @@ async function checkEthTransactionUntilResult (txHash, w3, callback) {
 }
 
 async function checkEthTxStatus (txHash, w3) {
-    console.log({txHash})
     try {
         let response = await w3.eth.getTransactionReceipt(txHash)
-        console.log({response})
         return response
     } catch (e) {console.log(e)}
     return false
@@ -525,12 +501,6 @@ export function sendEthChainApproval(resultTracker, callback){
         clearingHouse.address,
         quantity,
     )
-
-    console.log({
-        eth_clearinghouse: clearingHouse.address,
-        quantity,
-        token_address: token.address
-    })
 
     try {
         approve
@@ -579,7 +549,7 @@ export function sendEthChainDeposit(resultTracker, callback){
 
     if (swapInfoStore.token.origin_lamden) {
         clearingHouse = swapInfoStore.token.clearingHouse
-        console.log({token_clearingHouse: clearingHouse})
+
         let clearingHouseContract = new w3.eth.Contract(
             abi_MAP[clearingHouse.abi],
             clearingHouse.address,
@@ -591,7 +561,7 @@ export function sendEthChainDeposit(resultTracker, callback){
 
     }else {
         clearingHouse = networkInfo.clearingHouse
-        console.log({network_clearingHouse: clearingHouse})
+
         let clearingHouseContract = new w3.eth.Contract(
             abi_MAP[clearingHouse.abi],
             clearingHouse.address,
@@ -602,13 +572,6 @@ export function sendEthChainDeposit(resultTracker, callback){
             lamden_address,
         )
     }
-    
-    console.log({
-        token,
-        quantity: quantity.toString(),
-        clearingHouse,
-        swapInfoStore
-    })
 
     try {
         deposit

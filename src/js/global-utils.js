@@ -16,14 +16,12 @@ export function isString(s) {
 }
 
 export const stringToFixed = (value, precision) => {
-    console.log({stringToFixed: value.toString()})
 	if (!value) return "0.0"
 		try {
 			var values = value.split('.')
 		} catch {
 			var values = value.toString().split('.')
         }
-        console.log({values})
 		if (!values[1]) return value
 		else {
             if (values[1].length > precision) values[1] = values[1].substring(0, precision)

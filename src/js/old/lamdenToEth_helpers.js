@@ -373,7 +373,7 @@ export async function startBurn(event) {
         success.set('')
 
         const formData = new FormData(event.target)
-        console.log(event)
+
         tokenName = get(token_selected).toString()
 
         let amount = new BN(formData.get('quantity'))

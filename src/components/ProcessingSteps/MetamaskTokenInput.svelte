@@ -37,7 +37,6 @@
         if (!complete) {
             checkChainTokenBalance()
             .then(() => {
-                console.log("Checking token balance again")
                 setTimeout(refreshMetaMaskTokenBalance, 10000)
             })
         }
@@ -45,7 +44,6 @@
     }
 
     function handleInput(e){
-        console.log(e.detail)
         swapInfo.update(curr => {
             curr.tokenAmount = e.detail
             return curr
