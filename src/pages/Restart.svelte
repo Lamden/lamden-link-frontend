@@ -62,9 +62,9 @@
     <p>Be sure to copy the current swap info for your records BEFORE starting the swap.</p>
 
     <p class="text-warning">
-        Do NOT do this if you have already burned your tokens!  
-        If you have already sent the Lamden Burn transaction then 
-        <a href="https://t.me/lamdenlinksupport" target="_blank" rel="noopener noreferrer"> contact Lamden Link Support </a>
+        Do NOT do this if you have already burned/deposited your tokens in Lamden Link!  
+        If you no longer have your tokens in the Lamden Wallet then restarting the swap won't help you. Please 
+        <a href="https://t.me/lamdenlinksupport" target="_blank" rel="noopener noreferrer"> contact Lamden Link Support instead.</a>
     </p>
 
     <div class="flex just-center">
