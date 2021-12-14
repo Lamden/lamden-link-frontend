@@ -6,6 +6,7 @@ import { ethChainBalance, ethChainTokenBalance, ethChainTokenAllowance } from '.
 import { saveSwap } from './localstorage-utils' 
 import { isString, toBaseUnit } from './global-utils' 
 import { ERC20_ABI } from './erc20_abi'
+import { abi_MAP } from './abi_mappings'
 
 
 function getCorrectNetwork(){
@@ -193,7 +194,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     console.log({clearingHouse, depositEvent})
 
     const clearingHouseContract = new w3.eth.Contract(
-        clearingHouse.abi,
+        abi_MAP[clearingHouse.abi],
         clearingHouse.address,
     )
 
@@ -426,7 +427,7 @@ export function sendProofToEthereum(resultTracker, callback){
     else clearingHouse = networkInfo.clearingHouse
 
     const clearingHouseContract = new w3.eth.Contract(
-        clearingHouse.abi,
+        abi_MAP[clearingHouse.abi],
         clearingHouse.address,
     )
 
@@ -580,7 +581,7 @@ export function sendEthChainDeposit(resultTracker, callback){
         clearingHouse = swapInfoStore.token.clearingHouse
         console.log({token_clearingHouse: clearingHouse})
         let clearingHouseContract = new w3.eth.Contract(
-            clearingHouse.abi,
+            abi_MAP[clearingHouse.abi],
             clearingHouse.address,
         )
         deposit = clearingHouseContract.methods.deposit(
@@ -592,7 +593,7 @@ export function sendEthChainDeposit(resultTracker, callback){
         clearingHouse = networkInfo.clearingHouse
         console.log({network_clearingHouse: clearingHouse})
         let clearingHouseContract = new w3.eth.Contract(
-            clearingHouse.abi,
+            abi_MAP[clearingHouse.abi],
             clearingHouse.address,
         )
         deposit = clearingHouseContract.methods.deposit(

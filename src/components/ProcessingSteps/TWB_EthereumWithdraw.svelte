@@ -65,7 +65,7 @@
     }
 
     function handleNewWithdraw(){
-        let isSure = confirm("Only say OK if the previous transaction failed and Lamden Link was not made aware. Do NOT do this if you have pending transactions or transactions that are taking long. \n\n Are you sure you want to create a new withdraw transaction?");
+        let isSure = confirm("Only say OK if the previous transaction failed and Lamden Link was not made aware. Do NOT do this if you have pending transactions or transactions that you thinkg are taking too long. \n\n Are you sure you want to create a new withdraw transaction?");
         if (isSure) {
             swapInfo.update(curr => {
                 delete curr.withdrawHashPending

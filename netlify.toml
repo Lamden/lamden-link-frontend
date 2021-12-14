@@ -5,3 +5,6 @@
 
 [build]
   functions = "my_functions"
+  
+[dev]
+  targetPort = 5005
