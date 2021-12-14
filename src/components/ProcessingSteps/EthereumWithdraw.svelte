@@ -15,9 +15,12 @@
 
     export let current
 
+    let clicked = false
+
     $: swapComplete = $swapInfo.complete || false
 
     function withdrawTokens(){
+        clicked = true
         if ($swapInfo.proofData) sendProof()
         else continueBurn(withdrawTxStatus, handleWithdrawResult)
     }
@@ -81,7 +84,7 @@
 
     {#if !$withdrawTxStatus.loading }
         {#if !swapComplete}
-                <button on:click={withdrawTokens}>Withdraw Tokens</button>
+                <button on:click={withdrawTokens}>{clicked ? "Withdraw Tokens" : "Try Again"}</button>
         {/if }
 
         {#if swapComplete}
