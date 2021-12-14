@@ -1,6 +1,6 @@
 import { swapInfo, swapHistory  } from '../stores/globalStores'
 import { get } from "svelte/store";
-import BN from 'bignumber.js'
+import { BN } from '../js/global-utils'
 
 export function saveSwap(){
     setLSValue("current_swap", get(swapInfo))

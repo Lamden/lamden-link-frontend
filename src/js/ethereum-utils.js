@@ -1,10 +1,10 @@
 import { web3, selectedAccount, chainData } from 'svelte-web3'
 import { get } from "svelte/store";
-import BN from 'bignumber.js'
+
 import { swapInfo, getNetworkStore, selectedToken, selectedNetwork } from '../stores/globalStores';
 import { ethChainBalance, ethChainTokenBalance, ethChainTokenAllowance } from '../stores/ethereumStores';
 import { saveSwap } from './localstorage-utils' 
-import { isString, toBaseUnit } from './global-utils' 
+import { BN, toBaseUnit } from './global-utils' 
 import { ERC20_ABI } from './erc20_abi'
 import { abi_MAP } from './abi_mappings'
 

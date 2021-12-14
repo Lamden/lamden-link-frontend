@@ -1,9 +1,8 @@
-import BN from 'bignumber.js'
 import { get } from "svelte/store";
 import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore, selectedNetwork, tabHidden  } from '../stores/globalStores'
 import { lamden_vk, lamdenCurrencyBalance, lwc, lamdenTokenApprovalAmount } from '../stores/lamdenStores'
 import { TransactionResultHandler } from './lamdenTxResultsHandler'
-import { toBaseUnit } from './global-utils'
+import { toBaseUnit, BN } from './global-utils'
 import { saveSwap } from './localstorage-utils'
 
 let masternode_MAP = {
@@ -19,6 +18,7 @@ export async function checkLamdenTokenBalance() {
     try {
         const res = await fetch(`/.netlify/functions/getLamdenTokenBalance?network=${networkType}&contract=${token_contract}&vk=${vk}`)
         let val = await getValueFromResponse(res)
+        console.log({val: val.toString()})
         return val
     } catch (error) {
         console.log(error)

@@ -1,5 +1,6 @@
 import { writable, derived } from "svelte/store";
 import BN from 'bignumber.js'
+BN.set({EXPONENTIAL_AT: 31});
 
 export const lwc = writable(null)
 export const lamden_vk = writable(null)
