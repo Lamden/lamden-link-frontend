@@ -39,6 +39,6 @@
 
 <div class="flex row align-center">
     <TokenLogo token={networktoken} size="tiny" clickable={false} />
-    <p>{`${stringToFixed($ethChainBalance, 8)} ${$networkInfo.network_symbol}`}</p>
+    <p>{`${stringToFixed($ethChainBalance, 6)} ${$networkInfo.network_symbol}`}</p>
     <ResultLink type="address" hash={$selectedAccount} title={$selectedAccount} network={$networkInfo}/>
 </div>

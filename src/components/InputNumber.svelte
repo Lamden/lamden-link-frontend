@@ -21,9 +21,9 @@
 	const handleInputChange = (e) => {
         let value = new BN(e.target.value)
         if (value.isNaN()) value = new BN(0)
-        if (determinePrecision(value) > 8){
-            value = new BN(stringToFixed(value, 8))
-            inputElm.value = stringToFixed(value, 8)
+        if (determinePrecision(value) > 6){
+            value = new BN(stringToFixed(value, 6))
+            inputElm.value = stringToFixed(value, 6)
         }
         dispatchEvent(value)
 

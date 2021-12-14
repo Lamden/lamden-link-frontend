@@ -66,7 +66,7 @@
 {#if input}
     <div class="flex row align-center" class:insufficient={!hasEnoughTokens}>
         <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-        {`${stringToFixed($ethChainTokenBalance, 8)} ${$selectedToken.symbol}`}
+        {`${stringToFixed($ethChainTokenBalance, 6)} ${$selectedToken.symbol}`}
     </div>
 
     <p>How much {$selectedToken.symbol} to send?</p>

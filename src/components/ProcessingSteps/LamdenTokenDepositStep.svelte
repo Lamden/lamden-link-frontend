@@ -118,7 +118,7 @@
     <div class="flex row align-center">
         <p class="text-warning"><strong>{depositComplete ? "Deposited" : "Depositing"}</strong></p>
         <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
-        {`${stringToFixed($swapInfo.tokenAmount, 8)} ${$selectedToken.symbol}`}        
+        {`${stringToFixed($swapInfo.tokenAmount, 6)} ${$selectedToken.symbol}`}        
     </div> 
 
     <ul>
