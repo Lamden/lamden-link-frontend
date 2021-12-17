@@ -418,6 +418,18 @@ export function sendProofToEthereum(resultTracker, callback){
         proofData.s,
     )
 
+    if (proofData.bridge){
+        withdraw = clearingHouseContract.methods.withdraw(
+            proofData.token,
+            proofData.amount,
+            proofData.nonce,
+            proofData.v,
+            proofData.r,
+            proofData.s,
+            proofData.bridge,
+        )
+    }
+    
     if (get(selectedNetwork) !== 'mainnet'){
         console.log({metamask_address})
         console.log({proofData})

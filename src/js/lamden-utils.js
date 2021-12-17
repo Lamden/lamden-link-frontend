@@ -684,6 +684,13 @@ function processProof(unSignedABI, signedABI) {
 
         const token = '0x' + unSignedABI.slice(25, 65)
 
+        let bridge = undefined
+
+        try{
+            bridge = '0x' + unSignedABI.slice(281, 321)
+        }catch(e){}
+        
+
         if (!token || !r || !v || !s || !unSignedABI || !nonce) return false
 
         return {
@@ -694,6 +701,7 @@ function processProof(unSignedABI, signedABI) {
             v,
             r,
             s,
+            bridge
         }
     } catch (e) {
         //console.log(e)
