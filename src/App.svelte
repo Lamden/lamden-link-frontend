@@ -20,7 +20,7 @@
 
 	import { onMount } from 'svelte'
 
-	let maintenance_on = false
+	let maintenance_on = true
 	let allow_maintenance_swaps = false
 
 	onMount(() => {
