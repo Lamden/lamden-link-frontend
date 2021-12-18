@@ -334,6 +334,7 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
         const { kwargs, contract, function: method } = payload
 
         if (token.origin_lamden){
+            if (!kwargs) return false
             const { amount, to } = kwargs
 
 
@@ -363,7 +364,7 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
         statusStore.set({loading: true, status: `Checking Lamden for your ${swapInfoStore.mintedToken.symbol} tokens. This shouldn't take long...`})
         check()
         if (timer) stopChecking()
-        timer = setInterval(check, 30000)
+        timer = setInterval(check, 5000)
     }
 
     function stopChecking(){
@@ -619,29 +620,56 @@ export async function continueBurn(resultsTracker, callback){
 }
 
 function getUnsignedABIFromBlockchain(){
-    let lamdenNetworkInfo = get(lamdenNetwork)
+    let networkType = get(selectedNetwork)
     let swapInfoStore = get(swapInfo)
     let txHash = swapInfoStore.burnHash || swapInfoStore.depositHash
 
-    return fetch(`${lamdenNetworkInfo.apiLink}/transactions/get/${txHash}`)
-        .then((res) => {
-            if (res.status === 404) return
-            else return res.json()
-        })
-        .then((json) => {
-            if (!json) return
-            if (!json.result || json.result === null || json.result === 'None')
-                return
-            return json.result
-        })
-    }
+    let timesChecked = 0
+    let timesToCheck = 10
+
+    return new Promise(resolver => {
+        const checkAgain = () => {
+            timesChecked = timesChecked + 1
+            if (timesChecked >= timesToCheck){
+                resolver()
+            }else{
+                setTimeout(checkForUnsignedABI, 5000)
+            }
+        }
+
+        const checkForUnsignedABI = async () => {
+            fetch(`/.netlify/functions/getLamdenTxHash?network=${networkType}&hash=${txHash}`)
+            .then((res) => {
+                if (res.status === 404 || res.status === 500) {
+                    throw new Error("check again")
+                } 
+                return res.json()
+            })
+            .then((json) => {
+                if (!json) throw new Error("check again")
+                if (json.error) throw new Error("check again")
+
+                const { txInfo } = json
+
+                if (!txInfo || txInfo === null || txInfo === 'None'){
+                    throw new Error("check again")
+                }
+                resolver(txInfo.result)
+            })
+            .catch(checkAgain)
+        }
+
+        checkForUnsignedABI()
+
+    })
+}
 
 const getProof = (unSignedABI, resultsTracker) =>
     new Promise((resolve) => {
         let timesToCheck = 30
         let timesChecked = 0
 
-        let lamdenNetworkInfo = get(lamdenNetwork)
+        let networkType = get(selectedNetwork)
         let token = get(selectedToken)
         
         const checkAgain = () => {
@@ -654,7 +682,7 @@ const getProof = (unSignedABI, resultsTracker) =>
         }
 
         const checkForProof = () => {
-            fetch(`${lamdenNetworkInfo.apiLink}/states/${token.lamden_clearinghouse}/proofs/${unSignedABI.replace(/'/g, '')}`)
+            fetch(`/.netlify/functions/getLamdenProof?network=${networkType}&clearinghouse=${token.lamden_clearinghouse}&unSignedABI=${unSignedABI.replace(/'/g, '')}`)
                 .then((res) => res.json())
                 .then((json) => {
                     //console.log({ json })

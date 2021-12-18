@@ -21,6 +21,8 @@
     let checking = false
     let skipped = false
 
+    let clicked = false
+
     $: needsApproval = $swapInfo.tokenAmount.isGreaterThan($ethChainTokenAllowance)
   
     const { nextStep } = getContext('process_swap')
@@ -64,6 +66,7 @@
 
     function handleApproveTx(){
         if (!needsApproval) return
+        clicked = true
         sendEthChainApproval(approvalTxStatus, handleApproveResult)
     }
 
@@ -159,12 +162,8 @@
         <Status statusStore={approvalTxStatus} />
 
         <div class="flex row just-end buttons">
-            {#if !$approvalTxStatus.loading && needsApproval}
-                <button class="success" on:click={handleApproveTx}>Send Token Approval</button>
-            {:else}
-                {#if needsApproval}
-                    <button class="secondary" on:click={handleNewTx}>Create Approval Transaction</button>
-                {/if}
+            {#if needsApproval}
+                <button class:secondary={clicked} class:success={!clicked} on:click={clicked ? handleNewTx : handleApproveTx }>Create Another Approval</button>
             {/if}
             {#if !needsApproval}
                 <button class="success" on:click={handleNextStep}>Next Step</button>

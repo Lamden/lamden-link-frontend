@@ -121,7 +121,7 @@
         {#if !isComplete}
             <Status statusStore={checkEthEverntsStatus} />
             {#if clicked}
-                <button class="secondary" on:click={handleNewDepositTx}>Resend Deposit Transaction</button>
+                <button class="secondary" on:click={handleNewDepositTx}>Create Another Deposit Tx</button>
             {:else}
                 <button class="success" on:click={handleDepositTx}>Create Deposit Transaction</button>
             {/if}
