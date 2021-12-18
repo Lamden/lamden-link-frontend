@@ -36,7 +36,7 @@ export const mainnet = {
                     name: "Lamden",
                     symbol: 'TAU',
                     address: 'currency',
-                    lamden_clearinghouse: 'con_tau_bridge_v1',
+                    lamden_clearinghouse: 'con_tau_bridge_v2',
                     origin_lamden: true
                 },
                 {
@@ -116,11 +116,11 @@ export const mainnet = {
             lamden:[{
                 name: "Lamden Mainnet Token",
                 symbol: 'TAU',
-                address: '0x78813bABEbC899EaC01656ef6180cCF55008F458',
+                address: '0x70d7109D3AfE13EE8f9015566272838519578c6b',
                 decimals: 18,
                 lamden_clearinghouse: 'direct',
                 clearingHouse: {
-                    address: '0x4D635E82c801dCF121F61389167605C5A7117D77',
+                    address: '0x46E126489b7965ecC13E58f72F6D14B140614C18',
                     abi: 'twb_clearinghouse_abi'
                 },
                 origin_lamden: true
@@ -188,7 +188,7 @@ export const testnet = {
                     name: "Lamden Testnet Token",
                     symbol: 'dTAU',
                     address: 'currency',
-                    lamden_clearinghouse: 'con_tau_bridge_v1',
+                    lamden_clearinghouse: 'con_tau_bridge_v2',
                     origin_lamden: true
                 },
                 {
@@ -273,11 +273,11 @@ export const testnet = {
                 {
                     name: "Lamden Testnet Token",
                     symbol: 'dTAU',
-                    address: '0xFD8C3286320fE9B3E331DB0967803cf74a2472Ea',
+                    address: '0xfdB08de83A90872e4b540b1c0f04Ac8A6654dd88',
                     decimals: 18,
                     lamden_clearinghouse: 'direct',
                     clearingHouse: {
-                        address: '0x349D52D92ad99dF4d424D815f9f8A5d2aFE4eFc1',
+                        address: '0xaFbE462de48D0B4162536E0b4281A8e0Fb4B524a',
                         abi: 'twb_clearinghouse_abi'
                     },
                     origin_lamden: true

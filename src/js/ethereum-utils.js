@@ -409,14 +409,30 @@ export function sendProofToEthereum(resultTracker, callback){
         clearingHouse.address,
     )
 
-    let withdraw = clearingHouseContract.methods.withdraw(
-        proofData.token,
-        proofData.amount,
-        proofData.nonce,
-        proofData.v,
-        proofData.r,
-        proofData.s,
-    )
+    console.log({proofData})
+
+    let withdraw = null
+
+    if (proofData.bridge){
+        withdraw = clearingHouseContract.methods.withdraw(
+            proofData.token,
+            proofData.amount,
+            proofData.nonce,
+            proofData.v,
+            proofData.r,
+            proofData.s,
+            proofData.bridge
+        )
+    }else{
+        withdraw = clearingHouseContract.methods.withdraw(
+            proofData.token,
+            proofData.amount,
+            proofData.nonce,
+            proofData.v,
+            proofData.r,
+            proofData.s,
+        )
+    }
 
     if (get(selectedNetwork) !== 'mainnet'){
         console.log({metamask_address})

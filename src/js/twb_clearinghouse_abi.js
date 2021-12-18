@@ -14,13 +14,13 @@ export const abi = [
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
@@ -34,15 +34,15 @@ export const abi = [
     "inputs": [
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "receiver",
-        "type": "string"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "receiver",
+        "type": "string"
       }
     ],
     "name": "TokensBurned",
@@ -103,6 +103,11 @@ export const abi = [
       {
         "internalType": "address",
         "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "bridge",
         "type": "address"
       }
     ],
@@ -200,21 +205,6 @@ export const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferTokenOwnership",
-    "outputs": [
-      
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "token",
         "type": "address"
       },
@@ -242,6 +232,11 @@ export const abi = [
         "internalType": "bytes32",
         "name": "s",
         "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "bridge",
+        "type": "address"
       }
     ],
     "name": "withdraw",
