@@ -104,7 +104,7 @@
     <div class="flex row buttons just-end">
         {#if !$TWB_withdrawTxStatus.loading }
             {#if !swapComplete}
-                <button on:click={withdrawTokens}>Withdraw Tokens</button>
+                <button class="success" on:click={withdrawTokens}>Withdraw Tokens</button>
             {/if}
             {#if swapComplete}
                 <button class="success" on:click={handleNextStep}>Finsh</button>

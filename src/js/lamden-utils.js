@@ -715,7 +715,8 @@ function processProof(unSignedABI, signedABI) {
         let bridge = undefined
 
         try{
-            bridge = '0x' + unSignedABI.slice(281, 321)
+            let bridge = '0x' + unSignedABI.slice(281, 321)
+            if (bridge == '0x') bridge = undefined
         }catch(e){}
         
 
