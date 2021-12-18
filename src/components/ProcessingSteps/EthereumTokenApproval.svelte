@@ -163,7 +163,7 @@
 
         <div class="flex row just-end buttons">
             {#if needsApproval}
-                <button class:secondary={clicked} class:success={!clicked} on:click={clicked ? handleNewTx : handleApproveTx }>Create Another Approval</button>
+                <button class:secondary={clicked} class:success={!clicked} on:click={clicked ? handleNewTx : handleApproveTx }>{clicked ? "Create Another Approval Tx" : "Create Approval Tx"}</button>
             {/if}
             {#if !needsApproval}
                 <button class="success" on:click={handleNextStep}>Next Step</button>
