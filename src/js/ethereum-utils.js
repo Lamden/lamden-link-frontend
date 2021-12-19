@@ -413,14 +413,14 @@ export function sendProofToEthereum(resultTracker, callback){
 
     let withdraw = null
 
-    if (!proofData.bridge){
+    if (typeof proofData.bridge === "undefined"){
         withdraw = clearingHouseContract.methods.withdraw(
             proofData.token,
             proofData.amount,
             proofData.nonce,
             proofData.v,
             proofData.r,
-            proofData.s,
+            proofData.s
         )
     }else{
         withdraw = clearingHouseContract.methods.withdraw(
