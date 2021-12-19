@@ -177,9 +177,8 @@
                     {#if hasDepositHash }
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
-                    {#if skipApproval }
-                        <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
-                    {/if}
+                    <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
+
                 {/if}
             {/if}
 

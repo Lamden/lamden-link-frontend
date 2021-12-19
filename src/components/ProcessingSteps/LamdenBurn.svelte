@@ -183,9 +183,7 @@
                     {#if hasBurnHash }
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
-                    {#if skipApproval }
-                        <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
-                    {/if}                    
+                    <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>                
                 {/if}
                 {#if burnComplete}
                     <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
