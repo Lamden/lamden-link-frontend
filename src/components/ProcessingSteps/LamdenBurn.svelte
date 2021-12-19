@@ -16,13 +16,17 @@
     export let complete
     export let stepInfo = null;
 
+    let skipApproval = false
+
     const { nextStep } = getContext('process_swap')
 
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
     $: burnComplete = $swapInfo.burnSuccess || false
-    $: autoNext = burnComplete ? handleNextStep() : null
     $: hasBurnHash = $swapInfo.burnHash || false
 
+    function handleSkipApprove(){
+        skipApproval = true
+    }
 
     function handleApproveBurn(){
         sendBurnApproval(burnApprovalTxStatus, handleApproveBurnComplete)
@@ -131,7 +135,11 @@
                 {#if hasTokenApproval || burnComplete}
                     Burn Approved
                 {:else}
-                    Approval Needed
+                    {#if skipApproval}
+                        Approval Skipped
+                    {:else}
+                        Approval Needed
+                    {/if}
                 {/if}
             </span>
         </li>
@@ -154,14 +162,14 @@
 
     {#if current || !complete}
         <div class="flex row just-end">
-            {#if !hasTokenApproval && !burnComplete}
+            {#if !hasTokenApproval && !burnComplete && !skipApproval}
                 {#if !$burnApprovalTxStatus.loading}
                     <button on:click={handleApproveBurn}>Approve Burn</button>
+                    <button class="secondary" on:click={handleSkipApprove}>Skip Approve Step</button>
                 {/if}
-                
             {/if}
 
-            {#if hasTokenApproval}
+            {#if hasTokenApproval || skipApproval}
                 {#if !burnComplete}
                     {#if !$burnTxStatus.loading}
                         {#if $swapInfo.burnHash}
@@ -175,10 +183,15 @@
                     {#if hasBurnHash }
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
-
-                    
+                    {#if skipApproval }
+                        <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
+                    {/if}                    
                 {/if}
-                <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
+                {#if burnComplete}
+                    <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
+                    <button class="success" on:click={handleNextStep}>Next Step</button>
+                {/if}
+                
             {/if}
         </div>
     {/if}
