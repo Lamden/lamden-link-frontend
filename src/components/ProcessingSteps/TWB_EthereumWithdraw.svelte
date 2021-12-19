@@ -11,7 +11,7 @@
     import { TWB_withdrawTxStatus } from '../../stores/ethereumStores'
     import { swapInfo } from '../../stores/globalStores';
 
-    const { done } = getContext('process_swap')
+    const { done, prevStep } = getContext('process_swap')
 
     export let current
 
@@ -57,6 +57,10 @@
 
     function handleNextStep(){
         done()
+    }
+
+    function handlePreviousStep(){
+        prevStep()
     }
 
     function handleImDone(){
@@ -105,6 +109,7 @@
         {#if !$TWB_withdrawTxStatus.loading }
             {#if !swapComplete}
                 <button class="success" on:click={withdrawTokens}>Withdraw Tokens</button>
+                <button on:click={handlePreviousStep}>Previous Step</button>
             {/if}
             {#if swapComplete}
                 <button class="success" on:click={handleNextStep}>Finsh</button>
