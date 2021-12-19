@@ -85,7 +85,7 @@
     }
 
     function handleInputBurnHash(){
-        var burnHash = prompt("Please enter the tx hash of your successful burn transaction.  This can be found by looking up your lamden wallet address at www.tauhq.com\n\nIf you haven't created a Burn Transaction yet then click CANCEL and click the 'Create Burn Transaction' button.", "");
+        var burnHash = prompt("Please enter the tx hash of your successful burn transaction.  This can be found by looking up your lamden wallet address at www.tauhq.com\n\nIf you haven't created a Burn Transaction yet then click CANCEL and click 'Approve Burn' or 'Create Burn Transaction' button.", "");
 
         if (burnHash === null) return
 
@@ -176,10 +176,9 @@
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
 
-                    <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
+                    
                 {/if}
-
-
+                <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
             {/if}
         </div>
     {/if}
