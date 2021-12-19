@@ -413,7 +413,7 @@ export function sendProofToEthereum(resultTracker, callback){
 
     let withdraw = null
 
-    if (proofData.bridge){
+    if (!proofData.bridge){
         withdraw = clearingHouseContract.methods.withdraw(
             proofData.token,
             proofData.amount,
@@ -421,7 +421,6 @@ export function sendProofToEthereum(resultTracker, callback){
             proofData.v,
             proofData.r,
             proofData.s,
-            proofData.bridge
         )
     }else{
         withdraw = clearingHouseContract.methods.withdraw(
@@ -431,7 +430,9 @@ export function sendProofToEthereum(resultTracker, callback){
             proofData.v,
             proofData.r,
             proofData.s,
+            proofData.bridge
         )
+
     }
 
     if (get(selectedNetwork) !== 'mainnet'){
