@@ -185,6 +185,7 @@
 
     setContext('process_swap', {
         nextStep,
+        prevStep,
         setStep,
         done,
         restart
@@ -208,6 +209,15 @@
         let newStep = currentProcessingStep + 1
 
         if (newStep + 1 > steps.length ) return
+        currentProcessingStep = newStep
+        scrollToStep()
+    }
+
+    function prevStep(){
+        if (currentProcessingStep === 0) return
+        let steps = getProcessingSteps()
+        let newStep = currentProcessingStep  - 1
+
         currentProcessingStep = newStep
         scrollToStep()
     }

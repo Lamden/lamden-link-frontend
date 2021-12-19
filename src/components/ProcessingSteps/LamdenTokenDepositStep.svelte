@@ -20,7 +20,6 @@
 
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
     $: depositComplete = $swapInfo.depositSuccess || false
-    $: autoNext = depositComplete ? handleNextStep() : null
     $: hasDepositHash = $swapInfo.depositHash || false
 
     function handleApproveDeposit(){
@@ -67,7 +66,6 @@
                 return curr
             })
             saveSwap()
-            handleNextStep()
         }
     }
 
@@ -160,6 +158,7 @@
                     {#if !$depositTxStatus.loading}
                         {#if $swapInfo.depositHash}
                             <button class="secondary" on:click={handleStartDeposit}>Create Another Deposit Transaction</button>
+                            
                         {:else}
                             <button class="success" on:click={handleStartDeposit}>Create Deposit Transaction</button>
                         {/if}
@@ -169,11 +168,11 @@
                     {#if hasDepositHash }
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
-
-                    <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
                 {/if}
-
-
+            {/if}
+            {#if depositComplete}
+                    <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
+                    <button class="success" on:click={handleNextStep}>Next Step</button>
             {/if}
         </div>
     {/if}

@@ -74,6 +74,12 @@
         nextStep()
     }
 
+    function handleResumeSwap(){
+        let agree = confirm("If you have not started swap yet click CANCEL.\n\nClick OK if you have a burn or depost hash you need to redeem.")
+        if (!agree) return
+        handleNextStep()
+    }
+
 </script>
 
 
@@ -175,8 +181,13 @@
                 {#if $lamden_vk && current && !$isTrackedAddress}
                     {#if tokenFromMe}
                         <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !resuming } on:click={handleNextStep}>
-                            {resuming ? "Resume Swap" : "Next Step"}
+                            {resuming ? "Resume Swap" : "Start New Swap"}
                         </button>
+                        {#if !resuming}
+                            <button disabled={$swapInfo.tokenAmount ? $swapInfo.tokenAmount.isGreaterThan(0) ? false : true : true} on:click={handleResumeSwap}>
+                                Resume Swap
+                            </button>
+                        {/if}
                     {:else}
                         <button class="success" on:click={handleNextStep}>Next Step</button>
                     {/if}
@@ -191,5 +202,6 @@
                 {/if}
             {/if}
         {/if}
+        
     </div>
 {/if}
