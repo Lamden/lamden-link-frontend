@@ -9,8 +9,11 @@
     let copiedSwapInfo = false
 
     function handleStartOver(){
-        clearCurrentSwap()
-        setTimeout(handleGoHome, 500);
+        let agree = confirm("This should NOT be used as a troubleshooting step.\n\nIf you have an issue with your swap seek help first.\n\nClick CANCEL if you have not been told to do this by support.\n\nClick OK if you understand you could lose funds.")
+        if (agree) {
+            clearCurrentSwap()
+            setTimeout(handleGoHome, 500);
+        }
     }
 
     function handleCopyData(){
