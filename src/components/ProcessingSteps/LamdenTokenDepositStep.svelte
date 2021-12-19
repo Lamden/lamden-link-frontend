@@ -16,11 +16,17 @@
     export let complete
     export let stepInfo = null;
 
+    let skipApproval = false
+
     const { nextStep } = getContext('process_swap')
 
     $: hasTokenApproval = $lamdenTokenApprovalAmount.isGreaterThanOrEqualTo($swapInfo.tokenAmount)
     $: depositComplete = $swapInfo.depositSuccess || false
     $: hasDepositHash = $swapInfo.depositHash || false
+
+    function handleSkipApprove(){
+        skipApproval = true
+    }
 
     function handleApproveDeposit(){
         sendDepositApproval(depositApprovalTxStatus, handleApproveDepositComplete)
@@ -125,7 +131,11 @@
                 {#if hasTokenApproval || depositComplete}
                     Deposit Approved
                 {:else}
-                    Approval Needed
+                    {#if skipApproval}
+                        Approval Skipped
+                    {:else}
+                        Approval Needed
+                    {/if}
                 {/if}
             </span>
         </li>
@@ -146,14 +156,15 @@
 
     {#if current || !complete}
         <div class="flex row just-end">
-            {#if !hasTokenApproval && !depositComplete}
+            {#if !hasTokenApproval && !depositComplete && !skipApproval}
                 {#if !$depositApprovalTxStatus.loading}
                     <button on:click={handleApproveDeposit}>Approve Deposit</button>
+                    <button class="secondary" on:click={handleSkipApprove}>Skip Approve Step</button>
                 {/if}
                 
             {/if}
 
-            {#if hasTokenApproval}
+            {#if hasTokenApproval || skipApproval}
                 {#if !depositComplete}
                     {#if !$depositTxStatus.loading}
                         {#if $swapInfo.depositHash}
@@ -168,12 +179,17 @@
                     {#if hasDepositHash }
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
+                    {#if skipApproval }
+                        <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
+                    {/if}
                 {/if}
             {/if}
+
             {#if depositComplete}
                     <button class="secondary" on:click={handleInputDepositHash}>Input Deposit Hash</button>
                     <button class="success" on:click={handleNextStep}>Next Step</button>
             {/if}
+
         </div>
     {/if}
 {/if}
