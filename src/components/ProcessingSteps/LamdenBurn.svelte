@@ -183,13 +183,13 @@
                     {#if hasBurnHash }
                         <button on:click={handleCheckAgain}>Check Transaction Again</button>
                     {/if}
+
                     <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>                
                 {/if}
-                {#if burnComplete}
-                    <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
-                    <button class="success" on:click={handleNextStep}>Next Step</button>
-                {/if}
-                
+            {/if}
+            {#if burnComplete}
+                <button class="secondary" on:click={handleInputBurnHash}>Input Burn Hash</button>
+                <button class="success" on:click={handleNextStep}>Next Step</button>
             {/if}
         </div>
     {/if}
