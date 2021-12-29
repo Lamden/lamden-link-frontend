@@ -5,7 +5,7 @@
   let links = [
     { name: "Home", href: "/"},
     { name: "Explorer", href: "https://www.tauhq.com/"},
-    { name: "Wallet", href: "https://lamden.io/en/wallets/"},
+    { name: "Wallet", href: "https://lamden.io/quickstart"},
     { name: "Help", href: "https://help.lamdenlink.com/"},
   ];
 </script>

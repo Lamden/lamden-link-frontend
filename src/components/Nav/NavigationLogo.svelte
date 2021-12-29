@@ -6,7 +6,7 @@
     <div class="flex align-center just-center nav-brand-logo">
         <Logo width="100%"/>
     </div>
-    <a href="https://lamden.io/en/" class="page-header" target="_blank" rel="noopener noreferrer">
+    <a href="https://www.lamden.io" class="page-header" target="_blank" rel="noopener noreferrer">
         Lamden.io
     </a>
 </div>
