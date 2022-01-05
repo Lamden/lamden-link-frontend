@@ -26,17 +26,15 @@ export async function checkLamdenTokenBalance() {
 }
 
 export async function checkLamdenBalance() {
-    let lamdenNetworkInfo = get(lamdenNetwork)
+    let networkType = get(selectedNetwork)
     let vk = get(lamden_vk)
+
     try {
-        const res = await fetch(
-            `${lamdenNetworkInfo.apiLink}/states/currency/balances/${vk}`, {
-                method: 'GET',
-            },
-        )
-        return await getValueFromResponse(res)
+        const res = await fetch(`/.netlify/functions/getLamdenBalance?network=${networkType}&vk=${vk}`)
+        let val = await getValueFromResponse(res)
+        return val
     } catch (error) {
-        console.log({error})
+        console.log(error)
         return new BN(0)
     }
 }
@@ -66,12 +64,14 @@ export async function getLamdenTxResults(txHash){
 
 export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
     const onSuccessfulResult = (txResults) => {
+        
         let swapInfoStore = get(swapInfo)
 
         const { token } = swapInfoStore
 
         if (txResults.recheck) callback(txResults)
         try{
+            /*
             const { payload } = txResults.transaction
             const { contract, function: method, kwargs } = payload
             const { amount, ethereum_address } = kwargs
@@ -97,6 +97,7 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
                 resultsTracker.set({errors: [`Error: Amount in deposit hash does not match swap details.`]})
                 return
             }
+            */
 
             callback(txResults)
 
@@ -640,16 +641,20 @@ function getUnsignedABIFromBlockchain(){
         const checkForUnsignedABI = async () => {
             fetch(`/.netlify/functions/getLamdenTxHash?network=${networkType}&hash=${txHash}`)
             .then((res) => {
+                console.log(res)
                 if (res.status === 404 || res.status === 500) {
                     throw new Error("check again")
                 } 
                 return res.json()
             })
             .then((json) => {
+                console.log(json)
                 if (!json) throw new Error("check again")
                 if (json.error) throw new Error("check again")
 
                 const { txInfo } = json
+
+                console.log(txInfo)
 
                 if (!txInfo || txInfo === null || txInfo === 'None'){
                     throw new Error("check again")
