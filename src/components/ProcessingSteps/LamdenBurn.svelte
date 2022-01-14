@@ -53,6 +53,7 @@
     }
 
     function handleBurnComplete(txResults){
+        console.log({txResults})
         if (txResults.recheckFailed) return
 
         if (txResults.recheck){
@@ -156,7 +157,7 @@
         <Status statusStore={burnApprovalTxStatus} />
     {/if}
 
-    {#if hasTokenApproval && !burnComplete}
+    {#if (hasTokenApproval || skipApproval) && !burnComplete}
         <Status statusStore={burnTxStatus} />
     {/if}
 
