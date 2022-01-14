@@ -150,7 +150,7 @@
         <Status statusStore={depositApprovalTxStatus} />
     {/if}
 
-    {#if hasTokenApproval && !depositComplete}
+    {#if (hasTokenApproval || skipApproval) && !depositComplete}
         <Status statusStore={depositTxStatus} />
     {/if}
 

@@ -56,10 +56,7 @@ export async function getCurrentLamdenBlockNum(){
 
 export async function getLamdenTxResults(txHash){
     let networkType = get(selectedNetwork)
-    let masternode = masternode_MAP[networkType]
-
-    return fetch(`https://${masternode}/tx?hash=${txHash}`).then(res => res.json())
-
+    return fetch(`/.netlify/functions/getLamdenTxHash?network=${networkType}&hash=${txHash}`)
 }
 
 export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
@@ -71,12 +68,10 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
 
         if (txResults.recheck) callback(txResults)
         try{
-            /*
+
             const { payload } = txResults.transaction
             const { contract, function: method, kwargs } = payload
-            const { amount, ethereum_address } = kwargs
-
-            let tokenAmount = getValueFromFixed(amount)
+            const { ethereum_address } = kwargs
 
             if (contract !== token.lamden_clearinghouse){
                 resultsTracker.set({errors: [`Error: Invalid Lamden Link contract name in deposit hash.`]})
@@ -93,12 +88,6 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
                 return
             }
 
-            if (!swapInfoStore.tokenAmount.isEqualTo(tokenAmount)){
-                resultsTracker.set({errors: [`Error: Amount in deposit hash does not match swap details.`]})
-                return
-            }
-            */
-
             callback(txResults)
 
         }catch(e){
@@ -111,13 +100,22 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
     resultsTracker.set({loading: true, status: "Checking status of deposit transaction..."})
 
     getLamdenTransaction(txHash).then(txResults => {
-        if (txResults.error){
-            resultsTracker.set({errors: [txResults.error]})
+        const {txInfo} = txResults
+
+        if (!txInfo){
+            resultsTracker.set({errors: ['Invalid TxResult from blockservice.']})
             callback({recheckFailed: true})
+            return
         }
-    
+
+        if (txInfo.error){
+            resultsTracker.set({errors: [txInfo.error]})
+            callback({recheckFailed: true})
+            return
+        }
+
         let lamdenTxResultsHandler = TransactionResultHandler()
-        lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, onSuccessfulResult)
+        lamdenTxResultsHandler.parseTxResult(txInfo, resultsTracker, onSuccessfulResult)
     })
 }
 
@@ -131,27 +129,24 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
         try{
             const { payload } = txResults.transaction
             const { contract, function: method, kwargs } = payload
-            const { amount, ethereum_address } = kwargs
-
-            let tokenAmount = getValueFromFixed(amount)
+            const { ethereum_address } = kwargs
 
             if (contract !== token.lamden_clearinghouse){
+                console.log(`Error: Invalid Lamden Link contract hame in burn hash.`)
                 resultsTracker.set({errors: [`Error: Invalid Lamden Link contract hame in burn hash.`]})
                 return
             }
 
+
             if (method !== "burn"){
+                console.log('Error: This is not a burn transaction.')
                 resultsTracker.set({errors: [`Error: This is not a burn transaction.`]})
                 return
             }
 
             if (ethereum_address !== swapInfoStore.metamask_address){
+                console.log('Error: This burn hash is for a different metamask address than the one selected.')
                 resultsTracker.set({errors: [`Error: This burn hash is for a different metamask address than the one selected.`]})
-                return
-            }
-
-            if (!swapInfoStore.tokenAmount.isEqualTo(tokenAmount)){
-                resultsTracker.set({errors: [`Error: Amount in burn hash does not match swap details.`]})
                 return
             }
 
@@ -167,13 +162,21 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
     resultsTracker.set({loading: true, status: "Checking status of burn transaction..."})
 
     getLamdenTransaction(txHash).then(txResults => {
-        if (txResults.error){
-            resultsTracker.set({errors: [txResults.error]})
+        const {txInfo} = txResults
+
+        if (!txInfo){
+            resultsTracker.set({errors: ['Invalid TxResult from blockservice.']})
+            callback({recheckFailed: true})
+            return
+        }
+
+        if (txInfo.error){
+            resultsTracker.set({errors: [txInfo.error]})
             callback({recheckFailed: true})
         }
     
         let lamdenTxResultsHandler = TransactionResultHandler()
-        lamdenTxResultsHandler.parseTxResult(txResults, resultsTracker, onSuccessfulResult)
+        lamdenTxResultsHandler.parseTxResult(txInfo, resultsTracker, onSuccessfulResult)
     })
 }
 
@@ -194,7 +197,8 @@ export function getLamdenTransaction(txHash, resultsTracker, callback){
             timesChecked = timesChecked + 1
 
             try{
-                var txResults = await getLamdenTxResults(txHash)
+                var txResults = await getLamdenTxResults(txHash).then(res => res.json())
+                console.log(txResults)
             }catch(e){
                 console.log(e)
                 var txResults = {error: e.message}
