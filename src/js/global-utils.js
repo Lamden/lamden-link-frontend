@@ -7,6 +7,11 @@ import { web3 } from 'svelte-web3'
 
 export const BN = BigNumber
 
+export function eth_address_to_checksum(address){
+    let w3 = get(web3)
+    return w3.utils.toChecksumAddress(address)
+}
+
 export function openURL(url){
 	window.open(url, '_blank');
 }

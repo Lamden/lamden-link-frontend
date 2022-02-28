@@ -2,7 +2,7 @@ import { get } from "svelte/store";
 import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore, selectedNetwork, tabHidden  } from '../stores/globalStores'
 import { lamden_vk, lamdenCurrencyBalance, lwc, lamdenTokenApprovalAmount } from '../stores/lamdenStores'
 import { TransactionResultHandler } from './lamdenTxResultsHandler'
-import { toBaseUnit, BN } from './global-utils'
+import { toBaseUnit, BN, eth_address_to_checksum } from './global-utils'
 import { saveSwap } from './localstorage-utils'
 
 let masternode_MAP = {
@@ -492,7 +492,7 @@ function sendDeposit (resultsTracker, callback){
         methodName: 'deposit',
         kwargs: {
             amount: { __fixed__: tokenAmount.toString() },
-            ethereum_address: metamask_address
+            ethereum_address: eth_address_to_checksum(metamask_address)
         },
         stampLimit: lamdenNetworkInfo.stamps.approval
     }
@@ -542,7 +542,7 @@ function sendBurn (resultsTracker, callback) {
         methodName: 'burn',
         kwargs: {
             ethereum_contract,
-            ethereum_address: metamask_address,
+            ethereum_address: eth_address_to_checksum(metamask_address),
             amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
         },
         stampLimit: lamdenNetworkInfo.stamps.burn,

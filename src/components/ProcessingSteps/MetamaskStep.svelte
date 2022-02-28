@@ -12,7 +12,7 @@
     import { getNetworkStore, swapInfo } from '../../stores/globalStores';
     import { checkChain, checkChainBalance, checkChainTokenBalance } from '../../js/ethereum-utils';   
     import { saveSwap } from '../../js/localstorage-utils'
-    import { BN } from '../../js/global-utils'
+    import { BN, eth_address_to_checksum } from '../../js/global-utils'
 
     export let current
     export let complete
@@ -63,7 +63,7 @@
     function handleNextStep(){
         if (!resuming){
             swapInfo.update(curr => {
-                curr.metamask_address = $selectedAccount
+                curr.metamask_address = eth_address_to_checksum($selectedAccount)
                 return curr
             })
         }
