@@ -63,7 +63,7 @@
     function handleNextStep(){
         if (!resuming){
             swapInfo.update(curr => {
-                curr.metamask_address = eth_address_to_checksum($selectedAccount)
+                curr.metamask_address = $selectedAccount
                 return curr
             })
         }

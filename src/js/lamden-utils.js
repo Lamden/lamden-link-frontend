@@ -492,7 +492,7 @@ function sendDeposit (resultsTracker, callback){
         methodName: 'deposit',
         kwargs: {
             amount: { __fixed__: tokenAmount.toString() },
-            ethereum_address: eth_address_to_checksum(metamask_address)
+            ethereum_address: metamask_address.toLowerCase()
         },
         stampLimit: lamdenNetworkInfo.stamps.approval
     }
@@ -542,7 +542,7 @@ function sendBurn (resultsTracker, callback) {
         methodName: 'burn',
         kwargs: {
             ethereum_contract,
-            ethereum_address: eth_address_to_checksum(metamask_address),
+            ethereum_address: metamask_address.toLowerCase(),
             amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
         },
         stampLimit: lamdenNetworkInfo.stamps.burn,
