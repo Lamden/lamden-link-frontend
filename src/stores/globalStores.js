@@ -4,6 +4,9 @@ import * as networks from '../js/networks'
 export const selectedNetwork = writable("mainnet")
 export const tabHidden = writable(false);
 
+export const maintenance_on = writable(false);
+export const maintenance_unlocked = writable(false)
+
 export const swapInfo = writable({})
 export const swapHistory = writable([])
 

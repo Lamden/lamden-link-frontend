@@ -3,6 +3,7 @@
 
 	// Components
 	import Maintenance from "./pages/Maintenance.svelte";
+	import MaintenancePassword from "./pages/MaintenancePassword.svelte";
 	import Home from "./pages/Home.svelte";
 	import MakeSwap from "./pages/MakeSwap.svelte";
 	import Results from "./pages/Results.svelte";
@@ -16,14 +17,14 @@
 
 	// Misc
 	import { hydrateSwapHistory, hydrateSwapInfo } from './js/localstorage-utils'
-	import { tabHidden } from './stores/globalStores'
+	import { tabHidden, maintenance_on, maintenance_unlocked } from './stores/globalStores'
 
 	import { onMount } from 'svelte'
 
-	let maintenance_on = false
-	let allow_maintenance_swaps = false
-
 	onMount(() => {
+		// Turn Maintence On or Off
+		maintenance_on.set(true)
+
 		hydrateSwapHistory()
 		hydrateSwapInfo()
 		unregisterOldServiceWorkers()
@@ -82,9 +83,14 @@
 	<Banner />
 	<NavBar />
 	<main>
-		{#if maintenance_on}
-			<Route path="/" component={Maintenance} />
-			{#if allow_maintenance_swaps}
+		{#if $maintenance_on}
+			{#if !$maintenance_unlocked}
+				<Route path="/" component={Maintenance} />
+			{:else}
+				<Route path="/" component={Home} />
+			{/if}
+			<Route path="/maintenance" component={MaintenancePassword} />
+			{#if $maintenance_unlocked}
 				<Route path="/swap" component={MakeSwap} />
 				<Route path="/swap/:testnet" component={MakeSwap} />
 				<Route path="/results" component={Results} />

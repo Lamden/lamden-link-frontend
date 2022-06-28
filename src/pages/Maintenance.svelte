@@ -1,3 +1,7 @@
+<script>
+	export let location
+</script>
+
 <style>
 	.subtitle{
 		font-size: 1em;
