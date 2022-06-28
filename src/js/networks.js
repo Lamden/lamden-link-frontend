@@ -61,7 +61,7 @@ export const mainnet = {
                     name: "Lamden USD",
                     symbol: 'LUSD',
                     equivalents: {
-                        binance:['USDT']
+                        binance:['USDC']
                     },
                     address: 'con_lusd_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
@@ -146,11 +146,21 @@ export const mainnet = {
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             },
+            /*
             {
                 name: "BEP-20 USDT",
                 symbol: 'USDT',
                 lamden_equivalent: 'LUSD',
                 address: '0x55d398326f99059fF775485246999027B3197955',
+                decimals: 18,
+                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+            },
+            */
+            {
+                name: "BEP-20 USDC",
+                symbol: 'USDC',
+                lamden_equivalent: 'LUSD',
+                address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             }

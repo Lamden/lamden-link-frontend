@@ -8,7 +8,8 @@
     import Token_ETH from '../Tokens/Token_ETH.svelte'
     import Token_BNB from '../Tokens/Token_BNB.svelte'
     import Token_LUSD from '../Tokens/Token_LUSD.svelte'
-    import Token_USDT from '../Tokens/Token_USDT.svelte'
+    //import Token_USDT from '../Tokens/Token_USDT.svelte'
+    import Token_USDC from '../Tokens/Token_USDC.svelte'
     import Token_DC from '../Tokens/Token_DC.svelte'
     import Token_LIQ from '../Tokens/Token_LIQ.svelte'
 
@@ -31,7 +32,7 @@
         TETH: Token_ETH,
         BNB: Token_BNB,
         TBNB: Token_BNB,
-        USDT: Token_USDT,
+        USDC: Token_USDC,
         LUSD: Token_LUSD,
         DC: Token_DC,
         LIQ: Token_LIQ
