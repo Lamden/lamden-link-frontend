@@ -160,7 +160,7 @@ export const mainnet = {
                 name: "BEP-20 USDC",
                 symbol: 'USDC',
                 lamden_equivalent: 'LUSD',
-                address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+                address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             }
