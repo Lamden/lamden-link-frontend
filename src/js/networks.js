@@ -14,7 +14,7 @@ export const mainnet = {
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
-        interop: ['ethereum', 'binance'],
+        interop: ['binance'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
             version: "1.0.3", // any version to start, increment later versions to update connection info
@@ -24,13 +24,6 @@ export const mainnet = {
             networkType: "mainnet", // other option is 'mainnet' 
         },
         tokens: {
-            ethereum:[{
-                name: "Wrapped Ethereum",
-                symbol: 'WETH',
-                address: 'con_weth_lst001',
-                lamden_clearinghouse: 'con_lamden_link_v1'
-                
-            }],
             binance: [
                 {
                     name: "Lamden",
@@ -56,29 +49,6 @@ export const mainnet = {
         stamps: {
             burn: 65,
             approval: 65
-        }
-    },
-    ethereum: {
-        network: "wss://mainnet.infura.io/ws/v3/5ef3994ede0945f6beb3fbddef483643",
-        interop: ['lamden'],
-        blockexplorer: "https://etherscan.io",
-        blockexplorer_tx: "tx",
-        blockexplorer_address: "address",
-        chainId: 1,
-        networkName: "Ethereum Mainnet",
-        network_symbol: "ETH",
-        clearingHouse: {
-            address: '0xF881aC8E0BAe5FCFE125e88c5F90A693aF3EA8Cb',
-            abi: 'clearinghouse_abi'
-        },
-        tokens: {
-            lamden:[{
-                name: "Wrapped Ethereum",
-                symbol: 'WETH',
-                address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_v1'
-            }]
         }
     },
     binance: {
@@ -126,7 +96,7 @@ export const testnet = {
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
-        interop: ['ethereum', 'binance'],
+        interop: ['binance'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
             version: "5.0.3", // any version to start, increment later versions to update connection info
@@ -136,14 +106,6 @@ export const testnet = {
             networkType: "testnet", // other option is 'mainnet' 
         },
         tokens: {
-            ethereum:[
-                {
-                    name: "Wrapped Ethereum",
-                    symbol: 'WETH',
-                    address: 'con_weth_lst001_v1',
-                    lamden_clearinghouse: 'con_eth_bridge_v2'
-                }
-            ],
             binance: [
                 {
                     name: "Lamden Testnet Token",
@@ -189,29 +151,6 @@ export const testnet = {
             approval: 65
         }
     },
-    ethereum: {
-        network: "wss://kovan.infura.io/ws/v3/63ded85a9a5442c6ae2b94c2e97fb8c4",
-        interop: ['lamden'],
-        blockexplorer: "https://kovan.etherscan.io",
-        blockexplorer_tx: "tx",
-        blockexplorer_address: "address",
-        network_symbol: "TETH",
-        chainId: 42,
-        networkName: "Kovan Test Network",
-        clearingHouse: {
-            address: '0xF69Fae70CC5Af8f3A8DE496Bf06C6bC021baDea0',
-            abi: 'clearinghouse_abi'
-        },
-        tokens: {
-            lamden: [{
-                name: "Wrapped Ethereum",
-                symbol: 'WETH',
-                address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-                decimals: 18,
-                lamden_clearinghouse: 'con_eth_bridge_v2'
-            }]
-        }
-    },
     binance: {
         network: "https://nd-867-543-091.p2pify.com/3cfe90b4204a0cd275ff8f31f992dbd0",
         interop: ['lamden'],
@@ -242,27 +181,6 @@ export const testnet = {
                         abi: 'twb_clearinghouse_abi'
                     },
                     origin_lamden: true
-                },
-                {
-                    name: "Block Duelers",
-                    symbol: 'BDT',
-                    address: '0x1A023125a11968Ea5685291fBbDF484D98b4E41e',
-                    decimals: 18,
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Duelers Credits",
-                    symbol: 'DC',
-                    address: '0x7126Bf8fafa29Eb55B13C2C3956e617aB181ffaa',
-                    decimals: 18,
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Liquidus Finance",
-                    symbol: 'LIQ',
-                    address: '0x481E0c66d2cC0bC41AA75D135cC6C7137a5A21EC',
-                    decimals: 18,
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
                     name: "BEP-20 USDT",
