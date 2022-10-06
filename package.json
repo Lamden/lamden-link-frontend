@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rollup -c",
-    "dev": "PORT=5005 HOST=0.0.0.0 rollup -c -w -s",
+    "dev": "cross-env PORT=5005 HOST=0.0.0.0 rollup -c -w -s",
     "start": "sirv public --no-clear -s",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -41,6 +41,7 @@
     "axios": "^0.21.1",
     "big-number": "^2.0.0",
     "compression": "^1.7.1",
+    "cross-env": "^7.0.3",
     "crypto-js": "^4.0.0",
     "dotenv": "^9.0.2",
     "lamden_wallet_controller": "^0.6.3",

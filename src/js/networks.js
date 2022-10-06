@@ -40,24 +40,6 @@ export const mainnet = {
                     origin_lamden: true
                 },
                 {
-                    name: "Block Duelers",
-                    symbol: 'BDT',
-                    address: 'con_bdt_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Duelers Credits",
-                    symbol: 'DC',
-                    address: 'con_dc_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Liquidus Finance",
-                    symbol: 'LIQ',
-                    address: 'con_liquidus_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
                     name: "Lamden USD",
                     symbol: 'LUSD',
                     equivalents: {
@@ -125,37 +107,6 @@ export const mainnet = {
                 },
                 origin_lamden: true
             },
-            {
-                name: "Block Duelers",
-                symbol: 'BDT',
-                address: '0x286a61a9B193F1b92d3A0FaB4Fd16028786273f3',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            {
-                name: "Duelers Credits",
-                symbol: 'DC',
-                address: '0x7990ad6dBE9bCE17Ed91E72B30899b77a415f6CC',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            {
-                name: "Liquidus Finance",
-                symbol: 'LIQ',
-                address: '0xc7981767f644C7F8e483DAbDc413e8a371b83079',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            /*
-            {
-                name: "BEP-20 USDT",
-                symbol: 'USDT',
-                lamden_equivalent: 'LUSD',
-                address: '0x55d398326f99059fF775485246999027B3197955',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            */
             {
                 name: "BEP-20 USDC",
                 symbol: 'USDC',
