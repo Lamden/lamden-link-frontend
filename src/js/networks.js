@@ -115,28 +115,10 @@ export const testnet = {
                     origin_lamden: true
                 },
                 {
-                    name: "Block Duelers",
-                    symbol: 'BDT',
-                    address: 'con_bdt_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Duelers Credits",
-                    symbol: 'DC',
-                    address: 'con_dc_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Liquidus Finance",
-                    symbol: 'LIQ',
-                    address: 'con_liquidus_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
                     name: "Lamden USD",
                     symbol: 'LUSD',
                     equivalents: {
-                        binance:['USDT']
+                        binance:['USDC']
                     },
                     address: 'con_usdt_bsc_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
@@ -183,8 +165,8 @@ export const testnet = {
                     origin_lamden: true
                 },
                 {
-                    name: "BEP-20 USDT",
-                    symbol: 'USDT',
+                    name: "BEP-20 USDC",
+                    symbol: 'USDC',
                     lamden_equivalent: 'LUSD',
                     address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
                     decimals: 18,
