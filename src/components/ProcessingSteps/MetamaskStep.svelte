@@ -10,7 +10,7 @@
     import { ethStore, connected, selectedAccount, chainData } from 'svelte-web3'
     import { ethChainBalance, ethChainTokenBalance } from '../../stores/ethereumStores'
     import { getNetworkStore, swapInfo } from '../../stores/globalStores';
-    import { checkChain, checkChainBalance, checkChainTokenBalance } from '../../js/ethereum-utils';   
+    import { checkChain, checkChainBalance, checkChainTokenBalance, checkChainTokenBalanceByAccount } from '../../js/ethereum-utils';   
     import { saveSwap } from '../../js/localstorage-utils'
     import { BN, eth_address_to_checksum } from '../../js/global-utils'
 
@@ -21,6 +21,8 @@
     let metamaskError = false
     let networkInfo = getNetworkStore(stepInfo.network)
 
+    let clearingHouseUsdcBalances = new BN(0)
+
     $: hasEthBalnnce = $ethChainBalance.isGreaterThan(0)
     $: isCorrectChain = checkChain($chainData)
     $: tokenFromMe = $swapInfo.from !== "lamden"
@@ -29,6 +31,8 @@
     $: hasApproval = $swapInfo.metamaskApproval || false
     $: resuming = $swapInfo.burnHash || $swapInfo.depositHash || false
     $: sameAddress = resuming && $selectedAccount ? $selectedAccount.toLowerCase() === $swapInfo.metamask_address.toLowerCase() : null
+    $: isLusd = $swapInfo.token.symbol === "LUSD"
+    $: hasEnoughLiquidity = clearingHouseUsdcBalances.isGreaterThan(tokensToSend)
 
     const { nextStep, setStep, restart } = getContext('process_swap')
 
@@ -74,6 +78,11 @@
     function refreshAllBalances(){
         if (!$selectedAccount) return
         checkChainBalance()
+        if (isLusd) {
+            const tokenAddress = $swapInfo.mintedToken.address
+            const account = $networkInfo.clearingHouse.address
+            checkChainTokenBalanceByAccount(tokenAddress, account).then(r => clearingHouseUsdcBalances = r)
+        }
 
         metamaskError = false
         
@@ -147,6 +156,18 @@
         </li>
     {/if}
 
+    {#if isLusd && $connected && isCorrectChain && (current || complete)}
+        <li class:yes={hasEnoughLiquidity}>
+            <span>
+                {#if !hasEnoughLiquidity}
+                    {`The contract has ${clearingHouseUsdcBalances.toFixed(2)} USDC. Insufficient liquidity on ${$networkInfo.networkName}.`}
+                {:else}
+                    {`The contract has ${clearingHouseUsdcBalances.toFixed(2)} USDC. Liquidity is fine.`}
+                {/if}
+            </span>
+        </li>
+    {/if}
+
 </ul>
 
 {#if isCorrectChain && $selectedAccount}
@@ -170,9 +191,9 @@
                 </button>
             {:else}
                 {#if resuming}
-                    <button class:success={hasEthBalnnce && sameAddress} disabled={!hasEthBalnnce || !sameAddress} on:click={handleNextStep}>Resume Swap</button>
+                    <button class:success={hasEthBalnnce && sameAddress && (isLusd ? hasEnoughLiquidity : true)} disabled={!hasEthBalnnce || !sameAddress || (isLusd ? !hasEnoughLiquidity : false)} on:click={handleNextStep}>Resume Swap</button>
                 {:else}
-                    <button class:success={hasEthBalnnce} disabled={!hasEthBalnnce} on:click={handleNextStep}>Next Step</button>
+                    <button class:success={hasEthBalnnce && (isLusd ? hasEnoughLiquidity : true)} disabled={!hasEthBalnnce || (isLusd ? !hasEnoughLiquidity : false)} on:click={handleNextStep}>Next Step</button>
                 {/if}
             {/if}
         {/if}

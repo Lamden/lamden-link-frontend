@@ -182,7 +182,7 @@
                 {#if isLUSD}
                     <div class="flex row align-center burn-text text-warning">
                         <span style="margin-right: 1rem;">24h Burn Limit</span>
-                        {remainsBurnLusd.toFixed(2)}/{dailyLusdLimit.toFixed(2)} LUSD {!resuming}</div>
+                        {remainsBurnLusd.toFixed(2)}/{dailyLusdLimit.toFixed(2)} LUSD</div>
                 {/if}
         {/if}
     {/if}
