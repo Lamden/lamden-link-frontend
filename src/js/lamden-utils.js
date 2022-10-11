@@ -764,3 +764,17 @@ function hasEnoughTauToSendTx(txName){
     let currencyBalance = get(lamdenCurrencyBalance)
     return currencyBalance.isGreaterThan(lamdenNetworkInfo.stamps[txName] / lamdenNetworkInfo.currentStampRatio)
 }
+
+export async function getDailyBurnedTokens(vk){
+    try {
+        let networkType = get(selectedNetwork)
+
+        let swapInfoStore = get(swapInfo)
+        const { token } = swapInfoStore
+        let res = await fetch(`/.netlify/functions/getTokensBurnedAmount?network=${networkType}&vk=${vk}&lamden_clearinghouse=${token.lamden_clearinghouse}`)
+        let data = await res.json()
+        return res.status === 200 ? new BN(data) : null
+    } catch (e) {
+        return null
+    }
+}

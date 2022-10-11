@@ -7,13 +7,16 @@
 
     // Misc
     import WalletController from 'lamden_wallet_controller';
-    import { selectedNetwork, lamdenNetwork, swapInfo } from '../../stores/globalStores.js';
+    import { selectedNetwork, lamdenNetwork, swapInfo, selectedToken } from '../../stores/globalStores.js';
     import { lamdenWalletInfo, lamden_vk, lwc, hasNetworkApproval, lamdenTokenBalance, isTrackedAddress } from '../../stores/lamdenStores.js';
-    import { checkLamdenTokenApproval } from '../../js/lamden-utils'
+    import { checkLamdenTokenApproval, getDailyBurnedTokens  } from '../../js/lamden-utils'
     import { BN } from '../../js/global-utils'
 
     export let current
     export let complete
+
+    let remainsBurnLusd = new BN(0)
+    let dailyLusdLimit = new BN(250)
 
     $: depositComplete = $swapInfo.ethDepositTxHash || false
     $: notAttempted = $lamdenWalletInfo.installed === undefined
@@ -25,9 +28,18 @@
     $: hasEnoughTokens = tokensToSend.isGreaterThan(0) && $lamdenTokenBalance.isGreaterThanOrEqualTo(tokensToSend)
     $: resuming = $swapInfo.burnHash || $swapInfo.depositHash || false
 
+    $: isLUSD = $selectedToken.symbol === "LUSD"
+    $: canSendLusd = remainsBurnLusd.isGreaterThan(tokensToSend)
+
     const { nextStep } = getContext('process_swap')
 
 	onMount(() => {
+        if (isLUSD) {
+            lamden_vk.subscribe((current) => current && getDailyBurnedTokens(current).then(r => {
+                remainsBurnLusd = r ? dailyLusdLimit.minus(r) : new BN(0)
+            }))
+        }
+
         lwc.set(new WalletController(getApprovalRequest()))
 
         $lwc.events.on('newInfo', handleWalletInfo)
@@ -112,6 +124,11 @@
     @media screen and (min-width: 430px) {
 
     }
+
+    .burn-text {
+        margin-top: 1rem;
+        font-size: 0.8em;
+    }
 </style>
 
 {#if current || complete}
@@ -162,6 +179,11 @@
     {#if $lamden_vk && tokenFromMe}
         {#if !depositComplete}
                 <LamdenTokenInput {complete}/>
+                {#if isLUSD}
+                    <div class="flex row align-center burn-text text-warning">
+                        <span style="margin-right: 1rem;">24h Burn Limit</span>
+                        {remainsBurnLusd.toFixed(2)}/{dailyLusdLimit.toFixed(2)} LUSD</div>
+                {/if}
         {/if}
     {/if}
 
@@ -180,7 +202,7 @@
                 
                 {#if $lamden_vk && current && !$isTrackedAddress}
                     {#if tokenFromMe}
-                        <button class:success={ hasEnoughTokens } disabled={!hasEnoughTokens && !resuming } on:click={handleNextStep}>
+                        <button class:success={ hasEnoughTokens && (isLUSD? canSendLusd : true)} disabled={!hasEnoughTokens && !resuming || (isLUSD? !canSendLusd : false)} on:click={handleNextStep}>
                             {resuming ? "Resume Swap" : "Start New Swap"}
                         </button>
                         {#if !resuming}

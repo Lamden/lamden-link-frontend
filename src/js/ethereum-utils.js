@@ -69,6 +69,30 @@ export async function checkChainTokenBalance() {
 
 }
 
+export async function checkChainTokenBalanceByAccount(tokenAddress, account) {
+    let w3 = get(web3)
+
+    try {
+        const erc20TokenContract = new w3.eth.Contract(
+            ERC20_ABI,
+            tokenAddress,
+        )
+        let val = await erc20TokenContract.methods
+            .balanceOf(account)
+            .call()
+        if (val) {
+            val = new BN(w3.utils.fromWei(val, 'ether'))
+        } else {
+            val = new BN(0)
+        }
+        return val
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
 export async function checkTokenAllowance() {
     let swapInfoStore = get(swapInfo)
 

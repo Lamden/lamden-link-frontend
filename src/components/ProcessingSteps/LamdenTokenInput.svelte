@@ -23,7 +23,6 @@
     onMount(() => {
         timer = setTimeout(refreshLamdenTokenBalance, 10000)
         refreshLamdenTokenBalance()
-
         return () => {
             timer = null
         }
