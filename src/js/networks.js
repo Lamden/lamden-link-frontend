@@ -40,6 +40,16 @@ export const mainnet = {
                     origin_lamden: true
                 },
                 {
+                    name: "Lamden USD",
+                    symbol: 'LUSD',
+                    equivalents: {
+                        binance:['BUSD']
+                    },
+                    address: 'con_lusd_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                }
+                /*
+                {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: 'con_bdt_lst001',
@@ -56,16 +66,7 @@ export const mainnet = {
                     symbol: 'LIQ',
                     address: 'con_liquidus_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Lamden USD",
-                    symbol: 'LUSD',
-                    equivalents: {
-                        binance:['USDC']
-                    },
-                    address: 'con_lusd_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                }
+                },*/
             ]
         },
         networkName: "Lamden Mainnet",
@@ -146,6 +147,14 @@ export const mainnet = {
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             },
+            {
+                name: "Binance-Peg BUSD",
+                symbol: 'BUSD',
+                lamden_equivalent: 'LUSD',
+                address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+                decimals: 18,
+                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+            }
             /*
             {
                 name: "BEP-20 USDT",
@@ -155,7 +164,7 @@ export const mainnet = {
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
             },
-            */
+            
             {
                 name: "BEP-20 USDC",
                 symbol: 'USDC',
@@ -163,7 +172,7 @@ export const mainnet = {
                 address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
                 decimals: 18,
                 lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            }
+            },*/
         ]}
     }
 }
@@ -202,6 +211,15 @@ export const testnet = {
                     origin_lamden: true
                 },
                 {
+                    name: "Lamden USD",
+                    symbol: 'LUSD',
+                    equivalents: {
+                        binance:['BUSD']
+                    },
+                    address: 'con_usdt_bsc_lst001',
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                }/*
+                {
                     name: "Block Duelers",
                     symbol: 'BDT',
                     address: 'con_bdt_lst001',
@@ -218,16 +236,7 @@ export const testnet = {
                     symbol: 'LIQ',
                     address: 'con_liquidus_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },
-                {
-                    name: "Lamden USD",
-                    symbol: 'LUSD',
-                    equivalents: {
-                        binance:['USDT']
-                    },
-                    address: 'con_usdt_bsc_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                }
+                },*/
             ]
         },
         networkName: "Lamden Testnet",
@@ -314,13 +323,21 @@ export const testnet = {
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
                 {
+                    name: "Binance-Peg BUSD",
+                    symbol: 'BUSD',
+                    lamden_equivalent: 'LUSD',
+                    address: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                }/*
+                {
                     name: "BEP-20 USDT",
                     symbol: 'USDT',
                     lamden_equivalent: 'LUSD',
                     address: '0x337610d27c682E347C9cD60BD4b3b107C9d34dDd',
                     decimals: 18,
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                }
+                }*/
             ]
         }
     }
