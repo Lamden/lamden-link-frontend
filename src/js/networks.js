@@ -114,66 +114,68 @@ export const mainnet = {
             abi: 'clearinghouse_abi'
         },
         tokens: {
-            lamden:[{
-                name: "Lamden Mainnet Token",
-                symbol: 'TAU',
-                address: '0x70d7109D3AfE13EE8f9015566272838519578c6b',
-                decimals: 18,
-                lamden_clearinghouse: 'direct',
-                clearingHouse: {
-                    address: '0x46E126489b7965ecC13E58f72F6D14B140614C18',
-                    abi: 'twb_clearinghouse_abi'
+            lamden:[
+                {
+                    name: "Lamden Mainnet Token",
+                    symbol: 'TAU',
+                    address: '0x70d7109D3AfE13EE8f9015566272838519578c6b',
+                    decimals: 18,
+                    lamden_clearinghouse: 'direct',
+                    clearingHouse: {
+                        address: '0x46E126489b7965ecC13E58f72F6D14B140614C18',
+                        abi: 'twb_clearinghouse_abi'
+                    },
+                    origin_lamden: true
                 },
-                origin_lamden: true
-            },
-            {
-                name: "Block Duelers",
-                symbol: 'BDT',
-                address: '0x286a61a9B193F1b92d3A0FaB4Fd16028786273f3',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            {
-                name: "Duelers Credits",
-                symbol: 'DC',
-                address: '0x7990ad6dBE9bCE17Ed91E72B30899b77a415f6CC',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            {
-                name: "Liquidus Finance",
-                symbol: 'LIQ',
-                address: '0xc7981767f644C7F8e483DAbDc413e8a371b83079',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            {
-                name: "Binance-Peg BUSD",
-                symbol: 'BUSD',
-                lamden_equivalent: 'LUSD',
-                address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            }
-            /*
-            {
-                name: "BEP-20 USDT",
-                symbol: 'USDT',
-                lamden_equivalent: 'LUSD',
-                address: '0x55d398326f99059fF775485246999027B3197955',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },
-            
-            {
-                name: "BEP-20 USDC",
-                symbol: 'USDC',
-                lamden_equivalent: 'LUSD',
-                address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-                decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-            },*/
-        ]}
+                {
+                    name: "Binance-Peg BUSD",
+                    symbol: 'BUSD',
+                    lamden_equivalent: 'LUSD',
+                    address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                }
+                /*
+                {
+                    name: "Block Duelers",
+                    symbol: 'BDT',
+                    address: '0x286a61a9B193F1b92d3A0FaB4Fd16028786273f3',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Duelers Credits",
+                    symbol: 'DC',
+                    address: '0x7990ad6dBE9bCE17Ed91E72B30899b77a415f6CC',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "Liquidus Finance",
+                    symbol: 'LIQ',
+                    address: '0xc7981767f644C7F8e483DAbDc413e8a371b83079',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "BEP-20 USDC",
+                    symbol: 'USDC',
+                    lamden_equivalent: 'LUSD',
+                    address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                },
+                {
+                    name: "BEP-20 USDT",
+                    symbol: 'USDT',
+                    lamden_equivalent: 'LUSD',
+                    address: '0x55d398326f99059fF775485246999027B3197955',
+                    decimals: 18,
+                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                }
+                */
+            ]
+        }
     }
 }
 
