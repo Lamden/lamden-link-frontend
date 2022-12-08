@@ -144,7 +144,15 @@ h1 {
 input:disabled {
     color: #ccc;
 }
-
+button.not-button{
+    background: transparent;
+    padding: 0px;
+    border: none;
+    border-radius: 0px;
+}
+button.not-button:hover{
+    filter: brightness(100%);
+}
 button {
     position: relative;
     color: white;
@@ -167,16 +175,16 @@ button:disabled {
     color: #999;
 }
 
-button:not(:disabled):hover {
+button:not(:disabled):not(.not-button):hover {
     filter: brightness(130%);
 }
 
-button:not(:disabled):active {
+button:not(:disabled):not(.not-button):active {
     filter: brightness(110%);
     top: 2px;
 }
 
-button:focus {
+button:not(.not-button):focus {
     border-color: #666;
 }
 
@@ -194,7 +202,6 @@ button.warning{
     font-weight: 400;
 }
 
-
 button.icon{
     padding: 3px;
     border-radius: 8px;
@@ -205,17 +212,10 @@ button.icon{
 }
 
 button.text{
+    padding: 0px;
+    border-radius: 0px;
+    border: 0px;
     background: transparent;
-    color: var(--color-gray-2);
-    cursor: pointer;
-    padding: 0;
-    margin-top: 0.8em;
-    margin-bottom: 0.8em;
-}
-
-button.text:hover{
-    text-decoration: underline;
-    color: var(--color-white);
 }
 
 a {

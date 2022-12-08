@@ -99,11 +99,6 @@
         display: block;
         margin: 1rem 0 0 auto;
     }
-    .buttons > button{
-        margin: 0;
-        margin-top: 1rem;
-        margin-left: 10px;
-    }
 
     @media screen and (min-width: 430px) {
 

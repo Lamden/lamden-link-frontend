@@ -38,10 +38,6 @@
         border-style: none;
         height: 1px;
     }
-    .text-warning{
-        font-size: 0.7em;
-        margin: 1rem 0;
-    }
     .add-token-link{
         text-align: center;
         display: block;

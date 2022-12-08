@@ -19,11 +19,11 @@
 </script>
 
 <style>
-    div{
+    .container{
         width: fit-content;
         margin: 1rem;
     }
-    button{
+    button.icon{
         width: 80px;
         padding: 15px;
         height: 80px;
@@ -33,29 +33,27 @@
         border-radius: 99px;
         border: 1px solid var(--color-white);
     }
-    button:hover{
+    button.icon:hover{
         border: 1px solid var(--accent-color);
     }
-    button:active{
+    button.icon:active{
         border: 1px solid var(--accent-color);
     }
-    p{
+    button.text{
         color: var(--accent-color);
         cursor: pointer;
         font-size: 0.8em;
         font-weight: 200;
     }
-    p:hover{
+    button.text:hover{
         color: var(--white-color);
     }
 
     @media only screen and (min-width: 650px) {
-		main{
-			max-width: 1000px;
-		}
+
 	}
 	@media only screen and (min-width: 1280px) {
-        button{
+        button.icon{
             width: 90px;
             padding: 18px;
             height: 90px;
@@ -63,7 +61,7 @@
         }
 	}
 	@media only screen and (min-width: 2800px) {
-        button{
+        button.icon{
             width: 200px;
             padding: 25px;
             height: 200px;
@@ -72,9 +70,9 @@
 
 </style>
 
-<div class="flex col just-center align-center">
-    <button on:click={action}>
+<button class="not-button container flex col just-center align-center">
+    <button class="icon" on:click={action}>
         <svelte:component this={iconMap[icon]} />
     </button>
-    <p on:click={action}>{title}</p>
-</div>
+    <button class="text" on:click={action}>{title}</button>
+</button>

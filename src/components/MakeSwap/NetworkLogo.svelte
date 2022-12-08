@@ -45,12 +45,12 @@
     }
 </style>
 
-<div class="flex align-center just-center container" class:filled={hasNetworkName} on:click={handleClick}>
+<button class="not-button flex align-center just-center container" class:filled={hasNetworkName} on:click={handleClick}>
     {#if hasNetworkName}
         <div class="logo">
             <svelte:component this={LogoMap[networkName]} />
         </div>
     {/if}
-</div>
+</button>
 
 

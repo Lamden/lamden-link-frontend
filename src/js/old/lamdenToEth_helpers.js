@@ -274,25 +274,31 @@ const getProof = (unSignedABI) =>
 const processProof = (unSignedABI, signedABI) => {
     try {
         signedABI = signedABI.substr(2) //remove 0x
+
+        // Parse Signed ABI
         const r = '0x' + signedABI.slice(0, 64)
-        const s = '0x' + signedABI.slice(64, 128)
-        const v = '0x' + signedABI.slice(128, 130)
+        const s = '0x' + signedABI.slice(64, 128) 
+        const v = '0x' + signedABI.slice(128, 130) 
 
-        const amountHex = '0x' + unSignedABI.substring(65, 129)
-        const nonce = '0x' + unSignedABI.substring(129, 193)
+        // Parse Unsigned ABI
+        const token = '0x' + unSignedABI.slice(24, 64) // remove leading zeros
+        const amountHex = '0x' + unSignedABI.slice(64, 128) 
+        const nonce = '0x' + unSignedABI.slice(128, 192) 
+        const address = '0x' + unSignedABI.slice(192, 256) // unused in transaction
+        const bridge = '0x' + unSignedABI.slice(280, 320) // remove leading zeros
+        
 
-        const token = '0x' + unSignedABI.slice(25, 65)
-
-        if (!token || !r || !v || !s || !unSignedABI || !nonce) return false
+        if (!bridge || !token || !r || !v || !s || !unSignedABI || !nonce) return false
 
         return {
             unSignedABI,
             token,
             amount: amountHex,
-            nonce: nonce,
+            nonce,
             v,
             r,
             s,
+            bridge
         }
     } catch (e) {
         //console.log(e)

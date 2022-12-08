@@ -20,7 +20,7 @@
 
 </script>
 
-<div class="hamburger-container" on:click={() => openMobileMenu()}>
+<button class="not-button hamburger-container" on:click={() => openMobileMenu()}>
   <svg
     width="27"
     height="18"
@@ -34,7 +34,7 @@
       fill="white"
     />
   </svg>
-</div>
+</button>
 
 <style>
   .hamburger-container {

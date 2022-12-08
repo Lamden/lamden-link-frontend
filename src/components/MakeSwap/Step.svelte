@@ -64,9 +64,6 @@
     p.step-desc{
         color: var(--font-primary-dim)
     }
-    .buttons{
-        text-align: end;
-    }
     .step-num{
         opacity: 50%;
         font-size: 50px;

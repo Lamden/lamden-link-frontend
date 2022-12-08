@@ -114,11 +114,11 @@
     <div class="flex row wrap align-center just-center tokens">
         {#each supportedTokens() as token (token.address)}
             {#if !token.one_way}
-                <div class="flex col align-center token" on:click={() => handleTokenClicked(token)}>
+                <button class="not-button flex col align-center token" on:click={() => handleTokenClicked(token)}>
                     <TokenLogo {token} on:selected={handleTokenSelected}/>
                     <p class="token-name">{token.name}</p>
                     <p class="token-symbol">{token.symbol}</p>
-                </div>
+                </button>
             {/if}
         {/each}
     </div>

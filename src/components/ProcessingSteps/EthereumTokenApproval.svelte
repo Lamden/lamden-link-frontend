@@ -122,12 +122,6 @@
         margin: 0;
         margin-left: 10px;
     }
-    .check-allowance{
-        margin-top: 1em;
-    }
-    .check-allowance-text{
-        margin-right: 0.5em;
-    }
     ul.skipped{
         margin-bottom: 4em;
     }

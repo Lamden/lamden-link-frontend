@@ -14,7 +14,7 @@
 
     export let current
     export let complete
-    export let stepInfo = null;
+    export const stepInfo = null;
 
     let skipApproval = false
 
