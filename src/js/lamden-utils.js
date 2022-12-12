@@ -2,7 +2,7 @@ import { get } from "svelte/store";
 import { lamdenNetwork, selectedToken, swapInfo, getNetworkStore, selectedNetwork, tabHidden  } from '../stores/globalStores'
 import { lamden_vk, lamdenCurrencyBalance, lwc, lamdenTokenApprovalAmount } from '../stores/lamdenStores'
 import { TransactionResultHandler } from './lamdenTxResultsHandler'
-import { toBaseUnit, BN, eth_address_to_checksum } from './global-utils'
+import { toBaseUnit, BN, get_bridge_info } from './global-utils'
 import { saveSwap } from './localstorage-utils'
 
 let masternode_MAP = {
@@ -65,6 +65,7 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
         let swapInfoStore = get(swapInfo)
 
         const { token } = swapInfoStore
+        const bridge = get_bridge_info(token)
 
         if (txResults.recheck) callback(txResults)
         try{
@@ -73,7 +74,7 @@ export function checkLamdenDepositTransaction(txHash, resultsTracker, callback){
             const { contract, function: method, kwargs } = payload
             const { ethereum_address } = kwargs
 
-            if (contract !== token.lamden_clearinghouse){
+            if (contract !== bridge.lamden_clearinghouse.address){
                 resultsTracker.set({errors: [`Error: Invalid Lamden Link contract name in deposit hash.`]})
                 return
             }
@@ -124,6 +125,7 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
         let swapInfoStore = get(swapInfo)
 
         const { token } = swapInfoStore
+        const bridge = get_bridge_info(token)
 
         if (txResults.recheck) callback(txResults)
         try{
@@ -131,7 +133,7 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
             const { contract, function: method, kwargs } = payload
             const { ethereum_address } = kwargs
 
-            if (contract !== token.lamden_clearinghouse){
+            if (contract !== bridge.lamden_clearinghouse.address){
                 console.log(`Error: Invalid Lamden Link contract hame in burn hash.`)
                 resultsTracker.set({errors: [`Error: Invalid Lamden Link contract hame in burn hash.`]})
                 return
@@ -266,7 +268,7 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     let contract = mintedToken.address
     let networkType = get(selectedNetwork)
 
-    let clearingHouse = mintedToken.lamden_clearinghouse
+    const bridge = get_bridge_info(mintedToken)
     
     function check(){
         if (get(tabHidden)) {
@@ -289,6 +291,7 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function handleResponse(events){
+        console.log(events)
         const { history } = events
         
         if (!history || !Array.isArray(history) || history.length === 0) return
@@ -338,15 +341,14 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
         const { payload } = transaction
         const { kwargs, contract, function: method } = payload
 
-        if (token.origin_lamden){
+        if (bridge.origin_lamden){
             if (!kwargs) return false
             const { amount, to } = kwargs
 
-
             if (!to || !amount) return false
 
-            return  contract === clearingHouse && 
-                    method === "withdraw" &&
+            return  contract === bridge.lamden_clearinghouse.address && 
+                    method === bridge.lamden_clearinghouse.abi.in &&
                     to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
                     new BN(amount.__fixed__).isEqualTo(new BN(swapInfoStore.tokenAmount))
 
@@ -358,8 +360,8 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
 
             if (!ethereum_contract || !lamden_wallet || !amount) return false
 
-            return  contract === clearingHouse && 
-                    method === "mint" &&
+            return  contract === bridge.lamden_clearinghouse.address && 
+                    method ===  bridge.lamden_clearinghouse.abi.out &&
                     lamden_wallet.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
                     new BN(amount).toString() === tokenAmount
         }
@@ -390,12 +392,12 @@ export async function checkLamdenTokenApproval() {
     let networkType = get(selectedNetwork)
     let token = get(selectedToken)
     let token_contract = token.address
-    let clearinghouse = token.lamden_clearinghouse
+    const bridge = get_bridge_info(token)
     let vk = get(lamden_vk)
 
 
     try {
-        const res = await fetch(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${clearinghouse}`)
+        const res = await fetch(`/.netlify/functions/getLamdenTokenAllowance?network=${networkType}&contract=${token_contract}&vk=${vk}&to=${bridge.lamden_clearinghouse.address}`)
             .catch((e) => console.log({e}))
         let value = await getValueFromResponse(res)
 
@@ -433,6 +435,7 @@ export async function sendDepositApproval(resultsTracker, callback){
 function sendLamdenApproval (resultsTracker, callback){
     let lamdenNetworkInfo = get(lamdenNetwork)
     let token = get(selectedToken)
+    const bridge = get_bridge_info(token)
 
     let swapInfoStore = get(swapInfo)
     let walletController = get(lwc)
@@ -443,7 +446,7 @@ function sendLamdenApproval (resultsTracker, callback){
         methodName: 'approve',
         kwargs: {
             amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
-            to: token.lamden_clearinghouse,
+            to: bridge.lamden_clearinghouse.address,
         },
         stampLimit: lamdenNetworkInfo.stamps.approval,
     }
@@ -481,6 +484,7 @@ export function startDeposit(resultsTracker, callback) {
 function sendDeposit (resultsTracker, callback){
     let lamdenNetworkInfo = get(lamdenNetwork)
     let token = get(selectedToken)
+    const bridge = get_bridge_info(token)
 
     let swapInfoStore = get(swapInfo)
     let walletController = get(lwc)
@@ -488,8 +492,8 @@ function sendDeposit (resultsTracker, callback){
 
     const txInfo = {
         networkType: lamdenNetworkInfo.clearingHouse.networkType,
-        contractName: token.lamden_clearinghouse,
-        methodName: 'deposit',
+        contractName: bridge.lamden_clearinghouse.address,
+        methodName: bridge.lamden_clearinghouse.abi.in,
         kwargs: {
             amount: { __fixed__: tokenAmount.toString() },
             ethereum_address: metamask_address.toLowerCase()
@@ -524,6 +528,7 @@ function sendBurn (resultsTracker, callback) {
 
 
     let lamdenToken = get(selectedToken)
+    const bridge = get_bridge_info(lamdenToken)
     let metamask_address = swapInfoStore.metamask_address
 
     let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol || t.lamden_equivalent === lamdenToken.symbol)
@@ -537,9 +542,9 @@ function sendBurn (resultsTracker, callback) {
     let walletController = get(lwc)
 
     const txInfo = {
-        contractName: lamdenToken.lamden_clearinghouse,
+        contractName: bridge.lamden_clearinghouse.address,
         networkType: lamdenNetworkInfo.clearingHouse.networkType,
-        methodName: 'burn',
+        methodName: bridge.lamden_clearinghouse.abi.out,
         kwargs: {
             ethereum_contract,
             ethereum_address: metamask_address.toLowerCase(),
@@ -680,6 +685,7 @@ const getProof = (unSignedABI, resultsTracker) =>
 
         let networkType = get(selectedNetwork)
         let token = get(selectedToken)
+        const bridge = get_bridge_info(token)
         
         const checkAgain = () => {
             timesChecked = timesChecked + 1
@@ -691,7 +697,7 @@ const getProof = (unSignedABI, resultsTracker) =>
         }
 
         const checkForProof = () => {
-            fetch(`/.netlify/functions/getLamdenProof?network=${networkType}&clearinghouse=${token.lamden_clearinghouse}&unSignedABI=${unSignedABI.replace(/'/g, '')}`)
+            fetch(`/.netlify/functions/getLamdenProof?network=${networkType}&clearinghouse=${bridge.lamden_clearinghouse.address}&unSignedABI=${unSignedABI.replace(/'/g, '')}`)
                 .then((res) => res.json())
                 .then((json) => {
                     //console.log({ json })

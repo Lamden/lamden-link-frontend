@@ -2,22 +2,26 @@ import { get } from "svelte/store";
 import { binanceNetwork } from '../stores/globalStores';
 import { web3 } from 'svelte-web3'
 
-import { abi } from './twb_clearinghouse_abi'
-
 const tokensBurnedInputs = [
     {
-      "indexed": true,
-      "internalType": "uint256",
-      "name": "amount",
-      "type": "uint256"
+        "indexed":false,
+        "internalType":"address",
+        "name":"token",
+        "type":"address"
     },
     {
-      "indexed": false,
-      "internalType": "string",
-      "name": "receiver",
-      "type": "string"
+        "indexed":false,
+        "internalType":"uint256",
+        "name":"amount",
+        "type":"uint256"
+    },
+    {
+        "indexed":false,
+        "internalType":"string",
+        "name":"receiver",
+        "type":"string"
     }
-  ]
+]
 
 export async function getBSCEvent(fromBlock, toBlock, address, topic){
     let w3 = get(web3)

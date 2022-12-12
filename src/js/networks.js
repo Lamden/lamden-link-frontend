@@ -1,11 +1,8 @@
-/*
-    BDT Mainnet info
-    {
-        name: 'BDT',
-        address: '0x7BCe667EF12023dc5f8577D015a2F09d99a5ef58',
-        decimals: 18
-    }
-*/
+import old_clearinghouse_abi from './abi/old_clearinghouse_abi.js'
+import eth_eth_native from './abi/eth_eth_native.js'
+import eth_lamden_native from './abi/eth_lamden_native.js'
+import lamden_lamden_native from './abi/lamden_lamden_native.js'
+import lamden_eth_native from './abi/lamden_eth_native.js'
 
 export const mainnet = {
     lamden: {
@@ -180,6 +177,42 @@ export const mainnet = {
 }
 
 export const testnet = {
+    bridges: {
+        eth_native:{
+            lamden_clearinghouse: {
+                address: "con_eth_native_tokens_bridge_to_eth_v1",
+                abi: lamden_eth_native
+            },
+            clearingHouse: {
+                address: '0xa50f39F5b9D0721E0e5bE1B6f89e168d5F468301',
+                abi: old_clearinghouse_abi,
+                depositEvent: "TokensWrapped"
+            }
+        },
+        bsc_native: {
+            lamden_clearinghouse: {
+                address: "con_bsc_native_tokens_bridge_to_bsc_v4",
+                abi: lamden_eth_native
+            },
+            clearingHouse: {
+                address: '0xa50f39F5b9D0721E0e5bE1B6f89e168d5F468301',
+                abi: eth_eth_native,
+                depositEvent: "TokensWrapped"
+            }
+        },
+        lamden_native_to_bsc: {
+            origin_lamden: true,
+            lamden_clearinghouse: {
+                address: "con_lamden_native_tokens_bridge_to_bsc_v4",
+                abi: lamden_lamden_native
+            },
+            clearingHouse: {
+                address: '0x4dd0EC135dAC004F0C0e5a980120822304dAA23B',
+                abi: eth_lamden_native,
+                depositEvent: "TokensBurned"
+            }
+        }
+    },
     lamden: {
         apiLink: "https://testnet.lamden.io/api",
         blockexplorer: "https://testnet.lamden.io",
@@ -192,7 +225,7 @@ export const testnet = {
             version: "5.0.3", // any version to start, increment later versions to update connection info
             logo: "/static/logo-512.png", // or whatever the location of your logo
             background: "/static/wallet/background.jpg", // or whatever the location of your logo
-            contractName: "con_eth_bridge_v2", // Will never change
+            contractName: "con_eth_native_tokens_bridge_to_eth_v1", // Will never change
             networkType: "testnet", // other option is 'mainnet' 
         },
         tokens: {
@@ -200,8 +233,8 @@ export const testnet = {
                 {
                     name: "Wrapped Ethereum",
                     symbol: 'WETH',
-                    address: 'con_weth_lst001_v1',
-                    lamden_clearinghouse: 'con_eth_bridge_v2'
+                    address: 'con_weth_lst001_v3',
+                    bridge: "eth_native"
                 }
             ],
             binance: [
@@ -209,8 +242,7 @@ export const testnet = {
                     name: "Lamden Testnet Token",
                     symbol: 'dTAU',
                     address: 'currency',
-                    lamden_clearinghouse: 'con_tau_bridge_v2',
-                    origin_lamden: true
+                    bridge: "lamden_native_to_bsc"
                 },
                 {
                     name: "Lamden USD",
@@ -219,8 +251,8 @@ export const testnet = {
                         binance:['BUSD']
                     },
                     address: 'con_usdt_bsc_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                }/*
+                    bridge: "bsc_native"
+                }/*,
                 {
                     name: "Block Duelers",
                     symbol: 'BDT',
@@ -238,7 +270,7 @@ export const testnet = {
                     symbol: 'LIQ',
                     address: 'con_liquidus_lst001',
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                },*/
+                }*/
             ]
         },
         networkName: "Lamden Testnet",
@@ -268,7 +300,7 @@ export const testnet = {
                 symbol: 'WETH',
                 address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
                 decimals: 18,
-                lamden_clearinghouse: 'con_eth_bridge_v2'
+                bridge: "eth_native"
             }]
         }
     },
@@ -296,13 +328,17 @@ export const testnet = {
                     symbol: 'dTAU',
                     address: '0xfdB08de83A90872e4b540b1c0f04Ac8A6654dd88',
                     decimals: 18,
-                    lamden_clearinghouse: 'direct',
-                    clearingHouse: {
-                        address: '0xaFbE462de48D0B4162536E0b4281A8e0Fb4B524a',
-                        abi: 'twb_clearinghouse_abi'
-                    },
-                    origin_lamden: true
+                    bridge: "lamden_native_to_bsc"
                 },
+                {
+                    name: "Binance-Peg BUSD",
+                    symbol: 'BUSD',
+                    lamden_equivalent: 'LUSD',
+                    address: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
+                    decimals: 18,
+                    bridge: "bsc_native"
+                }
+                /*
                 {
                     name: "Block Duelers",
                     symbol: 'BDT',
@@ -324,14 +360,6 @@ export const testnet = {
                     decimals: 18,
                     lamden_clearinghouse: 'con_lamden_link_bsc_v1'
                 },
-                {
-                    name: "Binance-Peg BUSD",
-                    symbol: 'BUSD',
-                    lamden_equivalent: 'LUSD',
-                    address: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
-                    decimals: 18,
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
-                }/*
                 {
                     name: "BEP-20 USDT",
                     symbol: 'USDT',

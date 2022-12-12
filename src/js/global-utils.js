@@ -3,9 +3,24 @@ BigNumber.set({EXPONENTIAL_AT: 31});
 
 import { get } from "svelte/store";
 import { web3 } from 'svelte-web3'
+import { Bridges } from '../stores/globalStores';
 
 
 export const BN = BigNumber
+
+export function get_bridge_info(token){
+    console.log({token})
+    const bridges = get(Bridges)
+    console.log({bridges})
+    
+    return bridges[token.bridge]
+}
+
+export function populate_bridge_info(token){
+    const bridges = get(Bridges)
+    
+    token.bridge = bridges[token.bridge]
+}
 
 export function eth_address_to_checksum(address){
     let w3 = get(web3)

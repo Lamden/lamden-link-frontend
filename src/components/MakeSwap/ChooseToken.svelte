@@ -24,7 +24,7 @@
                 if (curr.token.equivalents){
                     let equivalentTokens = curr.token.equivalents[curr.to]
  
-                    if (equivalentTokens.length === 1) curr.mintedToken = toNetwork.tokens[curr.from].find(t => t.symbol === equivalentTokens[0])
+                    if (equivalentTokens) curr.mintedToken = toNetwork.tokens[curr.from].find(t => t.symbol === equivalentTokens[0])
                 }else{
                     curr.mintedToken = toNetwork.tokens[curr.from].find(t => t.symbol === curr.token.symbol)
                 }

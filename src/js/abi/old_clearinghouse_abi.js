@@ -1,4 +1,4 @@
-export const abi = [{
+export default [{
         "anonymous": false,
         "inputs": [{
                 "indexed": true,

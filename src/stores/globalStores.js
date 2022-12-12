@@ -16,6 +16,7 @@ export const networkInfo = derived(selectedNetwork, ($selectedNetwork) => networ
 export const lamdenNetwork = derived(networkInfo, ($networkInfo) => $networkInfo.lamden)
 export const ethereumNetwork = derived(networkInfo, ($networkInfo) => $networkInfo.ethereum)
 export const binanceNetwork = derived(networkInfo, ($networkInfo) => $networkInfo.binance)
+export const Bridges = derived(networkInfo, ($networkInfo) => $networkInfo.bridges)
 
 export const getNetworkStore = (networkName) => {
     const networkMap = {
