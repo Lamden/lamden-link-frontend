@@ -5,6 +5,42 @@ import lamden_lamden_native from './abi/lamden_lamden_native.js'
 import lamden_eth_native from './abi/lamden_eth_native.js'
 
 export const mainnet = {
+    bridges: {
+        eth_native:{
+            lamden_clearinghouse: {
+                address: "FILL_IN",
+                abi: lamden_eth_native
+            },
+            clearingHouse: {
+                address: 'FILL_IN',
+                abi: old_clearinghouse_abi,
+                depositEvent: "TokensWrapped"
+            }
+        },
+        bsc_native: {
+            lamden_clearinghouse: {
+                address: "FILL_IN",
+                abi: lamden_eth_native
+            },
+            clearingHouse: {
+                address: 'FILL_IN',
+                abi: eth_eth_native,
+                depositEvent: "TokensWrapped"
+            }
+        },
+        lamden_native_to_bsc: {
+            origin_lamden: true,
+            lamden_clearinghouse: {
+                address: "FILL_IN",
+                abi: lamden_lamden_native
+            },
+            clearingHouse: {
+                address: 'FILL_IN',
+                abi: eth_lamden_native,
+                depositEvent: "TokensBurned"
+            }
+        }
+    },
     lamden: {
         apiLink: "https://mainnet.lamden.io/api",
         blockexplorer: "https://www.tauhq.com",
@@ -21,20 +57,20 @@ export const mainnet = {
             networkType: "mainnet", // other option is 'mainnet' 
         },
         tokens: {
-            ethereum:[{
-                name: "Wrapped Ethereum",
-                symbol: 'WETH',
-                address: 'con_weth_lst001',
-                lamden_clearinghouse: 'con_lamden_link_v1'
-                
-            }],
+            ethereum:[
+                {
+                    name: "Wrapped Ethereum",
+                    symbol: 'WETH',
+                    address: 'con_weth_lst001',
+                    bridge: "eth_native"
+                }
+            ],
             binance: [
                 {
                     name: "Lamden",
                     symbol: 'TAU',
                     address: 'currency',
-                    lamden_clearinghouse: 'con_tau_bridge_v2',
-                    origin_lamden: true
+                    bridge: "lamden_native_to_bsc"
                 },
                 {
                     name: "Lamden USD",
@@ -43,7 +79,7 @@ export const mainnet = {
                         binance:['BUSD']
                     },
                     address: 'con_lusd_lst001',
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                    bridge: "bsc_native"
                 }
                 /*
                 {
@@ -93,7 +129,7 @@ export const mainnet = {
                 symbol: 'WETH',
                 address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
                 decimals: 18,
-                lamden_clearinghouse: 'con_lamden_link_v1'
+                bridge: "eth_native"
             }]
         }
     },
@@ -117,12 +153,7 @@ export const mainnet = {
                     symbol: 'TAU',
                     address: '0x70d7109D3AfE13EE8f9015566272838519578c6b',
                     decimals: 18,
-                    lamden_clearinghouse: 'direct',
-                    clearingHouse: {
-                        address: '0x46E126489b7965ecC13E58f72F6D14B140614C18',
-                        abi: 'twb_clearinghouse_abi'
-                    },
-                    origin_lamden: true
+                    bridge: "lamden_native_to_bsc"
                 },
                 {
                     name: "Binance-Peg BUSD",
@@ -130,7 +161,7 @@ export const mainnet = {
                     lamden_equivalent: 'LUSD',
                     address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
                     decimals: 18,
-                    lamden_clearinghouse: 'con_lamden_link_bsc_v1'
+                    bridge: "bsc_native"
                 }
                 /*
                 {
