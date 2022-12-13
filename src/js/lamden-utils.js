@@ -441,7 +441,7 @@ function sendLamdenApproval (resultsTracker, callback){
     let walletController = get(lwc)
 
     const txInfo = {
-        networkType: lamdenNetworkInfo.clearingHouse.networkType,
+        networkType: lamdenNetworkInfo.walletConnection.networkType,
         contractName: token.address,
         methodName: 'approve',
         kwargs: {
@@ -491,7 +491,7 @@ function sendDeposit (resultsTracker, callback){
     const { tokenAmount, metamask_address } = swapInfoStore
 
     const txInfo = {
-        networkType: lamdenNetworkInfo.clearingHouse.networkType,
+        networkType: lamdenNetworkInfo.walletConnection.networkType,
         contractName: bridge.lamden_clearinghouse.address,
         methodName: bridge.lamden_clearinghouse.abi.in,
         kwargs: {
@@ -543,7 +543,7 @@ function sendBurn (resultsTracker, callback) {
 
     const txInfo = {
         contractName: bridge.lamden_clearinghouse.address,
-        networkType: lamdenNetworkInfo.clearingHouse.networkType,
+        networkType: lamdenNetworkInfo.walletConnection.networkType,
         methodName: bridge.lamden_clearinghouse.abi.out,
         kwargs: {
             ethereum_contract,

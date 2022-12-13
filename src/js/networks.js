@@ -8,22 +8,22 @@ export const mainnet = {
     bridges: {
         eth_native:{
             lamden_clearinghouse: {
-                address: "FILL_IN",
+                address: "con_lamden_link_v1",
                 abi: lamden_eth_native
             },
             clearingHouse: {
-                address: 'FILL_IN',
+                address: '0xF881aC8E0BAe5FCFE125e88c5F90A693aF3EA8Cb',
                 abi: old_clearinghouse_abi,
                 depositEvent: "TokensWrapped"
             }
         },
         bsc_native: {
             lamden_clearinghouse: {
-                address: "FILL_IN",
+                address: "con_bsc_native_tokens_bridge_to_bsc_v1",
                 abi: lamden_eth_native
             },
             clearingHouse: {
-                address: 'FILL_IN',
+                address: '0xEEfE1327459525F836100068A50e038f82579bEe',
                 abi: eth_eth_native,
                 depositEvent: "TokensWrapped"
             }
@@ -31,11 +31,11 @@ export const mainnet = {
         lamden_native_to_bsc: {
             origin_lamden: true,
             lamden_clearinghouse: {
-                address: "FILL_IN",
+                address: "con_lamden_native_tokens_bridge_to_bsc_v1",
                 abi: lamden_lamden_native
             },
             clearingHouse: {
-                address: 'FILL_IN',
+                address: '0x12C718eF3Ce17CABD773a40CF6202B635441FA97',
                 abi: eth_lamden_native,
                 depositEvent: "TokensBurned"
             }
@@ -48,7 +48,7 @@ export const mainnet = {
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
         interop: ['ethereum', 'binance'],
-        clearingHouse: {
+        walletConnection: {
             appName: "Lamden Link", // Your DAPPS's name
             version: "1.0.3", // any version to start, increment later versions to update connection info
             logo: "/static/logo-512.png", // or whatever the location of your logo
@@ -119,10 +119,6 @@ export const mainnet = {
         chainId: 1,
         networkName: "Ethereum Mainnet",
         network_symbol: "ETH",
-        clearingHouse: {
-            address: '0xF881aC8E0BAe5FCFE125e88c5F90A693aF3EA8Cb',
-            abi: 'clearinghouse_abi'
-        },
         tokens: {
             lamden:[{
                 name: "Wrapped Ethereum",
@@ -142,16 +138,12 @@ export const mainnet = {
         network_symbol: "BNB",
         chainId: 56,
         networkName: "Binance Smart Chain Mainnet",
-        clearingHouse: {
-            address: '0x7F15E7c3Dff596291727F1ba46E98D5DE0697e3d',
-            abi: 'clearinghouse_abi'
-        },
         tokens: {
             lamden:[
                 {
                     name: "Lamden Mainnet Token",
                     symbol: 'TAU',
-                    address: '0x70d7109D3AfE13EE8f9015566272838519578c6b',
+                    address: '0x0e255FA2309383804deF26f1b305EBC2Cb750368',
                     decimals: 18,
                     bridge: "lamden_native_to_bsc"
                 },

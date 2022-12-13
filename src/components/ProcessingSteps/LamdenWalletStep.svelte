@@ -41,7 +41,7 @@
     }
 
     function getApprovalRequest(){
-        return $lamdenNetwork.clearingHouse
+        return $lamdenNetwork.walletConnection
     }
 
 	const handleWalletInfo = (info) => {
