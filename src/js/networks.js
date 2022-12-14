@@ -143,7 +143,7 @@ export const mainnet = {
                 {
                     name: "Lamden Mainnet Token",
                     symbol: 'TAU',
-                    address: '0x0e255FA2309383804deF26f1b305EBC2Cb750368',
+                    address: '0x5d9Cb4C6F988f8eD166F175a5B8be7E3CBCA850d',
                     decimals: 18,
                     bridge: "lamden_native_to_bsc"
                 },

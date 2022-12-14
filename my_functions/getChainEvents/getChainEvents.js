@@ -16,7 +16,6 @@ exports.handler = async (event, context) => {
 		toBlock
 	})
 	.then((events) => {
-		console.log({events})
 		return {
 			statusCode: 200,
 			body: JSON.stringify(events)

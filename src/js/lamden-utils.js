@@ -44,8 +44,8 @@ export async function getCurrentLamdenBlockNum(){
 
     return fetch(`/.netlify/functions/getLamdenCurrentBlock?&network=${networkType}`)
         .then(res => res.json())
-        .then(synced_stats => {
-            const { latest_block } = synced_stats
+        .then(json => {
+            const { latest_block } = json
             return latest_block
         })
         .catch(err => {
@@ -231,7 +231,6 @@ export function attemptToGetLamdenCurrentBlock(statusStore){
         async function check(){
             getCurrentLamdenBlockNum()
             .then((block) => {
-                console.log(block)
                 if (block && !block.error) {
                     statusStore.set({})
                     resolve(block)
@@ -248,8 +247,9 @@ export function attemptToGetLamdenCurrentBlock(statusStore){
             })
             .catch((err)=> {
                 console.log(err)
-                statusStore.set({errors: [`Error getting current block number: ${err.message}`]})
-                reject(err)
+                const error = `Error getting current block number: ${err.message}`
+                statusStore.set({errors: [error]})
+                reject(error)
             })
         }
         statusStore.set({loading: true, status: `Getting current Lamden block...`})
@@ -272,7 +272,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     
     function check(){
         if (get(tabHidden)) {
-            console.log("tab not active")
             return
         }
 
@@ -291,7 +290,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function handleResponse(events){
-        console.log(events)
         const { history } = events
         
         if (!history || !Array.isArray(history) || history.length === 0) return
@@ -361,7 +359,7 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
             if (!ethereum_contract || !lamden_wallet || !amount) return false
 
             return  contract === bridge.lamden_clearinghouse.address && 
-                    method ===  bridge.lamden_clearinghouse.abi.out &&
+                    method ===  bridge.lamden_clearinghouse.abi.in &&
                     lamden_wallet.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
                     new BN(amount).toString() === tokenAmount
         }
@@ -457,6 +455,7 @@ function sendLamdenApproval (resultsTracker, callback){
 
 
 function handleTxResults(txResults, resultsTracker, callback){
+    console.log({txResults})
     if (!txResults.data) 
         resultsTracker.set({loading:false, errors: ["Transaction result unavailable."]})
     else {
@@ -650,20 +649,16 @@ function getUnsignedABIFromBlockchain(){
         const checkForUnsignedABI = async () => {
             fetch(`/.netlify/functions/getLamdenTxHash?network=${networkType}&hash=${txHash}`)
             .then((res) => {
-                console.log(res)
                 if (res.status === 404 || res.status === 500) {
                     throw new Error("check again")
                 } 
                 return res.json()
             })
             .then((json) => {
-                console.log(json)
                 if (!json) throw new Error("check again")
                 if (json.error) throw new Error("check again")
 
                 const { txInfo } = json
-
-                console.log(txInfo)
 
                 if (!txInfo || txInfo === null || txInfo === 'None'){
                     throw new Error("check again")
@@ -700,7 +695,6 @@ const getProof = (unSignedABI, resultsTracker) =>
             fetch(`/.netlify/functions/getLamdenProof?network=${networkType}&clearinghouse=${bridge.lamden_clearinghouse.address}&unSignedABI=${unSignedABI.replace(/'/g, '')}`)
                 .then((res) => res.json())
                 .then((json) => {
-                    //console.log({ json })
                     if (!json) {
                         checkAgain()
                         return

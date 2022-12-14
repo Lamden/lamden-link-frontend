@@ -9,9 +9,7 @@ import { Bridges } from '../stores/globalStores';
 export const BN = BigNumber
 
 export function get_bridge_info(token){
-    console.log({token})
     const bridges = get(Bridges)
-    console.log({bridges})
     
     return bridges[token.bridge]
 }

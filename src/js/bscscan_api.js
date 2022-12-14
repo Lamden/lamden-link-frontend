@@ -28,24 +28,17 @@ export async function getBSCEvent(fromBlock, toBlock, address, topic){
     let network = get(binanceNetwork)
     const { api_url, key} = network.bsc_scan
 
-    console.log({fromBlock, toBlock, address, topic})
-
-    console.log(`${api_url}&fromBlock=${fromBlock}&toBlock=${toBlock}&address=${address}&topic=${topic}&apiKey=${key}`)
-
     return fetch(`${api_url}&fromBlock=${fromBlock}&toBlock=${toBlock}&address=${address}&topic=${topic}&apiKey=${key}`)
     .then(res => res.json())
     .then(json => {
-        console.log(json)
         const {result } = json
         
 
         if (!result || !Array.isArray(result)) throw new Error("Error: Invalid event payload")
 
         let decoded = result.map(log => {
-            console.log(log)
             return w3.eth.abi.decodeLog(tokensBurnedInputs, log.data, log.topics);
         })
-        console.log({decoded})
         
         return []
     })

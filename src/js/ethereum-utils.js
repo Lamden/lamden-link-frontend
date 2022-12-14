@@ -77,7 +77,6 @@ export async function checkTokenAllowance() {
     
 
     if (!token){
-        console.log(get(swapInfo))
         return
     }
 
@@ -171,25 +170,28 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     )
 
     function check(){
-        console.log(bridge)
+
         let fromBlock = get(swapInfo).lastETHBlockNum
         let toBlock = 'latest'
 
-        console.log(`/.netlify/functions/getChainEvents?networkType=${networkType}&fromNetwork=${fromNetwork}&fromBlock=${fromBlock}&toBlock${toBlock}&eventType=${bridge.clearingHouse.depositEvent}`)
+        if (fromBlock){
+            fetch(`/.netlify/functions/getChainEvents?networkType=${networkType}&fromNetwork=${fromNetwork}&fromBlock=${fromBlock}&toBlock=${toBlock}&eventType=${bridge.clearingHouse.depositEvent}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bridge.clearingHouse)
+            })
+            .then(res => res.json())
+            .then(handleResponse)
+            .catch(err => {
+                console.log(err)
+                statusStore.set({errors: [`Error checking for Deposit event: ${err.message}`]})
+                stopChecking()
+            });
+        }
 
-        fetch(`/.netlify/functions/getChainEvents?networkType=${networkType}&fromNetwork=${fromNetwork}&fromBlock=${fromBlock}&toBlock=${toBlock}&eventType=${bridge.clearingHouse.depositEvent}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bridge.clearingHouse)
-        })
-        .then(handleResponse)
-        .catch(err => {
-            console.log(err)
-            statusStore.set({errors: [`Error checking for Deposit event: ${err.message}`]})
-            stopChecking()
-        });
+
     }
 
     function handleResponse(events){
@@ -252,7 +254,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
         statusStore.set({loading: true, status: `Checking ${fromNetwork} for your successful Deposit transaction...`})
         check()
         if (timer) stopChecking()
-        timer = setInterval(check, 60000)
+        timer = setInterval(check, 10000)
     }
 
     function stopChecking(){
@@ -334,14 +336,11 @@ export function sendProofToEthereum(resultTracker, callback){
 
     const bridge = get_bridge_info(swapInfoStore.mintedToken)
 
-    console.log({bridge})
-
     const clearingHouseContract = new w3.eth.Contract(
         bridge.clearingHouse.abi,
         bridge.clearingHouse.address,
     )
 
-    console.log({proofData})
 
     let withdraw = null
 
