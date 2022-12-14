@@ -80,12 +80,12 @@
     }
 </style>
 
-<div class="flex align-center just-center container" class:no-margin={!margin} class:filled={hashTokenInfo} on:click={handleClick} class:tiny={size === "tiny"}>
+<button class="not-button flex align-center just-center container" class:no-margin={!margin} class:filled={hashTokenInfo} on:click={handleClick} class:tiny={size === "tiny"}>
     {#if hashTokenInfo}
         <div class="flex align-center just-center logo" class:tiny={size === "tiny"}>
             <svelte:component this={TokenMap[token.symbol]} />
         </div>
     {/if}
-</div>
+</button>
 
 

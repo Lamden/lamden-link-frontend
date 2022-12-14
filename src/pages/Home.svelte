@@ -33,9 +33,6 @@
 </script>
 
 <style>
-	.description{
-		text-align: center;
-	}
 	.buttons{
 		width: max-content;
 		margin: 2rem auto 1rem;

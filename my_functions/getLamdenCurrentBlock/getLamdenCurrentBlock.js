@@ -6,7 +6,7 @@ const BLOCKSERVICE_URL = {
 }
 
 const PORT = "3535"
-const ENDPOINT = "synced_stats"
+const ENDPOINT = "latest_block"
 
 exports.handler = async (event, context) => {
 	const { network } = event.queryStringParameters

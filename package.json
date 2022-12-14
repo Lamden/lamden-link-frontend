@@ -1,12 +1,17 @@
 {
   "name": "svelte-app",
-  "version": "1.5.0",
+  "version": "1.9.0",
   "private": true,
   "scripts": {
     "build": "rollup -c",
-    "dev": "PORT=5005 HOST=0.0.0.0 rollup -c -w -s",
+    "dev": "HOST=localhost PORT=5005 rollup -c -w",
     "start": "sirv public --no-clear -s",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "overrides": {
+    "chokidar": "3.5.3",
+    "glob-parent": "6.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -1,5 +1,6 @@
 /node_modules/
 /public/build/
+/my_functions/*/node_modules
 
 .DS_Store
 

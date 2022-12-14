@@ -14,7 +14,7 @@
 
     export let current
     export let complete
-    export let stepInfo = null;
+    export const stepInfo = null;
 
     let skipApproval = false
 
@@ -42,6 +42,9 @@
     }
 
     async function handleApproveBurnComplete(txResults){
+        await new Promise((resolve) => {
+            setTimeout(resolve, 10000)
+        })
         lamdenTokenApprovalAmount.set($swapInfo.tokenAmount)
         burnApprovalTxStatus.set({})
         swapInfo.update(curr => {
@@ -53,7 +56,6 @@
     }
 
     function handleBurnComplete(txResults){
-        console.log({txResults})
         if (txResults.recheckFailed) return
 
         if (txResults.recheck){

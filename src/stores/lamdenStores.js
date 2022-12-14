@@ -12,8 +12,6 @@ export const lamdenTokenApprovalAmount = writable(new BN(0))
 
 export const isTrackedAddress = derived(lamden_vk, ($lamden_vk) => $lamden_vk === "tracked_address");
 
-
-
 // Results Trackers
 export const burnTxStatus = writable({})
 export const burnApprovalTxStatus = writable({})

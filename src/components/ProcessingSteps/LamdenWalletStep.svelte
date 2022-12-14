@@ -29,7 +29,7 @@
 
 	onMount(() => {
         lwc.set(new WalletController(getApprovalRequest()))
-
+        
         $lwc.events.on('newInfo', handleWalletInfo)
 
 		return () => {
@@ -41,7 +41,7 @@
     }
 
     function getApprovalRequest(){
-        return $lamdenNetwork.clearingHouse
+        return $lamdenNetwork.walletConnection
     }
 
 	const handleWalletInfo = (info) => {

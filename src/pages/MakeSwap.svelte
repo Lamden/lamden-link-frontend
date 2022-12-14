@@ -41,11 +41,11 @@
 
 
     function getFromNetworks(){
-        return Object.keys(networks[$selectedNetwork])
+        return Object.keys(networks[$selectedNetwork]).filter(k => k !== "bridges" && k !== "ethereum")
     }
 
     function getToNetworks(){
-        return networks[$selectedNetwork][$swapInfo.from].interop
+        return networks[$selectedNetwork][$swapInfo.from].interop.filter(k => k !== "ethereum")
     }
 
     function getSupportedTokens(){

@@ -3,11 +3,14 @@
 
 	import Button from '../components/Button.svelte';
 	import { maintenance_unlocked } from '../stores/globalStores'
-
+	
 	let password = ""
 
-	function handle_click(){
-		if (password === "lamden_maint"){
+	async function handle_click(){
+		const res = await fetch(`/.netlify/functions/checkMaintPass?password=${password}`)
+					.then(res => res.json())
+
+		if (res.valid){
 			maintenance_unlocked.set(true)
 			navigate("/")
 		}

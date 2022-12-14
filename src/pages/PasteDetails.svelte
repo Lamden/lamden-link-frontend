@@ -93,6 +93,7 @@
 <div class="flex col align-center just-center">
     <h2>Paste Swap Details</h2>
     <p class="text-warning">Only use if Lamden Link support has directed you too</p>
+    <!-- svelte-ignore a11y-autofocus -->
     <textarea autofocus rows="20" bind:value={swapData} class:validData={datavalid} class:invalidData={invalidData} on:input={handleInput}/>
     <p class="text-error">{error == null ? "" : error}</p>
     <div class="buttons flex just-center">

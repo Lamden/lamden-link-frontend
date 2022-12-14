@@ -4,9 +4,8 @@ import { get } from "svelte/store";
 import { swapInfo, getNetworkStore, selectedToken, selectedNetwork } from '../stores/globalStores';
 import { ethChainBalance, ethChainTokenBalance, ethChainTokenAllowance } from '../stores/ethereumStores';
 import { saveSwap } from './localstorage-utils' 
-import { BN, toBaseUnit } from './global-utils' 
-import { ERC20_ABI } from './erc20_abi'
-import { abi_MAP } from './abi_mappings'
+import { BN, toBaseUnit, get_bridge_info } from './global-utils' 
+import { ERC20_ABI } from './abi/erc20_abi'
 
 
 function getCorrectNetwork(){
@@ -78,17 +77,10 @@ export async function checkTokenAllowance() {
     
 
     if (!token){
-        console.log(get(swapInfo))
         return
     }
 
-    let clearingHouse = null
-
-    if (token.origin_lamden) clearingHouse = token.clearingHouse
-    else {
-        let network = getCorrectNetwork()
-        clearingHouse = network.clearingHouse
-    }
+    const bridge = get_bridge_info(token)
 
     let w3 = get(web3)
     try {
@@ -98,7 +90,7 @@ export async function checkTokenAllowance() {
         )
         
         let val = await erc20TokenContract.methods
-            .allowance(metamask_address, clearingHouse.address)
+            .allowance(metamask_address, bridge.clearingHouse.address)
             .call()
 
         if (val) {
@@ -166,42 +158,40 @@ export function checkForEthereumConfirmations(statusStore, startingBlock){
 export const checkForEthereumEvents = (statusStore, doneCallback) => {
     let w3 = get(web3)
     let swapInfoStore = get(swapInfo)
-    let networkInfo = getCorrectNetwork()
     let fromNetwork = swapInfoStore.from.toUpperCase()
+    const networkType = get(selectedNetwork).toUpperCase()
     let timer = null
 
-    let clearingHouse = null
-    let depositEvent = null
-
-    if (swapInfoStore.token.origin_lamden) {
-        clearingHouse = swapInfoStore.token.clearingHouse
-        depositEvent = "TokensBurned"
-    }
-    else {
-        depositEvent = "TokensWrapped"
-        clearingHouse = networkInfo.clearingHouse
-    }
+    const bridge = get_bridge_info(swapInfoStore.token)
 
     const clearingHouseContract = new w3.eth.Contract(
-        abi_MAP[clearingHouse.abi],
-        clearingHouse.address,
+        bridge.clearingHouse.abi,
+        bridge.clearingHouse.address
     )
 
-
     function check(){
+
         let fromBlock = get(swapInfo).lastETHBlockNum
         let toBlock = 'latest'
 
-        clearingHouseContract.getPastEvents('allEvents', {
-            fromBlock,
-            toBlock
-        })
-        .then(handleResponse)
-        .catch(err => {
-            console.log(err)
-            statusStore.set({errors: [`Error checking for Deposit event: ${err.message}`]})
-            stopChecking()
-        });
+        if (fromBlock){
+            fetch(`/.netlify/functions/getChainEvents?networkType=${networkType}&fromNetwork=${fromNetwork}&fromBlock=${fromBlock}&toBlock=${toBlock}&eventType=${bridge.clearingHouse.depositEvent}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bridge.clearingHouse)
+            })
+            .then(res => res.json())
+            .then(handleResponse)
+            .catch(err => {
+                console.log(err)
+                statusStore.set({errors: [`Error checking for Deposit event: ${err.message}`]})
+                stopChecking()
+            });
+        }
+
+
     }
 
     function handleResponse(events){
@@ -248,7 +238,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
         const { token, receiver, amount } = returnValues;
         let tokenAmount = toBaseUnit(swapInfoStore.tokenAmount.toString(), swapInfoStore.token.decimals).toString()
 
-        if (depositEvent === "TokensWrapped"){
+        if (bridge.depositEvent === "TokensWrapped"){
             if (!token) return false
             if (token.toLowerCase() !== swapInfoStore.token.address.toLowerCase()) return false
         }
@@ -264,7 +254,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
         statusStore.set({loading: true, status: `Checking ${fromNetwork} for your successful Deposit transaction...`})
         check()
         if (timer) stopChecking()
-        timer = setInterval(check, 60000)
+        timer = setInterval(check, 10000)
     }
 
     function stopChecking(){
@@ -280,62 +270,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
         started: () => timer !== null
     }
 }
-/*
-export const checkForEthereumTransactions = (statusStore, doneCallback) => {
-    let w3 = get(web3)
-    let swapInfoStore = get(swapInfo)
 
-    const { mintedToken, metamask_address } = swapInfoStore
-
-    let clearingHouse = null
-
-    if (swapInfoStore.token.origin_lamden) {
-        clearingHouse = mintedToken.clearingHouse
-    }else {
-        clearingHouse = networkInfo.clearingHouse
-    }
-
-    let tokenAmount = toBaseUnit(swapInfoStore.tokenAmount.toString(), swapInfoStore.mintedToken.decimals).toString()
-
-    const erc20TokenContract = new w3.eth.Contract(
-        ERC20_ABI,
-        mintedToken.address,
-    )
-
-    const options = {
-
-        filter: {
-            _from:  clearingHouse.address,
-            _to:    metamask_address,
-            _value: tokenAmount
-        },
-        fromBlock: get(swapInfo).lastETHBlockNum
-    }
-
-    statusStore.set({loading: true, status: ""})
-
-    erc20TokenContract.events.Transfer(options, handleResponse)
-
-    function handleResponse(transactions){
-        console.log({transactions})
-
-        try{
-            for (let transaction of transactions){
-                checkForMatchingEvent(transaction)
-            }
-        }catch(e){
-            console.log(e)
-            statusStore.set({errors: [`Error checking for Transactions: ${e.message}`]})
-        }
-    }
-
-    function checkForMatchingEvent(transaction){
-        console.log({transaction})
-
-    }
-
-}
-*/
 export function attemptToGetCurrentBlock(statusStore){
     let swapInfoStore = get(swapInfo)
     let fromNetwork = swapInfoStore.from.toUpperCase()
@@ -399,17 +334,13 @@ export function sendProofToEthereum(resultTracker, callback){
         return
     }
 
-    let clearingHouse = null
-
-    if (swapInfoStore.mintedToken.origin_lamden) clearingHouse = swapInfoStore.mintedToken.clearingHouse
-    else clearingHouse = networkInfo.clearingHouse
+    const bridge = get_bridge_info(swapInfoStore.mintedToken)
 
     const clearingHouseContract = new w3.eth.Contract(
-        abi_MAP[clearingHouse.abi],
-        clearingHouse.address,
+        bridge.clearingHouse.abi,
+        bridge.clearingHouse.address,
     )
 
-    console.log({proofData})
 
     let withdraw = null
 
@@ -509,13 +440,10 @@ export function sendEthChainApproval(resultTracker, callback){
         token.address,
     )
 
-    let clearingHouse = null
-
-    if (swapInfoStore.token.origin_lamden) clearingHouse = swapInfoStore.token.clearingHouse
-    else clearingHouse = networkInfo.clearingHouse
+    const bridge = get_bridge_info(swapInfoStore.token) 
 
     const approve = erc20TokenContract.methods.approve(
-        clearingHouse.address,
+        bridge.clearingHouse.address,
         quantity,
     )
 
@@ -561,34 +489,18 @@ export function sendEthChainDeposit(resultTracker, callback){
 
     resultTracker.set({loading: true, status: `Sending ${networkInfo.networkName} ${token.symbol} deposit transaction (check for metamask popup)...`}) 
 
-    let clearingHouse = null
-    let deposit = null
+    const bridge = get_bridge_info(swapInfoStore.token)
 
-    if (swapInfoStore.token.origin_lamden) {
-        clearingHouse = swapInfoStore.token.clearingHouse
+    const clearingHouseContract = new w3.eth.Contract(
+        bridge.clearingHouse.abi,
+        bridge.clearingHouse.address,
+    )
 
-        let clearingHouseContract = new w3.eth.Contract(
-            abi_MAP[clearingHouse.abi],
-            clearingHouse.address,
-        )
-        deposit = clearingHouseContract.methods.deposit(
-            quantity,
-            lamden_address,
-        )
-
-    }else {
-        clearingHouse = networkInfo.clearingHouse
-
-        let clearingHouseContract = new w3.eth.Contract(
-            abi_MAP[clearingHouse.abi],
-            clearingHouse.address,
-        )
-        deposit = clearingHouseContract.methods.deposit(
-            token.address,
-            quantity,
-            lamden_address,
-        )
-    }
+    const deposit = clearingHouseContract.methods.deposit(
+        token.address,
+        quantity,
+        lamden_address,
+    )
 
     try {
         deposit
