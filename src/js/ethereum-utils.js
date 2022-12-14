@@ -160,6 +160,7 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     let w3 = get(web3)
     let swapInfoStore = get(swapInfo)
     let fromNetwork = swapInfoStore.from.toUpperCase()
+    const networkType = get(selectedNetwork).toUpperCase()
     let timer = null
 
     const bridge = get_bridge_info(swapInfoStore.token)
@@ -170,12 +171,18 @@ export const checkForEthereumEvents = (statusStore, doneCallback) => {
     )
 
     function check(){
+        console.log(bridge)
         let fromBlock = get(swapInfo).lastETHBlockNum
         let toBlock = 'latest'
 
-        clearingHouseContract.getPastEvents('allEvents', {
-            fromBlock,
-            toBlock
+        console.log(`/.netlify/functions/getChainEvents?networkType=${networkType}&fromNetwork=${fromNetwork}&fromBlock=${fromBlock}&toBlock${toBlock}&eventType=${bridge.clearingHouse.depositEvent}`)
+
+        fetch(`/.netlify/functions/getChainEvents?networkType=${networkType}&fromNetwork=${fromNetwork}&fromBlock=${fromBlock}&toBlock=${toBlock}&eventType=${bridge.clearingHouse.depositEvent}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bridge.clearingHouse)
         })
         .then(handleResponse)
         .catch(err => {
