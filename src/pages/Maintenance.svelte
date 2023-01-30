@@ -21,7 +21,7 @@
 
 <h2>We'll be back soon...</h2>
 <div class="subtitle flex row wrap align-center">
-	<p class="subtitle">Lamden Link is down for maintenance. </p>
+	<p class="subtitle">Lamden Link is down for the Arko Upgrade and will be back by Feb 1st. </p>
 	<a class="help-link" href="https://t.me/lamdenlinksupport" target="_blank" rel="noopener noreferrer" > check for updates </a>
 </div>
 
