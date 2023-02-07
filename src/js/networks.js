@@ -238,18 +238,19 @@ export const testnet = {
     },
     lamden: {
         apiLink: "https://testnet.lamden.io/api",
-        blockexplorer: "https://testnet.lamden.io",
+        blockexplorer: "https://testnetv2.tauhq.com",
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
         interop: ['ethereum', 'binance'],
         clearingHouse: {
             appName: "Lamden Link", // Your DAPPS's name
-            version: "5.0.3", // any version to start, increment later versions to update connection info
+            version: "5.0.5", // any version to start, increment later versions to update connection info
             logo: "/static/logo-512.png", // or whatever the location of your logo
             background: "/static/wallet/background.jpg", // or whatever the location of your logo
             contractName: "con_eth_native_tokens_bridge_to_eth_v1", // Will never change
             networkType: "testnet", // other option is 'mainnet' 
+            networkName: 'arko' // New Arko network
         },
         tokens: {
             ethereum:[
