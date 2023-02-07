@@ -1,30 +1,39 @@
 const fetch = require("node-fetch");
 
-const BLOCKSERVICE_URL = {
-    testnet: "http://165.227.181.34",
-    mainnet: "http://165.22.47.195"
+const BLOCKSERVICE_HOSTS = {
+	testnet: [
+        "https://testnet-v2-bs-lon.lamden.io",
+        "https://testnet-v2-bs-sf.lamden.io",
+        "https://testnet-v2-bs-bang.lamden.io"
+    ],
+	mainnet: [
+		"https://arko-bs-1.lamden.io",
+		"https://arko-bs-2.lamden.io",
+		"https://arko-bs-3.lamden.io"
+	]
 }
 
-const PORT = "3535"
 const ENDPOINT = "contract_history"
 
 exports.handler = async (event, context) => {
-    const { network, contract, blockNum } = event.queryStringParameters
+    const { network, contract, start_block_num } = event.queryStringParameters
 
-    if (!network){
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Error: No 'network' parm provided." }),
-        };
-    }
+	if (!network || !Object.keys(BLOCKSERVICE_HOSTS).includes(network)){
+		return {
+			statusCode: 500,
+			body: JSON.stringify({ error: "Error: Invalid 'network' parameter provided." }),
+		};
+	}
 
-    last_tx_uid = `${String(blockNum).padStart(12, "0")}.00000.00000`
+    const hosts = BLOCKSERVICE_HOSTS[network]
+    const blockService_url = hosts[Math.floor(Math.random() * hosts.length)]
 
-    let url = `${BLOCKSERVICE_URL[network]}:${PORT}/${ENDPOINT}?contract=${contract}&last_tx_uid=${last_tx_uid}?limit=50`
+    let url = `${blockService_url}/${ENDPOINT}?contract=${contract}&start_block_num=${start_block_num}&limit=50`
 
     try {
         const response = await fetch(url);
         let data = await response.json()
+        console.log(data)
 		if (!data)  {
 			return {
 				statusCode: 500,

@@ -28,12 +28,18 @@
     const { nextStep } = getContext('process_swap')
 
 	onMount(() => {
-        lwc.set(new WalletController(getApprovalRequest()))
+        lwc.update(() => {
+            const instance = new WalletController(getApprovalRequest())
+            instance.events.on('newInfo', handleWalletInfo)
+            return instance
+        })
+
+        // lwc.set(new WalletController(getApprovalRequest()))
         
-        $lwc.events.on('newInfo', handleWalletInfo)
+        // $lwc.events.on('newInfo', handleWalletInfo)
 
 		return () => {
-			$lwc.events.removeListener(handleWalletInfo)
+            if ($lwc) $lwc.events.removeListener(handleWalletInfo)
 		}
     })
     function checkIfWalletIsInstalled(){

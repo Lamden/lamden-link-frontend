@@ -43,7 +43,7 @@ export const mainnet = {
     },
     lamden: {
         apiLink: "https://mainnet.lamden.io/api",
-        blockexplorer: "https://www.tauhq.com",
+        blockexplorer: "https://arko.tauhq.com",
         blockexplorer_tx: "transactions",
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
@@ -55,6 +55,7 @@ export const mainnet = {
             background: "/static/wallet/background.jpg", // or whatever the location of your logo
             contractName: "con_lamden_link_v1", // Will never change
             networkType: "mainnet", // other option is 'mainnet' 
+            networkName: 'arko' // New Arko network
         },
         tokens: {
             ethereum:[
@@ -243,12 +244,12 @@ export const testnet = {
         blockexplorer_address: "addresses",
         wallet_install_url: "https://chrome.google.com/webstore/detail/lamden-wallet-browser-ext/fhfffofbcgbjjojdnpcfompojdjjhdim",
         interop: ['ethereum', 'binance'],
-        clearingHouse: {
+        walletConnection: {
             appName: "Lamden Link", // Your DAPPS's name
             version: "5.0.5", // any version to start, increment later versions to update connection info
             logo: "/static/logo-512.png", // or whatever the location of your logo
             background: "/static/wallet/background.jpg", // or whatever the location of your logo
-            contractName: "con_eth_native_tokens_bridge_to_eth_v1", // Will never change
+            contractName: "con_lamden_native_tokens_bridge_to_bsc_v4", // Will never change
             networkType: "testnet", // other option is 'mainnet' 
             networkName: 'arko' // New Arko network
         },

@@ -275,12 +275,16 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
             return
         }
 
-        let blockNum = get(swapInfo).lastLamdenBlockNum - 1
+        let start_block_num = BigInt(get(swapInfo).lastLamdenBlockNum) - BigInt("1")
 
-        if (lastCheckedBlockNum === blockNum) return
+        if (lastCheckedBlockNum === start_block_num) return
 
-        fetch(`/.netlify/functions/getLamdenContractHistory?contract=${contract}&blockNum=${blockNum}&network=${networkType}`)
+        fetch(`/.netlify/functions/getLamdenContractHistory?contract=${contract}&start_block_num=${start_block_num.toString()}&network=${networkType}`)
 		.then(res => res.json())
+        .then(json => {
+            console.log(json)
+            return json
+        })
         .then(handleResponse)
         .catch(err => {
             console.log(err)
@@ -291,14 +295,17 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
 
     function handleResponse(events){
         const { history } = events
-        
+        console.log({history})
         if (!history || !Array.isArray(history) || history.length === 0) return
 
         try{
             for (let event of history){
                 const { txInfo, blockNum } = event
+                console.log({txInfo, blockNum})
 
                 let isMatch = checkForMatchingEvent(txInfo)
+
+                console.log({isMatch})
 
                 if (isMatch){
                     if (txInfo.status === 0){
@@ -334,17 +341,21 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function checkForMatchingEvent(txInfo){
-
+        console.log({txInfo})
         const { transaction } = txInfo
         const { payload } = transaction
         const { kwargs, contract, function: method } = payload
 
+        console.log({bridge})
         if (bridge.origin_lamden){
             if (!kwargs) return false
             const { amount, to } = kwargs
-
+            console.log({amount, to})
             if (!to || !amount) return false
-
+            console.log(contract === bridge.lamden_clearinghouse.address && 
+                method === bridge.lamden_clearinghouse.abi.in &&
+                to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
+                new BN(amount.__fixed__).isEqualTo(new BN(swapInfoStore.tokenAmount)))
             return  contract === bridge.lamden_clearinghouse.address && 
                     method === bridge.lamden_clearinghouse.abi.in &&
                     to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
@@ -440,6 +451,7 @@ function sendLamdenApproval (resultsTracker, callback){
 
     const txInfo = {
         networkType: lamdenNetworkInfo.walletConnection.networkType,
+        networkName: 'arko',
         contractName: token.address,
         methodName: 'approve',
         kwargs: {
@@ -491,6 +503,7 @@ function sendDeposit (resultsTracker, callback){
 
     const txInfo = {
         networkType: lamdenNetworkInfo.walletConnection.networkType,
+        networkName: 'arko',
         contractName: bridge.lamden_clearinghouse.address,
         methodName: bridge.lamden_clearinghouse.abi.in,
         kwargs: {
@@ -543,6 +556,7 @@ function sendBurn (resultsTracker, callback) {
     const txInfo = {
         contractName: bridge.lamden_clearinghouse.address,
         networkType: lamdenNetworkInfo.walletConnection.networkType,
+        networkName: 'arko',
         methodName: bridge.lamden_clearinghouse.abi.out,
         kwargs: {
             ethereum_contract,

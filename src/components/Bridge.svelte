@@ -1,6 +1,6 @@
 <script>
   import { beforeUpdate } from "svelte";
-  import WalletController from "../js/LamdenWalletController";
+  import WalletController from "lamden_wallet_controller";
   import {
     lwc,
     connected_lwc,
