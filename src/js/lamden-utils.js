@@ -533,40 +533,47 @@ export function startBurn(resultsTracker, callback) {
 }
 
 function sendBurn (resultsTracker, callback) {
-    let lamdenNetworkInfo = get(lamdenNetwork)
+    try{
+        let lamdenNetworkInfo = get(lamdenNetwork)
+        console.log(1)
+        let swapInfoStore = get(swapInfo)
+        let toNetworkInfo = get(getNetworkStore(swapInfoStore.to))
 
-    let swapInfoStore = get(swapInfo)
-    let toNetworkInfo = get(getNetworkStore(swapInfoStore.to))
-
-
-    let lamdenToken = get(selectedToken)
-    const bridge = get_bridge_info(lamdenToken)
-    let metamask_address = swapInfoStore.metamask_address
-
-    let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol || t.lamden_equivalent === lamdenToken.symbol)
-
-    if (!tokenInfo){
-        resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the ${swapInfoStore.to} network.`]})
-        return
+        console.log(2)
+        let lamdenToken = get(selectedToken)
+        console.log(3)
+        const bridge = get_bridge_info(lamdenToken)
+        console.log(4)
+        let metamask_address = swapInfoStore.metamask_address
+        console.log(5)
+        let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol || t.lamden_equivalent === lamdenToken.symbol)
+        console.log(6)
+        if (!tokenInfo){
+            resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the ${swapInfoStore.to} network.`]})
+            return
+        }
+        console.log(7)
+        let ethereum_contract = tokenInfo.address
+        console.log(8)
+        let walletController = get(lwc)
+        console.log(9)
+        const txInfo = {
+            contractName: bridge.lamden_clearinghouse.address,
+            networkType: lamdenNetworkInfo.walletConnection.networkType,
+            networkName: 'arko',
+            methodName: bridge.lamden_clearinghouse.abi.out,
+            kwargs: {
+                ethereum_contract,
+                ethereum_address: metamask_address.toLowerCase(),
+                amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
+            },
+            stampLimit: lamdenNetworkInfo.stamps.burn,
+        }
+        console.log(10)
+        walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
+    }catch(e){
+        resultsTracker.set({loading: false, errors: [e.message]})
     }
-    let ethereum_contract = tokenInfo.address
-
-    let walletController = get(lwc)
-
-    const txInfo = {
-        contractName: bridge.lamden_clearinghouse.address,
-        networkType: lamdenNetworkInfo.walletConnection.networkType,
-        networkName: 'arko',
-        methodName: bridge.lamden_clearinghouse.abi.out,
-        kwargs: {
-            ethereum_contract,
-            ethereum_address: metamask_address.toLowerCase(),
-            amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
-        },
-        stampLimit: lamdenNetworkInfo.stamps.burn,
-    }
-
-    walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
 }
 
 export async function continueDeposit(resultsTracker, callback){
