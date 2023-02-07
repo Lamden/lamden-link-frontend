@@ -528,11 +528,13 @@ export function startBurn(resultsTracker, callback) {
         let token = get(selectedToken)
         resultsTracker.set({loading: true, status: `Attempting to Burn ${token.name} tokens on the Lamden Blockchain (check for Lamden Wallet popup)...`})
 
+        console.log("calling sendBurn")
         sendBurn(resultsTracker, callback)
     }
 }
 
 function sendBurn (resultsTracker, callback) {
+    console.log("sendBurn")
     try{
         let lamdenNetworkInfo = get(lamdenNetwork)
         console.log(1)
@@ -572,6 +574,7 @@ function sendBurn (resultsTracker, callback) {
         console.log(10)
         walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
     }catch(e){
+        console.log(e)
         resultsTracker.set({loading: false, errors: [e.message]})
     }
 }
