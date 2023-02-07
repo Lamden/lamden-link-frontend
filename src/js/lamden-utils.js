@@ -518,6 +518,7 @@ function sendDeposit (resultsTracker, callback){
 
 
 export function startBurn(resultsTracker, callback) {
+    console.log("startBurn")
     if (!hasEnoughTauToSendTx("burn")) {
         let lamdenNetworkInfo = get(lamdenNetwork)
 
@@ -525,7 +526,9 @@ export function startBurn(resultsTracker, callback) {
 
         resultsTracker.set({loading: false, message})
     } else {
+        console.log({token: get(selectedToken)})
         let token = get(selectedToken)
+        console.log({token})
         resultsTracker.set({loading: true, status: `Attempting to Burn ${token.name} tokens on the Lamden Blockchain (check for Lamden Wallet popup)...`})
 
         console.log("calling sendBurn")
