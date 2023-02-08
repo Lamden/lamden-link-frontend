@@ -200,7 +200,6 @@ export function getLamdenTransaction(txHash, resultsTracker, callback){
 
             try{
                 var txResults = await getLamdenTxResults(txHash).then(res => res.json())
-                console.log(txResults)
             }catch(e){
                 console.log(e)
                 var txResults = {error: e.message}
@@ -281,10 +280,6 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
 
         fetch(`/.netlify/functions/getLamdenContractHistory?contract=${contract}&start_block_num=${start_block_num.toString()}&network=${networkType}`)
 		.then(res => res.json())
-        .then(json => {
-            console.log(json)
-            return json
-        })
         .then(handleResponse)
         .catch(err => {
             console.log(err)
@@ -295,17 +290,14 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
 
     function handleResponse(events){
         const { history } = events
-        console.log({history})
+
         if (!history || !Array.isArray(history) || history.length === 0) return
 
         try{
             for (let event of history){
                 const { txInfo, blockNum } = event
-                console.log({txInfo, blockNum})
 
                 let isMatch = checkForMatchingEvent(txInfo)
-
-                console.log({isMatch})
 
                 if (isMatch){
                     if (txInfo.status === 0){
@@ -341,21 +333,15 @@ export const checkForLamdenEvents = (statusStore, doneCallback) => {
     }
 
     function checkForMatchingEvent(txInfo){
-        console.log({txInfo})
         const { transaction } = txInfo
         const { payload } = transaction
         const { kwargs, contract, function: method } = payload
 
-        console.log({bridge})
         if (bridge.origin_lamden){
             if (!kwargs) return false
             const { amount, to } = kwargs
-            console.log({amount, to})
             if (!to || !amount) return false
-            console.log(contract === bridge.lamden_clearinghouse.address && 
-                method === bridge.lamden_clearinghouse.abi.in &&
-                to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
-                new BN(amount.__fixed__).isEqualTo(new BN(swapInfoStore.tokenAmount)))
+
             return  contract === bridge.lamden_clearinghouse.address && 
                     method === bridge.lamden_clearinghouse.abi.in &&
                     to.toLowerCase() === swapInfoStore.lamden_address.toLowerCase() &&
@@ -417,7 +403,6 @@ export async function checkLamdenTokenApproval() {
 }
 
 export async function sendBurnApproval(resultsTracker, callback){
-    console.log("sendBurnApproval")
     if (!hasEnoughTauToSendTx("approval")) {
         let lamdenNetworkInfo = get(lamdenNetwork)
 
@@ -443,7 +428,6 @@ export async function sendDepositApproval(resultsTracker, callback){
 }
 
 function sendLamdenApproval (resultsTracker, callback){
-    console.log("sendLamdenApproval")
     let lamdenNetworkInfo = get(lamdenNetwork)
     let token = get(selectedToken)
     const bridge = get_bridge_info(token)
@@ -467,7 +451,6 @@ function sendLamdenApproval (resultsTracker, callback){
 }
 
 function handleTxResults(txResults, resultsTracker, callback){
-    console.log("handleTxResults")
     if (!txResults.data) 
         resultsTracker.set({loading:false, errors: ["Transaction result unavailable."]})
     else {
@@ -518,68 +501,52 @@ function sendDeposit (resultsTracker, callback){
 
 
 export function startBurn(resultsTracker, callback) {
-    console.log("startBurn")
     if (!hasEnoughTauToSendTx("burn")) {
         let lamdenNetworkInfo = get(lamdenNetwork)
-
         let message = `Not enough Lamden ${lamdenNetworkInfo.currencySymbol} to send transactions. Send ${lamdenNetworkInfo.currencySymbol} to your Lamden Link account from within the Lamden Wallet.`
 
         resultsTracker.set({loading: false, message})
     } else {
-        console.log({token: get(selectedToken)})
         let token = get(selectedToken)
-        console.log({token})
-        resultsTracker.set({loading: true, status: `Attempting to Burn ${token.name} tokens on the Lamden Blockchain (check for Lamden Wallet popup)...`})
 
-        console.log("calling sendBurn")
+        resultsTracker.set({loading: true, status: `Attempting to Burn ${token.name} tokens on the Lamden Blockchain (check for Lamden Wallet popup)...`})
         sendBurn(resultsTracker, callback)
     }
 }
 
 function sendBurn (resultsTracker, callback) {
-    console.log("sendBurn")
-    try{
-        let lamdenNetworkInfo = get(lamdenNetwork)
-        console.log(1)
-        let swapInfoStore = get(swapInfo)
-        let toNetworkInfo = get(getNetworkStore(swapInfoStore.to))
+    let lamdenNetworkInfo = get(lamdenNetwork)
+    let swapInfoStore = get(swapInfo)
+    let toNetworkInfo = get(getNetworkStore(swapInfoStore.to))
 
-        console.log(2)
-        let lamdenToken = get(selectedToken)
-        console.log(3)
-        const bridge = get_bridge_info(lamdenToken)
-        console.log(4)
-        let metamask_address = swapInfoStore.metamask_address
-        console.log(5)
-        let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol || t.lamden_equivalent === lamdenToken.symbol)
-        console.log(6)
-        if (!tokenInfo){
-            resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the ${swapInfoStore.to} network.`]})
-            return
-        }
-        console.log(7)
-        let ethereum_contract = tokenInfo.address
-        console.log(8)
-        let walletController = get(lwc)
-        console.log(9)
-        const txInfo = {
-            contractName: bridge.lamden_clearinghouse.address,
-            networkType: lamdenNetworkInfo.walletConnection.networkType,
-            networkName: 'arko',
-            methodName: bridge.lamden_clearinghouse.abi.out,
-            kwargs: {
-                ethereum_contract,
-                ethereum_address: metamask_address.toLowerCase(),
-                amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
-            },
-            stampLimit: lamdenNetworkInfo.stamps.burn,
-        }
-        console.log(10)
-        walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
-    }catch(e){
-        console.log(e)
-        resultsTracker.set({loading: false, errors: [e.message]})
+    let lamdenToken = get(selectedToken)
+    const bridge = get_bridge_info(lamdenToken)
+
+    let metamask_address = swapInfoStore.metamask_address
+    let tokenInfo = toNetworkInfo.tokens[swapInfoStore.from].find(t => t.symbol === lamdenToken.symbol || t.lamden_equivalent === lamdenToken.symbol)
+
+    if (!tokenInfo){
+        resultsTracker.set({loading: false, errors: [`Could not find token ${lamdenToken.symbol} info on the ${swapInfoStore.to} network.`]})
+        return
     }
+
+    let ethereum_contract = tokenInfo.address
+    let walletController = get(lwc)
+
+    const txInfo = {
+        contractName: bridge.lamden_clearinghouse.address,
+        networkType: lamdenNetworkInfo.walletConnection.networkType,
+        networkName: 'arko',
+        methodName: bridge.lamden_clearinghouse.abi.out,
+        kwargs: {
+            ethereum_contract,
+            ethereum_address: metamask_address.toLowerCase(),
+            amount: { __fixed__: swapInfoStore.tokenAmount.toString() },
+        },
+        stampLimit: lamdenNetworkInfo.stamps.burn,
+    }
+
+    walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
 }
 
 export async function continueDeposit(resultsTracker, callback){

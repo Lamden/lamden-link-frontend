@@ -60,7 +60,6 @@
     }
 
     function handleBurnComplete(txResults){
-        console.log("handleBurnComplete")
         if (txResults.recheckFailed) return
 
         if (txResults.recheck){
@@ -80,6 +79,7 @@
                 curr.started = new Date()
                 return curr
             })
+            burnTxStatus.set({})
             saveSwap()
             handleNextStep()
         }
@@ -88,7 +88,6 @@
     }
 
     function handleCheckAgain(){
-        console.log("handleCheckAgain")
         if ($swapInfo.burnHash != null && $swapInfo.burnHash.length === 64) {
             checkLamdenBurnTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
         }else{

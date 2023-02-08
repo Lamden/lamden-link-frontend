@@ -51,7 +51,7 @@
         if (!$swapInfo.lastLamdenBlockNum){
             attemptToGetLamdenCurrentBlock(checkLamdenCurrentBlockStatus)
             .then((block) => {
-                console.log({block})
+
                 swapInfo.update(curr => {
                     curr.lastLamdenBlockNum = block
                     return curr
