@@ -29,10 +29,12 @@
     }
 
     function handleApproveDeposit(){
+        depositApprovalTxStatus.set({})
         sendDepositApproval(depositApprovalTxStatus, handleApproveDepositComplete)
     }
 
     function handleStartDeposit(){
+        depositTxStatus.set({})
         if ($swapInfo.depositHash){
             let agree = confirm("Lamden Link has detected that you already created a deposit transaction for this swap.\nCreating a second deposit transaction will almost always result in loss of funds.\n\nClick the OK button if your previous Deposit Transaction failed and you would like to create a new one.\nClick CANCEL if you have a pending Deposit Transaction.");
             if (!agree) return

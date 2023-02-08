@@ -64,6 +64,7 @@
 
 
     function handleDepositTx(){
+        depositTxStatus.set({})
         clicked = true
         sendEthChainDeposit(depositTxStatus, handleDepositResult)
     }

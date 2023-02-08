@@ -65,6 +65,7 @@
     }
 
     function handleApproveTx(){
+        approvalTxStatus.set({})
         if (!needsApproval) return
         clicked = true
         sendEthChainApproval(approvalTxStatus, handleApproveResult)

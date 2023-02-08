@@ -20,6 +20,7 @@
     $: swapComplete = $swapInfo.complete || false
 
     function withdrawTokens(){
+        withdrawTxStatus.set({})
         clicked = true
         if ($swapInfo.proofData) sendProof()
         else continueBurn(withdrawTxStatus, handleWithdrawResult)

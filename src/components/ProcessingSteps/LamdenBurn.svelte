@@ -29,6 +29,7 @@
     }
 
     function handleApproveBurn(){
+        burnApprovalTxStatus.set({})
         console.log("handleApproveBurn")
         sendBurnApproval(burnApprovalTxStatus, handleApproveBurnComplete)
     }
