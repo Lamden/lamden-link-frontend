@@ -417,6 +417,7 @@ export async function checkLamdenTokenApproval() {
 }
 
 export async function sendBurnApproval(resultsTracker, callback){
+    console.log("sendBurnApproval")
     if (!hasEnoughTauToSendTx("approval")) {
         let lamdenNetworkInfo = get(lamdenNetwork)
 
@@ -442,6 +443,7 @@ export async function sendDepositApproval(resultsTracker, callback){
 }
 
 function sendLamdenApproval (resultsTracker, callback){
+    console.log("sendLamdenApproval")
     let lamdenNetworkInfo = get(lamdenNetwork)
     let token = get(selectedToken)
     const bridge = get_bridge_info(token)
@@ -464,10 +466,8 @@ function sendLamdenApproval (resultsTracker, callback){
     walletController.sendTransaction(txInfo, (txResults) => handleTxResults(txResults, resultsTracker, callback))
 }
 
-
-
 function handleTxResults(txResults, resultsTracker, callback){
-    console.log({txResults})
+    console.log("handleTxResults")
     if (!txResults.data) 
         resultsTracker.set({loading:false, errors: ["Transaction result unavailable."]})
     else {

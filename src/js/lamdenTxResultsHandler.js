@@ -2,6 +2,7 @@ export const TransactionResultHandler = () => {
 	let resultsObj = {}
 
 	function parseTxResult(txResults, resultsTracker, callback) {
+		console.log("TransactionResultHandler - parseTxResult")
 		if (txResults.errors || txResults.error) {
 			parseTxErrors(txResults.errors || txResults.error)
 		}else{

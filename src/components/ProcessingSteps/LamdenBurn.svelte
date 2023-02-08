@@ -29,10 +29,12 @@
     }
 
     function handleApproveBurn(){
+        console.log("handleApproveBurn")
         sendBurnApproval(burnApprovalTxStatus, handleApproveBurnComplete)
     }
 
     function handleStartBurn(){
+        console.log("handleStartBurn")
         if ($swapInfo.burnHash){
             let agree = confirm("Lamden Link has detected that you already created a burn transaction for this swap.\nCreating a second burn transaction will almost always result in loss of funds.\n\nClick the OK button if your previous Burn Transaction failed and you would like to create a new one.\nClick CANCEL if you have a pending Burn Transaction.");
             if (!agree) return
@@ -42,6 +44,7 @@
     }
 
     async function handleApproveBurnComplete(txResults){
+        console.log("handleApproveBurnComplete")
         await new Promise((resolve) => {
             setTimeout(resolve, 10000)
         })
@@ -56,6 +59,7 @@
     }
 
     function handleBurnComplete(txResults){
+        console.log("handleBurnComplete")
         if (txResults.recheckFailed) return
 
         if (txResults.recheck){
@@ -83,6 +87,7 @@
     }
 
     function handleCheckAgain(){
+        console.log("handleCheckAgain")
         if ($swapInfo.burnHash != null && $swapInfo.burnHash.length === 64) {
             checkLamdenBurnTransaction($swapInfo.burnHash, burnTxStatus, handleBurnComplete)
         }else{
@@ -131,7 +136,23 @@
         <p class="text-warning"><strong>{burnComplete ? "BURNT" : "BURNING"}</strong></p>
         <TokenLogo token={$selectedToken} clickable={false} size="tiny" />
         {`${stringToFixed($swapInfo.tokenAmount, 6)} ${$selectedToken.symbol}`}        
-    </div> 
+    </div>
+    {
+    `hasTokenApproval ${hasTokenApproval} - 
+     skipApproval ${skipApproval} - 
+     burnComplete ${burnComplete} - 
+     $swapInfo.burnHash ${$swapInfo.burnHash} -
+     hasBurnHash ${hasBurnHash}
+    `}
+
+    <br><br>
+    {`$burnApprovalTxStatus ${JSON.stringify($burnApprovalTxStatus)}`}
+
+    <br><br>
+    {`$burnTxStatus ${JSON.stringify($burnTxStatus)}`}
+
+
+
     <ul>
         <li class:yes={hasTokenApproval || burnComplete}>
             <span>
