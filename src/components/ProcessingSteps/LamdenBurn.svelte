@@ -34,6 +34,7 @@
     }
 
     function handleStartBurn(){
+        burnTxStatus.set({})
         console.log("handleStartBurn")
         if ($swapInfo.burnHash){
             let agree = confirm("Lamden Link has detected that you already created a burn transaction for this swap.\nCreating a second burn transaction will almost always result in loss of funds.\n\nClick the OK button if your previous Burn Transaction failed and you would like to create a new one.\nClick CANCEL if you have a pending Burn Transaction.");
