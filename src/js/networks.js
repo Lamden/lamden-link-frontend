@@ -107,8 +107,8 @@ export const mainnet = {
         network_symbol: "TAU",
         currentStampRatio: 169,
         stamps: {
-            burn: 65,
-            approval: 65
+            burn: 80,
+            approval: 80
         }
     },
     ethereum: {
