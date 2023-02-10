@@ -31,7 +31,7 @@
         lwc.set(new WalletController(getApprovalRequest()))
         
         $lwc.events.on('newInfo', handleWalletInfo)
-        
+
 		return () => {
 			$lwc.events.removeListener(handleWalletInfo)
 		}
@@ -46,6 +46,7 @@
     }
 
 	const handleWalletInfo = (info) => {
+        console.log({info})
         if (info.approvals){
             if (Object.keys(info.approvals).includes($selectedNetwork)){
                 hasNetworkApproval.set({approved: true})
