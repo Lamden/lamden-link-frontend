@@ -46,11 +46,16 @@
     }
 
 	const handleWalletInfo = (info) => {
-        const {networkName } = $lamdenNetwork
+        const approvalRequest = getApprovalRequest()
+        const { networkName } = approvalRequest
+
         if (info.approvals && networkName){
-            if (Object.keys(info.approvals[networkName]).includes($selectedNetwork)){
-                hasNetworkApproval.set({approved: true})
-                lamden_vk.set($lwc.walletAddress)
+            const net_name = info.approvals[networkName]
+            if (net_name){
+                if (Object.keys(net_name).includes($selectedNetwork)){
+                    hasNetworkApproval.set({approved: true})
+                    lamden_vk.set($lwc.walletAddress)
+                }
             }
         }
         if (!info.errors){
