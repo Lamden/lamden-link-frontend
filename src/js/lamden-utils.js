@@ -139,12 +139,20 @@ export function checkLamdenBurnTransaction(txHash, resultsTracker, callback){
                 return
             }
 
-
-            if (method !== "burn"){
-                console.log('Error: This is not a burn transaction.')
-                resultsTracker.set({errors: [`Error: This is not a burn transaction.`]})
-                return
+            if (bridge.origin_lamden){
+                if (method !== "deposit"){
+                    console.log('Error: This is not a deposit transaction.')
+                    resultsTracker.set({errors: [`Error: This is not a deposit transaction.`]})
+                    return
+                }
+            }else{
+                if (method !== "burn"){
+                    console.log('Error: This is not a burn transaction.')
+                    resultsTracker.set({errors: [`Error: This is not a burn transaction.`]})
+                    return
+                }
             }
+
 
             if (ethereum_address !== swapInfoStore.metamask_address){
                 console.log('Error: This burn hash is for a different metamask address than the one selected.')
