@@ -23,7 +23,7 @@
 
 	onMount(() => {
 		// Turn Maintence On or Off
-		maintenance_on.set(false)
+		maintenance_on.set(true)
 
 		hydrateSwapHistory()
 		hydrateSwapInfo()
