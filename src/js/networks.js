@@ -131,7 +131,8 @@ export const mainnet = {
         }
     },
     binance: {
-        network: "wss://ws-nd-240-845-842.p2pify.com/4f418ee905ac8b6effbaa5fad89cd133",
+        //network: "wss://ws-nd-240-845-842.p2pify.com/4f418ee905ac8b6effbaa5fad89cd133",
+        network: "wss://ws-nd-463-770-272.p2pify.com/8411e4e71f588f5c0b80b936d3081378",
         interop: ['lamden'],
         blockexplorer: "https://bscscan.com",
         blockexplorer_tx: "tx",
