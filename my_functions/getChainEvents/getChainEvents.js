@@ -3,6 +3,7 @@ const Web3 = require('web3')
 exports.handler = async (event, context) => {
 	const { networkType, fromNetwork, eventType, fromBlock, toBlock } = event.queryStringParameters
 	console.log(event.body)
+	console.log(process.env[`${networkType}_${fromNetwork}_WEBSOCKET`])
 	const { abi, address } = JSON.parse(event.body)
 
 	const web3 = new Web3(process.env[`${networkType}_${fromNetwork}_WEBSOCKET`])
