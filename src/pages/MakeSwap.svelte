@@ -41,7 +41,7 @@
 
 
     function getFromNetworks(){
-        return Object.keys(networks[$selectedNetwork]).filter(k => k !== "bridges" && k !== "ethereum")
+        return Object.keys(networks[$selectedNetwork]).filter(k => k !== "bridges" && k !== "ethereum" && k !== "binance")
     }
 
     function getToNetworks(){
