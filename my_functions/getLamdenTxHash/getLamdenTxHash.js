@@ -7,9 +7,7 @@ const BLOCKSERVICE_HOSTS = {
         "https://testnet-v2-bs-bang.lamden.io"
     ],
 	mainnet: [
-		"https://arko-bs-1.lamden.io",
-		"https://arko-bs-2.lamden.io",
-		"https://arko-bs-3.lamden.io"
+		"https://arko-bs-1.lamden.io"
 	]
 }
 
